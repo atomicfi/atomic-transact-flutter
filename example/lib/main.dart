@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+
+import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late AtomicConfig _config;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _config = AtomicConfig(
+      publicToken: 'PUBLIC_TOKEN_HERE',
+      product: AtomicProductType.deposit,
+    );
+
+    Atomic.onInteraction(_onInteration);
+    Atomic.onDataRequest(_onDataRequest);
+    Atomic.onCompletion(_onCompletion);
+  }
+
+  void _onInteration(AtomicTransactInteraction interaction) {
+    print("onInteraction");
+    print("-- name: ${interaction.name}");
+    print("-- description: ${interaction.description}");
+    print("-- language: ${interaction.language}");
+    print("-- customer: ${interaction.customer}");
+    print("-- company: ${interaction.company}");
+    print("-- product: ${interaction.product}");
+    print("-- additionalProduct: ${interaction.additionalProduct}");
+    print("-- payroll: ${interaction.payroll}");
+    print("-- data: ${interaction.data}");
+  }
+
+  void _onDataRequest(AtomicTransactDataRequest request) {
+    print("onDataRequest");
+    print("-- taskId: ${request.taskId}");
+    print("-- userId: ${request.userId}");
+    print("-- fields: ${request.fields}");
+    print("-- data: ${request.data}");
+  }
+
+  void _onCompletion(AtomicTransactCompletionType type,
+      AtomicTransactResponse? response, AtomicTransactError? error) {
+    print("onCompletion");
+    print("-- type: ${type.name}");
+    print("-- error: ${error?.name}");
+    print("-- response.reason: ${response?.reason}");
+    print("-- response.handoff: ${response?.handoff}");
+    print("-- response.taskId: ${response?.taskId}");
+    print("-- response.data: ${response?.data}");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Atomic.presentTransact(
+                configuration: _config,
+                environment: AtomicEnvironment.sandbox,
+              );
+            },
+            child: const Text("Launch Transact"),
+          ),
+        ),
+      ),
+    );
+  }
+}
