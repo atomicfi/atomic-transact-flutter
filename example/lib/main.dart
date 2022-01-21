@@ -24,42 +24,42 @@ class _MyAppState extends State<MyApp> {
       publicToken: 'PUBLIC_TOKEN_HERE',
       product: AtomicProductType.deposit,
     );
-
-    Atomic.onInteraction(_onInteration);
-    Atomic.onDataRequest(_onDataRequest);
-    Atomic.onCompletion(_onCompletion);
   }
 
-  void _onInteration(AtomicTransactInteraction interaction) {
-    print("onInteraction");
-    print("-- name: ${interaction.name}");
-    print("-- description: ${interaction.description}");
-    print("-- language: ${interaction.language}");
-    print("-- customer: ${interaction.customer}");
-    print("-- company: ${interaction.company}");
-    print("-- product: ${interaction.product}");
-    print("-- additionalProduct: ${interaction.additionalProduct}");
-    print("-- payroll: ${interaction.payroll}");
-    print("-- data: ${interaction.data}");
-  }
-
-  void _onDataRequest(AtomicTransactDataRequest request) {
-    print("onDataRequest");
-    print("-- taskId: ${request.taskId}");
-    print("-- userId: ${request.userId}");
-    print("-- fields: ${request.fields}");
-    print("-- data: ${request.data}");
-  }
-
-  void _onCompletion(AtomicTransactCompletionType type,
-      AtomicTransactResponse? response, AtomicTransactError? error) {
-    print("onCompletion");
-    print("-- type: ${type.name}");
-    print("-- error: ${error?.name}");
-    print("-- response.reason: ${response?.reason}");
-    print("-- response.handoff: ${response?.handoff}");
-    print("-- response.taskId: ${response?.taskId}");
-    print("-- response.data: ${response?.data}");
+  void _onButtonPressed() {
+    Atomic.transact(
+      config: _config,
+      environment: AtomicEnvironment.sandbox,
+      onInteraction: (AtomicTransactInteraction interaction) {
+        print("onInteraction");
+        print("- name: ${interaction.name}");
+        print("- description: ${interaction.description}");
+        print("- language: ${interaction.language}");
+        print("- customer: ${interaction.customer}");
+        print("- company: ${interaction.company}");
+        print("- product: ${interaction.product}");
+        print("- additionalProduct: ${interaction.additionalProduct}");
+        print("- payroll: ${interaction.payroll}");
+        print("- data: ${interaction.data}");
+      },
+      onDataRequest: (AtomicTransactDataRequest request) {
+        print("onDataRequest");
+        print("- taskId: ${request.taskId}");
+        print("- userId: ${request.userId}");
+        print("- fields: ${request.fields}");
+        print("- data: ${request.data}");
+      },
+      onCompletion: (AtomicTransactCompletionType type,
+          AtomicTransactResponse? response, AtomicTransactError? error) {
+        print("onCompletion");
+        print("- type: ${type.name}");
+        print("- error: ${error?.name}");
+        print("- response.reason: ${response?.reason}");
+        print("- response.handoff: ${response?.handoff}");
+        print("- response.taskId: ${response?.taskId}");
+        print("- response.data: ${response?.data}");
+      },
+    );
   }
 
   @override
@@ -71,12 +71,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: ElevatedButton(
-            onPressed: () {
-              Atomic.presentTransact(
-                configuration: _config,
-                environment: AtomicEnvironment.sandbox,
-              );
-            },
+            onPressed: _onButtonPressed,
             child: const Text("Launch Transact"),
           ),
         ),
