@@ -173,6 +173,9 @@ class AtomicConfig {
   /// Used to override feature flags
   final AtomicExperiments? experiments;
 
+  /// Tasks
+  final List<Map<String, String>>? tasks;
+
   AtomicConfig({
     required this.publicToken,
     required this.product,
@@ -186,6 +189,7 @@ class AtomicConfig {
     this.search,
     this.handoff,
     this.experiments,
+    this.tasks,
   });
 
   /// Returns a JSON object representation.
@@ -203,6 +207,7 @@ class AtomicConfig {
       'search': search?.toJson(),
       'handoff': handoff?.map((e) => e.name.replaceAll("_", "-")).toList(),
       'experiments': experiments?.toJson(),
+      'tasks': tasks,
     }..removeWhere((key, value) => value == null);
   }
 }
