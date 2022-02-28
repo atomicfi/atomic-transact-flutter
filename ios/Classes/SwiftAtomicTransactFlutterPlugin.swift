@@ -31,6 +31,9 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
                         Atomic.presentTransact(from: controller, config: config, environment: environment,
                                                onInteraction: onInteraction, onDataRequest: onDataRequest, onCompletion: onCompletion)
+                        result(nil)
+                    } else {
+                        result(FlutterError(code: "PlatformError", message: "No keyWindow found"))
                     }
                 } catch let error {
                     result(FlutterError(code: "ConfigError", message: String(describing: error), details: nil))
