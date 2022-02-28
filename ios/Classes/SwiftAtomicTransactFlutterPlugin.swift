@@ -33,7 +33,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                                                onInteraction: onInteraction, onDataRequest: onDataRequest, onCompletion: onCompletion)
                         result(nil)
                     } else {
-                        result(FlutterError(code: "PlatformError", message: "No keyWindow found"))
+                        result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
                     }
                 } catch let error {
                     result(FlutterError(code: "ConfigError", message: String(describing: error), details: nil))
