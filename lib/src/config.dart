@@ -1,4 +1,5 @@
 import 'types.dart';
+import 'dart:io' show Platform;
 
 /// Provide colors to customize Transact.
 class AtomicTheme {
@@ -143,6 +144,9 @@ class AtomicConfig {
   /// The product to initiate. Valid values include deposit, verify, and identify.
   final AtomicProductType product;
 
+  /// The platform being used
+  final Map<String, String> platform = { 'version': Platform.operatingSystemVersion, 'name': Platform.operatingSystem };
+
   /// The additional product to initiate.
   final AtomicProductType? additionalProduct;
 
@@ -202,6 +206,7 @@ class AtomicConfig {
       'theme': theme?.toJson(),
       'distribution': distribution?.toJson(),
       'language': language,
+      'platform': platform,
       'deeplink': deeplink?.toJson(),
       'metadata': metadata,
       'search': search?.toJson(),

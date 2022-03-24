@@ -29,7 +29,6 @@ class _MyAppState extends State<MyApp> {
   void _onButtonPressed() {
     Atomic.transact(
       config: _config,
-      environment: AtomicEnvironment.sandbox,
       onInteraction: (AtomicTransactInteraction interaction) {
         print("onInteraction");
         print("- name: ${interaction.name}");
@@ -40,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         print("- product: ${interaction.product}");
         print("- additionalProduct: ${interaction.additionalProduct}");
         print("- payroll: ${interaction.payroll}");
-        print("- data: ${interaction.data}");
+        print("- data: ${interaction.value}");
       },
       onDataRequest: (AtomicTransactDataRequest request) {
         print("onDataRequest");

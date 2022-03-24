@@ -40,15 +40,6 @@ enum AtomicDeeplinkStep {
   login_payroll,
 }
 
-///  Transact environment to connect to.
-enum AtomicEnvironment {
-  /// For any shipping applications
-  production,
-
-  /// For development and testing
-  sandbox,
-}
-
 enum AtomicTransactCompletionType {
   /// Transact finished successfully
   finished,

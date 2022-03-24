@@ -16,17 +16,14 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
 
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK
-  ///   - [environment] Environment to use for Transact.
   @override
   Future<void> presentTransact({
     required AtomicConfig configuration,
-    required AtomicEnvironment environment,
   }) async {
     await _channel.invokeMethod(
       'presentTransact',
       {
         'configuration': configuration.toJson(),
-        'environment': environment.name
       },
     );
   }

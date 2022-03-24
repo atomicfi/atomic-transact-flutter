@@ -57,7 +57,7 @@ class AtomicTransactResponse {
 class AtomicTransactInteraction {
   final String name;
 
-  final Map<String, dynamic> data;
+  final Map<String, dynamic> value;
 
   final String? description;
 
@@ -75,7 +75,7 @@ class AtomicTransactInteraction {
 
   AtomicTransactInteraction({
     required this.name,
-    required this.data,
+    required this.value,
     this.description,
     this.language,
     this.customer,
@@ -90,7 +90,7 @@ class AtomicTransactInteraction {
 
     return AtomicTransactInteraction(
       name: json["name"] ?? '',
-      data: Map<String, dynamic>.from(json["data"] ?? {}),
+      value: Map<String, dynamic>.from(json["value"] ?? {}),
       description: json["description"],
       language: json["language"],
       customer: json["customer"],

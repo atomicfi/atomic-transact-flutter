@@ -21,7 +21,6 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
           
         case "presentTransact":
             let arguments = call.arguments as! [String: Any]
-            let environment = transactEnvironmentFromString(arguments["environment"] as? String);
             
             if let configuration = arguments["configuration"] {
                 do {
@@ -29,7 +28,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     let config = try JSONDecoder().decode(AtomicConfig.self, from: data)
                     
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                        Atomic.presentTransact(from: controller, config: config, environment: environment,
+                        Atomic.presentTransact(from: controller, config: config,
                                                onInteraction: onInteraction, onDataRequest: onDataRequest, onCompletion: onCompletion)
                         result(nil)
                     } else {
@@ -91,23 +90,12 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
     }
     
     // MARK: - Helpers
-    
-    func transactEnvironmentFromString(_ value: String?) -> TransactEnvironment {
-        switch (value) {
-            case "sandbox":
-                return TransactEnvironment.sandbox
-            case "production":
-                return TransactEnvironment.production
-            default:
-                return TransactEnvironment.production
-        }
-    }
-    
+
     func mapFromTransactInteraction(_ value: TransactInteraction) -> [String: Any?] {
         return [
             "name" : value.name,
             "description" : value.description,
-            "data" : value.data,
+            "value" : value.value,
             "language" : value.language,
             "company" : value.company,
             "customer" : value.customer,

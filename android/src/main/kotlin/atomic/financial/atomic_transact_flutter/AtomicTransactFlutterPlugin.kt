@@ -61,9 +61,6 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
               search = configSearchFromMap(search)
       )
 
-      val envString = call.argument<String>("environment") as String
-      val environment = Config.Environment.valueOf(envString.toUpperCase())
-
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
           Transact.unregisterReceiver(activity, this)
@@ -81,7 +78,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         }
       })
 
-      Transact.present(activity, config, environment)
+      Transact.present(activity, config)
 
     } else {
       result.notImplemented()
@@ -231,6 +228,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["additionalProduct"] = value.optString("additionalProduct")
     result["payroll"] = value.optString("payroll")
     result["company"] = value.optString("company")
+    result["value"] = value
 
     return result.toMap()
   }

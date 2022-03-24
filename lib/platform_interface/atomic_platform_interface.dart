@@ -29,10 +29,8 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
 
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK
-  ///   - [environment] Environment to use for Transact.
   Future<void> presentTransact({
     required AtomicConfig configuration,
-    required AtomicEnvironment environment,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
   }
