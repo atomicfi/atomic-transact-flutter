@@ -9,13 +9,11 @@ class Atomic {
 
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK.
-  ///   - [environment] Environment to use for Transact. Defaults to `.production`.
   ///   - [onInteraction] Closure that will be called when a Transact Interaction event occurs.
   ///   - [onDataRequest] Closure that will be called when a Transact data request event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
   static Future<void> transact({
     required AtomicConfig config,
-    AtomicEnvironment environment = AtomicEnvironment.production,
     AtomicInteractionHandler? onInteraction,
     AtomicDataRequestHandler? onDataRequest,
     AtomicCompletionHandler? onCompletion,
@@ -26,7 +24,6 @@ class Atomic {
 
     await _platform.presentTransact(
       configuration: config,
-      environment: environment,
     );
   }
 }
