@@ -2,18 +2,17 @@ package atomic.financial.atomic_transact_flutter
 
 import android.app.Activity
 import androidx.annotation.NonNull
-
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import financial.atomic.transact.*
+import financial.atomic.transact.receiver.TransactBroadcastReceiver
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-
 import org.json.JSONObject
-import financial.atomic.transact.*
-import financial.atomic.transact.receiver.TransactBroadcastReceiver
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import org.json.JSONArray
 
 
 /** AtomicTransactFlutterPlugin */
@@ -257,7 +256,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["additionalProduct"] = value.optString("additionalProduct")
     result["payroll"] = value.optString("payroll")
     result["company"] = value.optString("company")
-    result["value"] = value
+    result["value"] = toMap(value)
 
     return result.toMap()
   }
@@ -290,5 +289,40 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["reason"] = data.optString("reason")
 
     return result.toMap()
+  }
+
+  private fun toMap(json: JSONObject): Map<String, Any?>? {
+    val map = mutableMapOf<String, Any?>()
+    val keys = json.keys()
+    while (keys.hasNext()) {
+      val key = keys.next() as String
+      map[key] = fromJson(json[key])
+    }
+    return map
+  }
+
+  private fun toList(array: JSONArray): List<Any?>? {
+    val list = mutableListOf<Any?>()
+    for (i in 0 until array.length()) {
+      list.add(fromJson(array.get(i)))
+    }
+    return list
+  }
+
+  private fun fromJson(json: Any): Any? {
+    return when {
+        json === JSONObject.NULL -> {
+          null
+        }
+        json is JSONObject -> {
+          toMap(json)
+        }
+        json is JSONArray -> {
+          toList(json as JSONArray)
+        }
+        else -> {
+          json
+        }
+    }
   }
 }
