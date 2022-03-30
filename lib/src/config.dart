@@ -211,7 +211,10 @@ class AtomicConfig {
   final List<AtomicTransactHandoff>? handoff;
 
   /// The platform being used
-  final Map<String, String> platform = {'version': Platform.operatingSystemVersion, 'name': Platform.operatingSystem};
+  final Map<String, String> platform = {
+    'version': Platform.operatingSystemVersion,
+    'name': Platform.operatingSystem
+  };
 
   /// Used to override feature flags
   final AtomicExperiments? experiments;
@@ -219,11 +222,9 @@ class AtomicConfig {
   AtomicConfig({
     required this.publicToken,
     this.tasks,
-    @Deprecated("This has been moved to 'tasks'")
-    this.product,
+    @Deprecated("This has been moved to 'tasks'") this.product,
     this.additionalProduct,
-    @Deprecated("This has been moved to 'tasks'")
-    this.distribution,
+    @Deprecated("This has been moved to 'tasks'") this.distribution,
     this.linkedAccount,
     this.theme,
     this.language = 'en',
@@ -232,7 +233,8 @@ class AtomicConfig {
     this.search,
     this.handoff,
     this.experiments,
-  }) : assert(tasks != null || product != null, 'AtomicConfig requires a valid tasks list or a valid product type');
+  }) : assert(tasks != null || product != null,
+            'AtomicConfig requires a valid tasks list or a valid product type');
 
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
