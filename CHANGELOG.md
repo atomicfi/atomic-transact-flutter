@@ -1,3 +1,11 @@
+## 1.2.0
+
+* New 'tasks' parameter on AtomicConfig.
+* Deprecated 'product' and 'distribution' parameters on AtomicConfig.
+* Updated Android SDK to 0.0.6.
+
+## 1.1.0
+
 ## 1.0.0
 
 * Initial release.

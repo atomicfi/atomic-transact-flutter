@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,8 +20,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _config = AtomicConfig(
-      publicToken: 'PUBLIC_TOKEN_HERE',
-      product: AtomicProductType.deposit,
+      publicToken: '<YOUR_PUBLIC_TOKEN_HERE>',
+      tasks: [AtomicTask(product: AtomicProductType.deposit)],
     );
   }
 

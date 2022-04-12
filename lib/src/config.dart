@@ -1,5 +1,6 @@
-import 'types.dart';
 import 'dart:io' show Platform;
+
+import 'types.dart';
 
 /// Provide colors to customize Transact.
 class AtomicTheme {
@@ -136,19 +137,56 @@ class AtomicExperiments {
   }
 }
 
+/// Defines configuration for the tasks you wish to execute as part of the task workflow.
+class AtomicTask {
+  /// One of deposit, verify, or identify.
+  final AtomicProductType product;
+
+  /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
+  /// Default value: "continue"
+  final String? onComplete;
+
+  /// The action to take on failure of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
+  /// Default value: "continue"
+  final String? onFail;
+
+  /// Optionally pass in enforced deposit settings. Enforcing deposit settings will eliminate company search results that do not support the distribution settings.
+  final AtomicDistribution? distribution;
+
+  AtomicTask({
+    required this.product,
+    this.onComplete = "continue",
+    this.onFail = "continue",
+    this.distribution,
+  });
+
+  /// Returns a JSON object representation.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'product': product.name,
+      'onComplete': onComplete,
+      'onFail': onFail,
+      'distribution': distribution?.toJson(),
+    }..removeWhere((key, value) => value == null);
+  }
+}
+
 /// Configure for how you interact with the Atomic Transact SDK
 class AtomicConfig {
   /// The public token returned during AccessToken creation.
   final String publicToken;
 
-  /// The product to initiate. Valid values include deposit, verify, and identify.
-  final AtomicProductType product;
+  /// Defines configuration for the tasks you wish to execute as part of the task workflow.
+  final List<AtomicTask>? tasks;
 
-  /// The platform being used
-  final Map<String, String> platform = { 'version': Platform.operatingSystemVersion, 'name': Platform.operatingSystem };
+  /// The product to initiate. Valid values include deposit, verify, and identify.
+  final AtomicProductType? product;
 
   /// The additional product to initiate.
   final AtomicProductType? additionalProduct;
+
+  /// Optionally pass in enforced deposit settings. Enforcing deposit settings will eliminate company search results that do not support the distribution settings.
+  final AtomicDistribution? distribution;
 
   /// The linked account to use
   final String? linkedAccount;
@@ -156,10 +194,8 @@ class AtomicConfig {
   /// Optionally provide colors to customize Transact.
   final AtomicTheme? theme;
 
-  /// Optionally pass in enforced deposit settings. Enforcing deposit settings will eliminate company search results that do not support the distribution settings.
-  final AtomicDistribution? distribution;
-
   /// Optionally change the language. Could be either 'en' for English or 'es' for Spanish. Default is 'en', unless the user's current locale is Spanish, then Spanish will be used.
+  /// Default value: 'en'
   final String language;
 
   /// Optionally deeplink into a specific step
@@ -174,37 +210,42 @@ class AtomicConfig {
   /// Handoff allows views to be handled outside of Transact.
   final List<AtomicTransactHandoff>? handoff;
 
+  /// The platform being used
+  final Map<String, String> platform = {
+    'version': Platform.operatingSystemVersion,
+    'name': Platform.operatingSystem
+  };
+
   /// Used to override feature flags
   final AtomicExperiments? experiments;
 
-  /// Tasks
-  final List<Map<String, String>>? tasks;
-
   AtomicConfig({
     required this.publicToken,
-    required this.product,
+    this.tasks,
+    @Deprecated("This has been moved to 'tasks'") this.product,
     this.additionalProduct,
+    @Deprecated("This has been moved to 'tasks'") this.distribution,
     this.linkedAccount,
     this.theme,
-    this.distribution,
     this.language = 'en',
     this.deeplink,
     this.metadata,
     this.search,
     this.handoff,
     this.experiments,
-    this.tasks,
-  });
+  }) : assert(tasks != null || product != null,
+            'AtomicConfig requires a valid tasks list or a valid product type');
 
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'publicToken': publicToken,
-      'product': product.name,
+      'tasks': tasks?.map((e) => e.toJson()).toList(),
+      'product': product?.name,
       'additionalProduct': additionalProduct?.name,
+      'distribution': distribution?.toJson(),
       'linkedAccount': linkedAccount,
       'theme': theme?.toJson(),
-      'distribution': distribution?.toJson(),
       'language': language,
       'platform': platform,
       'deeplink': deeplink?.toJson(),
@@ -212,7 +253,6 @@ class AtomicConfig {
       'search': search?.toJson(),
       'handoff': handoff?.map((e) => e.name.replaceAll("_", "-")).toList(),
       'experiments': experiments?.toJson(),
-      'tasks': tasks,
     }..removeWhere((key, value) => value == null);
   }
 }

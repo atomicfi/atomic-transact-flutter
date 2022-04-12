@@ -2,18 +2,17 @@ package atomic.financial.atomic_transact_flutter
 
 import android.app.Activity
 import androidx.annotation.NonNull
-
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import financial.atomic.transact.*
+import financial.atomic.transact.receiver.TransactBroadcastReceiver
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-
 import org.json.JSONObject
-import financial.atomic.transact.*
-import financial.atomic.transact.receiver.TransactBroadcastReceiver
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import org.json.JSONArray
 
 
 /** AtomicTransactFlutterPlugin */
@@ -35,31 +34,49 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val language = configuration?.get("language") as String
-      val product = configuration?.get("product") as String
+      val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
+      val product = configuration?.get("product") as? String
       val additionalProduct = configuration?.get("additionalProduct") as? String
+      val distribution = configuration?.get("distribution") as? Map<String, Any>
       val handoff = configuration?.get("handoff") as? List<String>
       val linkedAccount = configuration?.get("linkedAccount") as? String
       val metadata = configuration?.get("metadata") as? String
       val theme = configuration?.get("theme") as? Map<String, Any>
-      val distribution = configuration?.get("distribution") as? Map<String, Any>
       val deeplink = configuration?.get("deeplink") as? Map<String, Any>
       val search = configuration?.get("search") as? Map<String, Any>
       val experiments = configuration?.get("experiments") as? Map<String, Any>
 
-      val config = Config(
-              publicToken = publicToken,
-              product = Config.Product.valueOf(product.toUpperCase()),
-              additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.toUpperCase()) else null,
-              linkedAccount = linkedAccount,
-              handoff = configHandoffFromList(handoff),
-              language = Config.Language.valueOf(language),
-              metadata = metadata,
-              theme = configThemeFromMap(theme),
-              distribution = configDistributionFromMap(distribution),
-              deeplink = configDeeplinkFromMap(deeplink),
-              experiments = configExperimentsFromMap(experiments),
-              search = configSearchFromMap(search)
-      )
+      val config : Config
+
+      if (product != null) {
+        config = Config(
+                publicToken = publicToken,
+                product = Config.Product.valueOf(product.uppercase()),
+                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
+                distribution = configDistributionFromMap(distribution),
+                linkedAccount = linkedAccount,
+                handoff = configHandoffFromList(handoff),
+                language = Config.Language.valueOf(language),
+                metadata = metadata,
+                theme = configThemeFromMap(theme),
+                deeplink = configDeeplinkFromMap(deeplink),
+                experiments = configExperimentsFromMap(experiments),
+                search = configSearchFromMap(search))
+      } else {
+        config = Config(
+                publicToken = publicToken,
+                tasks = configTaskFromList(tasks),
+                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
+                distribution = configDistributionFromMap(distribution),
+                linkedAccount = linkedAccount,
+                handoff = configHandoffFromList(handoff),
+                language = Config.Language.valueOf(language),
+                metadata = metadata,
+                theme = configThemeFromMap(theme),
+                deeplink = configDeeplinkFromMap(deeplink),
+                experiments = configExperimentsFromMap(experiments),
+                search = configSearchFromMap(search))
+      }
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
@@ -87,7 +104,6 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
-
   }
 
   /// ActivityAware
@@ -114,7 +130,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val result = mutableListOf<Config.Handoff>()
 
       value.forEach {
-        val item = it.replace('-', '_').toUpperCase()
+        val item = it.replace('-', '_').uppercase()
         result.add(Config.Handoff.valueOf(item))
       }
 
@@ -122,6 +138,18 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     }
 
     return null
+  }
+
+  private fun configTaskFromList(value: List<Map<String, Any?>>?): List<Config.Task> {
+    val result = mutableListOf<Config.Task>()
+
+    value?.forEach {
+      result.add(Config.Task(
+              product = Config.Product.valueOf((it["product"] as String).uppercase()),
+              distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any> )))
+    }
+
+    return result
   }
 
   private fun configThemeFromMap(value: Map<String, Any?>?): Config.Theme? {
@@ -160,7 +188,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         val valueTags = value["tags"] as List<String>
 
         valueTags.forEach {
-          val item = it.replace('-', '_').toUpperCase()
+          val item = it.replace('-', '_').uppercase()
           tags.add(Config.Search.Tag.valueOf(item))
         }
       }
@@ -169,7 +197,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         val valueExcludedTags = value["excludedTags"] as List<String>
 
         valueExcludedTags.forEach {
-          val item = it.replace('-', '_').toUpperCase()
+          val item = it.replace('-', '_').uppercase()
           excludedTags.add(Config.Search.Tag.valueOf(item))
         }
       }
@@ -228,7 +256,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["additionalProduct"] = value.optString("additionalProduct")
     result["payroll"] = value.optString("payroll")
     result["company"] = value.optString("company")
-    result["value"] = value
+    result["value"] = toMap(value)
 
     return result.toMap()
   }
@@ -261,5 +289,40 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["reason"] = data.optString("reason")
 
     return result.toMap()
+  }
+
+  private fun toMap(json: JSONObject): Map<String, Any?>? {
+    val map = mutableMapOf<String, Any?>()
+    val keys = json.keys()
+    while (keys.hasNext()) {
+      val key = keys.next() as String
+      map[key] = fromJson(json[key])
+    }
+    return map
+  }
+
+  private fun toList(array: JSONArray): List<Any?>? {
+    val list = mutableListOf<Any?>()
+    for (i in 0 until array.length()) {
+      list.add(fromJson(array.get(i)))
+    }
+    return list
+  }
+
+  private fun fromJson(json: Any): Any? {
+    return when {
+        json === JSONObject.NULL -> {
+          null
+        }
+        json is JSONObject -> {
+          toMap(json)
+        }
+        json is JSONArray -> {
+          toList(json as JSONArray)
+        }
+        else -> {
+          json
+        }
+    }
   }
 }
