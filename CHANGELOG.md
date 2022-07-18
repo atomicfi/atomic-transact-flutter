@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Add fix to support the latest iOS SDK
+
 ## 1.2.1
 
 - Add fix to support the latest iOS SDK
