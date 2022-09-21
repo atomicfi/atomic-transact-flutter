@@ -1,3 +1,7 @@
+## 1.2.3
+
+- Hotfix to support SDK
+
 ## 1.2.2
 
 - Add fix to support the latest iOS SDK
