@@ -1,3 +1,7 @@
+## 2.6.12
+
+- Add support for iOS SDK v2.6.12
+
 ## 2.6.5
 
 - Add support for iOS SDK v2.6.5

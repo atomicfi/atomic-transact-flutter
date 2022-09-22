@@ -4,14 +4,14 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'atomic_transact_flutter'
-  s.version          = '2.6.5'
-  s.summary          = 'A new flutter plugin project.'
+  s.version          = '2.6.12'
+  s.summary          = 'Atomic Flutter SDK'
   s.description      = <<-DESC
 A new flutter plugin project.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://docs.atomicfi.com/reference/transact-sdk#libraries__flutter'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Sean Hill' => 'sean@atomicfi.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
@@ -23,6 +23,6 @@ A new flutter plugin project.
   s.swift_version = '5.0'
 
   # Atomic dependency
-  s.dependency 'AtomicSDK', '2.6.5'
+  s.dependency 'AtomicSDK', '2.6.12'
 
 end
