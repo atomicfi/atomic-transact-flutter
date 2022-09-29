@@ -1,3 +1,8 @@
+## 2.6.14
+
+- Add support for iOS SDK v2.6.14
+- Add support for Android SDK v1.2.0
+
 ## 2.6.12
 
 - Add support for iOS SDK v2.6.12
