@@ -1,3 +1,7 @@
+## 2.6.16
+
+- Fix `metadata` issue
+
 ## 2.6.14
 
 - Add support for iOS SDK v2.6.14
