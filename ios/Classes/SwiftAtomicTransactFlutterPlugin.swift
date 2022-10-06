@@ -109,8 +109,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
         return [
             "fields": value.fields,
             "data": value.data,
-            "userId": value.userId,
-            "taskId": value.taskId,
+            "identifier": value.identifier,
         ];
     }
     

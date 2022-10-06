@@ -40,7 +40,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val distribution = configuration?.get("distribution") as? Map<String, Any>
       val handoff = configuration?.get("handoff") as? List<String>
       val linkedAccount = configuration?.get("linkedAccount") as? String
-      val metadata = configuration?.get("metadata") as? String
+      val metadata = configuration?.get("metadata") as? JSONObject
       val theme = configuration?.get("theme") as? Map<String, Any>
       val deeplink = configuration?.get("deeplink") as? Map<String, Any>
       val search = configuration?.get("search") as? Map<String, Any>
@@ -250,6 +250,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     val value = data.getJSONObject("value")
 
     result["name"] = name
+    result["identifier"] = value.optString("identifier")
     result["customer"] = value.optString("customer")
     result["language"] = value.optString("language")
     result["product"] = value.optString("product")
@@ -264,8 +265,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   private fun mapFromTransactDataRequest(data: JSONObject): Map<String, Any?> {
     val result = mutableMapOf<String, Any?>();
 
-    result["name"] = data.optString("taskId")
-    result["customer"] = data.optString("userId")
+    result["identifier"] = data.optString("identifier")
 
     val jArray = data.optJSONArray("fields")
 
