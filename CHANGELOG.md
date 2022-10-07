@@ -1,3 +1,7 @@
+## 2.6.17
+
+- Fix iOS platform issue
+
 ## 2.6.16
 
 - Fix `metadata` issue

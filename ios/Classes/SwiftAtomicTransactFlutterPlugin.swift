@@ -21,11 +21,16 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
           
         case "presentTransact":
             let arguments = call.arguments as! [String: Any]
+            let decoder = JSONDecoder()
             
-            if let configuration = arguments["configuration"] {
+            if let configuration = arguments["configuration"] as? [String: Any] {
                 do {
-                    let data = try JSONSerialization.data(withJSONObject: configuration, options: [])
-                    let config = try JSONDecoder().decode(AtomicConfig.self, from: data)
+                    var json = configuration
+                    json["platform"] = AtomicConfig.Platform().encode()
+
+                    guard let data = try? JSONSerialization.data(withJSONObject: json, options: []) else { return }
+
+                    var config = try decoder.decode(AtomicConfig.self, from: data)
                     
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
                         Atomic.presentTransact(from: controller, config: config,

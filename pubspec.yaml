@@ -1,6 +1,6 @@
 name: atomic_transact_flutter
 description: A Flutter plugin that provides a native implementation for the Atomic Transact SDK.
-version: 2.6.16
+version: 2.6.17
 repository: https://github.com/atomicfi/atomic-transact-flutter
 
 environment:
