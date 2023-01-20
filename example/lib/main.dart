@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
 
     _config = AtomicConfig(
       publicToken: '<YOUR_PUBLIC_TOKEN_HERE>',
-      tasks: [AtomicTask(product: AtomicProductType.deposit)],
+      tasks: [AtomicTask(product: AtomicOperationType.deposit)],
     );
   }
 
