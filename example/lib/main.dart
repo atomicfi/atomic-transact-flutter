@@ -37,6 +37,7 @@ class _MyAppState extends State<MyApp> {
         print("- company: ${interaction.company}");
         print("- product: ${interaction.product}");
         print("- additionalProduct: ${interaction.additionalProduct}");
+        print("- operation: ${interaction.operation}");
         print("- payroll: ${interaction.payroll}");
         print("- data: ${interaction.value}");
       },

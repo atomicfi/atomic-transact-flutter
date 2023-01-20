@@ -140,7 +140,8 @@ class AtomicExperiments {
 /// Defines configuration for the tasks you wish to execute as part of the task workflow.
 class AtomicTask {
   /// One of deposit, verify, or identify.
-  final AtomicProductType product;
+  final AtomicProductType? product;
+  final AtomicProductType? operation;
 
   /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
   /// Default value: "continue"
@@ -154,7 +155,8 @@ class AtomicTask {
   final AtomicDistribution? distribution;
 
   AtomicTask({
-    required this.product,
+    this.product,
+    this.operation,
     this.onComplete = "continue",
     this.onFail = "continue",
     this.distribution,
@@ -163,7 +165,8 @@ class AtomicTask {
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'product': product.name,
+      'product': product?.name,
+      'operation': operation?.name,
       'onComplete': onComplete,
       'onFail': onFail,
       'distribution': distribution?.toJson(),
