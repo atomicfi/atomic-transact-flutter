@@ -69,6 +69,8 @@ class AtomicTransactInteraction {
 
   final AtomicProductType? additionalProduct;
 
+  final AtomicProductType? operation;
+
   final String? company;
 
   final String? payroll;
@@ -81,6 +83,7 @@ class AtomicTransactInteraction {
     this.customer,
     this.product,
     this.additionalProduct,
+    this.operation,
     this.company,
     this.payroll,
   });
@@ -99,6 +102,9 @@ class AtomicTransactInteraction {
           : null,
       additionalProduct: typesMap.containsKey(json["additionalProduct"])
           ? typesMap[json["additionalProduct"]]
+          : null,
+      operation: typesMap.containsKey(json["operation"])
+          ? typesMap[json["operation"]]
           : null,
       company: json["company"],
       payroll: json["payroll"],

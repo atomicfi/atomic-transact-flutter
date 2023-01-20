@@ -20,8 +20,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _config = AtomicConfig(
-      publicToken: '<YOUR_PUBLIC_TOKEN_HERE>',
-      tasks: [AtomicTask(product: AtomicProductType.deposit)],
+      publicToken: 'BTZUCFKV',
+      tasks: [AtomicTask(operation: AtomicProductType.deposit)],
     );
   }
 
@@ -37,6 +37,7 @@ class _MyAppState extends State<MyApp> {
         print("- company: ${interaction.company}");
         print("- product: ${interaction.product}");
         print("- additionalProduct: ${interaction.additionalProduct}");
+        print("- operation: ${interaction.operation}");
         print("- payroll: ${interaction.payroll}");
         print("- data: ${interaction.value}");
       },

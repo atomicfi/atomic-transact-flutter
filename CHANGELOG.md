@@ -1,3 +1,7 @@
+## 2.7.0
+
+- Add support for 'operation' in the 'tasks' configuration
+
 ## 2.6.17
 
 - Fix iOS platform issue
