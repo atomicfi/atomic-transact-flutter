@@ -1,3 +1,8 @@
+## 2.7.1
+
+- Add support for iOS SDK v2.7.1
+- Add support for Android SDK v1.2.1
+
 ## 2.6.17
 
 - Fix iOS platform issue
