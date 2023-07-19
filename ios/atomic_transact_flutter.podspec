@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'atomic_transact_flutter'
-  s.version          = '2.7.1'
+  s.version          = '3.0.0'
   s.summary          = 'Atomic Flutter SDK'
   s.description      = <<-DESC
 A new flutter plugin project.
@@ -23,6 +23,6 @@ A new flutter plugin project.
   s.swift_version = '5.0'
 
   # Atomic dependency
-  s.dependency 'AtomicSDK', '2.7.1'
+  s.dependency 'AtomicSDK', '3.0.0'
 
 end
