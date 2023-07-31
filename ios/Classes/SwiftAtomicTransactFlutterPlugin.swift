@@ -26,7 +26,11 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             if let configuration = arguments["configuration"] as? [String: Any] {
                 do {
                     var json = configuration
-                    json["platform"] = AtomicConfig.Platform().encode()
+
+                    if var platform = AtomicConfig.Platform().encode() as? [String: Any] {
+                        platform["sdkVersion"] = platform["sdkVersion"] as! String + "-flutter"
+                        json["platform"] = platform
+                    }
 
                     guard let data = try? JSONSerialization.data(withJSONObject: json, options: []) else { return }
 
