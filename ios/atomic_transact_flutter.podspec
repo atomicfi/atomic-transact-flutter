@@ -23,6 +23,6 @@ A new flutter plugin project.
   s.swift_version = '5.0'
 
   # Atomic dependency
-  s.dependency 'AtomicSDK', '3.0.2'
+  s.dependency 'AtomicSDK', '3.0.3'
 
 end
