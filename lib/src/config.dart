@@ -137,6 +137,22 @@ class AtomicExperiments {
   }
 }
 
+class AtomicCustomer {
+  /// Accepts a string of the customer's name.
+  final String? name;
+
+  AtomicCustomer({
+    this.name,
+  });
+
+  /// Returns a JSON object representation.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'name': name,
+    }..removeWhere((key, value) => value == null);
+  }
+}
+
 /// Defines configuration for the tasks you wish to execute as part of the task workflow.
 class AtomicTask {
   /// One of deposit, verify, or identify.
@@ -219,6 +235,9 @@ class AtomicConfig {
   /// Used to override feature flags
   final AtomicExperiments? experiments;
 
+  /// Optionally provide a customer's name
+  final AtomicCustomer? customer;
+
   AtomicConfig({
     required this.publicToken,
     this.tasks,
@@ -233,6 +252,7 @@ class AtomicConfig {
     this.search,
     this.handoff,
     this.experiments,
+    this.customer,
   }) : assert(tasks != null || product != null,
             'AtomicConfig requires a valid tasks list or a valid product type');
 
@@ -253,6 +273,7 @@ class AtomicConfig {
       'search': search?.toJson(),
       'handoff': handoff?.map((e) => e.name.replaceAll("_", "-")).toList(),
       'experiments': experiments?.toJson(),
+      'customer': customer?.toJson()
     }..removeWhere((key, value) => value == null);
   }
 }
