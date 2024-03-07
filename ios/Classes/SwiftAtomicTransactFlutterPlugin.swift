@@ -48,6 +48,8 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                 }
             }
             break;
+        case "dismissTransact":
+            Atomic.dismissTransact()
 
         default:
             result(FlutterMethodNotImplemented)
