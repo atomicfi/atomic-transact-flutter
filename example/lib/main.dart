@@ -68,9 +68,23 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: ElevatedButton(
-            onPressed: _onButtonPressed,
-            child: const Text("Launch Transact"),
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: _onButtonPressed,
+                child: const Text("Launch Transact"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _onButtonPressed();
+                  Future.delayed(Duration(seconds: 10), () {
+                    Atomic.close();
+                    print('close');
+                  });
+                },
+                child: const Text("Launch And Close"),
+              ),
+            ],
           ),
         ),
       ),

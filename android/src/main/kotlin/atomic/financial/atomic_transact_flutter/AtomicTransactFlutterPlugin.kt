@@ -97,6 +97,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       Transact.present(activity, config)
 
+    } else if (call.method == "dismissTransact") {
+      Transact.close(activity)
     } else {
       result.notImplemented()
     }
