@@ -1,11 +1,15 @@
 PODS:
-  - atomic_transact_flutter (3.0.0):
-    - AtomicSDK (= 3.0.0)
+  - atomic_transact_flutter (3.8.0):
+    - AtomicSDK (= 3.8.0)
     - Flutter
-  - AtomicSDK (3.0.0):
-    - AtomicSDK/AtomicTransact (= 3.0.0)
-  - AtomicSDK/AtomicTransact (3.0.0)
+  - AtomicSDK (3.8.0):
+    - QuantumIOS
   - Flutter (1.0.0)
+  - QuantumIOS (3.8.0):
+    - QuantumIOS/QuantumIOS (= 3.8.0)
+  - QuantumIOS/MuppetIOS (3.8.0)
+  - QuantumIOS/QuantumIOS (3.8.0):
+    - QuantumIOS/MuppetIOS
 
 DEPENDENCIES:
   - atomic_transact_flutter (from `.symlinks/plugins/atomic_transact_flutter/ios`)
@@ -14,6 +18,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AtomicSDK
+    - QuantumIOS
 
 EXTERNAL SOURCES:
   atomic_transact_flutter:
@@ -22,10 +27,11 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  atomic_transact_flutter: dd6736e857f16b5710f6d329c5b02208e7b7e9a8
-  AtomicSDK: 56c441f9ac1d9a92241fca759958193f6eab9b42
+  atomic_transact_flutter: 911c9eb089e0718b1a8d88fc2e567d110ee24cca
+  AtomicSDK: 0bf151c7f3ac059b4e0b68616fd134005f6fc06b
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  QuantumIOS: c6f9c276b9c04dad35e37ab0c1c037f46aa0a8ae
 
 PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2
