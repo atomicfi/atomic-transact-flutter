@@ -27,6 +27,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
+    namespace = 'atomic.financial.atomic_transact_flutter'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
