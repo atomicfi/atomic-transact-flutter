@@ -4,8 +4,7 @@ import 'types.dart';
 import 'config.dart';
 
 class Atomic {
-  static AtomicPlatformInterface get _platform =>
-      AtomicPlatformInterface.instance;
+  static AtomicPlatformInterface get _platform => AtomicPlatformInterface.instance;
 
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK.
@@ -25,5 +24,9 @@ class Atomic {
     await _platform.presentTransact(
       configuration: config,
     );
+  }
+
+  static Future<void> close() async {
+    await _platform.dismissTransact();
   }
 }
