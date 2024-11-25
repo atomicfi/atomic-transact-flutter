@@ -101,9 +101,13 @@ class AtomicSearch {
   /// Exclude companies by a specific tag. Possible values include gig-economy, payroll-provider, and unemployment.
   final List<String>? excludedTags;
 
+  /// The ID of the rule to apply to the search.
+  final String? ruleId;
+
   AtomicSearch({
     this.tags,
     this.excludedTags,
+    this.ruleId,
   });
 
   /// Returns a JSON object representation.
@@ -111,6 +115,7 @@ class AtomicSearch {
     return <String, dynamic>{
       'tags': tags,
       'excludedTags': excludedTags,
+      'ruleId': ruleId,
     }..removeWhere((key, value) => value == null);
   }
 }
