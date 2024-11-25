@@ -183,6 +183,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     if (value != null) {
       val tags = mutableListOf<Config.Search.Tag>()
       val excludedTags = mutableListOf<Config.Search.Tag>()
+      val ruleId = value["ruleId"] as? String
 
       if(value["tags"] != null) {
         val valueTags = value["tags"] as List<String>
@@ -204,7 +205,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       return Config.Search(
               tags = tags,
-              excludedTags = excludedTags
+              excludedTags = excludedTags,
+              ruleId = ruleId 
       )
     }
 
