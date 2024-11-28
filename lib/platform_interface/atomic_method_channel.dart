@@ -28,6 +28,11 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     );
   }
 
+  @override
+  Future<void> dismissTransact() async {
+    await _channel.invokeMethod('dismissTransact');
+  }
+
   /// Handles receiving messages on the [MethodChannel]
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
@@ -46,21 +51,17 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         final type = AtomicTransactCompletionType.values.byName(typeName);
 
         final responseData = call.arguments['response'];
-        final response = responseData != null
-            ? AtomicTransactResponse.fromJson(responseData)
-            : null;
+        final response =
+            responseData != null ? AtomicTransactResponse.fromJson(responseData) : null;
 
         final errorName = call.arguments['error'];
-        final error = errorName != null
-            ? AtomicTransactError.values.byName(errorName)
-            : null;
+        final error = errorName != null ? AtomicTransactError.values.byName(errorName) : null;
 
         onCompletion?.call(type, response, error);
         break;
 
       default:
-        throw MissingPluginException(
-            '${call.method} was invoked but has no handler');
+        throw MissingPluginException('${call.method} was invoked but has no handler');
     }
   }
 }
