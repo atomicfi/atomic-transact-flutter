@@ -144,7 +144,7 @@ class AtomicExperiments {
 
 /// Defines configuration for the tasks you wish to execute as part of the task workflow.
 class AtomicTask {
-  /// One of deposit, verify, or identify.
+  /// One of deposit, verify.
   final AtomicProductType product;
 
   /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
@@ -187,7 +187,7 @@ class AtomicConfig {
   /// Defines configuration for the tasks you wish to execute as part of the task workflow.
   final List<AtomicTask>? tasks;
 
-  /// The product to initiate. Valid values include deposit, verify, and identify.
+  /// The product to initiate. Valid values include deposit, verify.
   final AtomicProductType? product;
 
   /// The additional product to initiate.

@@ -9,9 +9,6 @@ enum AtomicProductType {
 
   /// Verify a user’s income and employment status
   verify,
-
-  /// Reduce fraud and onboarding friction with verified profile data from a user’s employer
-  identify,
 }
 
 /// Type of distribution
