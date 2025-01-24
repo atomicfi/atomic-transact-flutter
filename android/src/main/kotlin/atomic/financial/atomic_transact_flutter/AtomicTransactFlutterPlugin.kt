@@ -33,6 +33,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     if (call.method == "presentTransact") {
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
+      val scope = configuration?.get("scope") as? String
       val language = configuration?.get("language") as String
       val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
       val product = configuration?.get("product") as? String
@@ -52,6 +53,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         config = Config(
                 publicToken = publicToken,
                 product = Config.Product.valueOf(product.uppercase()),
+                scope = scope,
                 additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
                 distribution = configDistributionFromMap(distribution),
                 linkedAccount = linkedAccount,
@@ -66,6 +68,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         config = Config(
                 publicToken = publicToken,
                 tasks = configTaskFromList(tasks),
+                scope = scope,
                 additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
                 distribution = configDistributionFromMap(distribution),
                 linkedAccount = linkedAccount,

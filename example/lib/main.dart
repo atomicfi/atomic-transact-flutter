@@ -20,6 +20,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _config = AtomicConfig(
+      scope: 'user-link',
       publicToken: '<YOUR_PUBLIC_TOKEN_HERE>',
       tasks: [AtomicTask(product: AtomicProductType.deposit)],
     );

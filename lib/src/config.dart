@@ -181,6 +181,9 @@ class AtomicConfig {
   /// The public token returned during AccessToken creation.
   final String publicToken;
 
+  /// The scope
+  final String? scope;
+
   /// Defines configuration for the tasks you wish to execute as part of the task workflow.
   final List<AtomicTask>? tasks;
 
@@ -226,6 +229,7 @@ class AtomicConfig {
 
   AtomicConfig({
     required this.publicToken,
+    this.scope,
     this.tasks,
     @Deprecated("This has been moved to 'tasks'") this.product,
     this.additionalProduct,
@@ -245,6 +249,7 @@ class AtomicConfig {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'publicToken': publicToken,
+      'scope': scope,
       'tasks': tasks?.map((e) => e.toJson()).toList(),
       'product': product?.name,
       'additionalProduct': additionalProduct?.name,
