@@ -7,8 +7,14 @@ enum AtomicProductType {
   /// Update the destination bank account of paychecks
   deposit,
 
-  /// Verify a user’s income and employment status
+  /// Verify a user's income and employment status
   verify,
+
+  /// Switch a user's payment method
+  switchPayment,
+
+  /// Subscription management
+  present,
 }
 
 /// Type of distribution
