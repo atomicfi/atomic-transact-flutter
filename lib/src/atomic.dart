@@ -26,4 +26,17 @@ class Atomic {
       configuration: config,
     );
   }
+
+  static Future<void> presentAction({
+    required String id,
+    AtomicLaunchHandler? onLaunch,
+    AtomicCompletionHandler? onCompletion,
+  }) async {
+    _platform.onLaunch = onLaunch;
+    _platform.onCompletion = onCompletion;
+
+    await _platform.presentAction(
+      id: id,
+    );
+  }
 }

@@ -48,7 +48,17 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                 }
             }
             break;
+        case "presentAction":
+            let arguments = call.arguments as! [String: Any]
+            let id = arguments["id"] as! String
 
+            if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
+                Atomic.presentAction(from: controller, id: id, onLaunch: onLaunch, onCompletion: onCompletion)
+                result(nil)
+            } else {
+                result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
+            }
+            break;
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -62,6 +72,10 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
     
     func onDataRequest(_ request: TransactDataRequest) {
         self.channel.invokeMethod("onDataRequest", arguments: ["request": mapFromTransactDataRequest(request)])
+    }
+
+    func onLaunch() {
+        self.channel.invokeMethod("onLaunch", arguments: nil)
     }
     
     func onCompletion(_ response: TransactResponse) {

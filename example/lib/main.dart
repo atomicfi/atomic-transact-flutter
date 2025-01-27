@@ -21,9 +21,11 @@ class _MyAppState extends State<MyApp> {
 
     _config = AtomicConfig(
       scope: 'user-link',
-      publicToken: '<YOUR_PUBLIC_TOKEN_HERE>',
-      tasks: [AtomicTask(product: AtomicProductType.deposit)],
+      publicToken: '',
+      tasks: [AtomicTask(product: AtomicProductType.present)],
     );
+
+    print("config: ${_config.toJson()}");
   }
 
   void _onButtonPressed() {
@@ -61,6 +63,24 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  void _onActionButtonPressed() {
+    Atomic.presentAction(
+      id: '',
+      onLaunch: () {
+        print("onLaunch");
+      },
+      onCompletion: (AtomicTransactCompletionType type,
+          AtomicTransactResponse? response, AtomicTransactError? error) {
+        print("onCompletion");
+        print("- type: ${type.name}");
+        print("- error: ${error?.name}");
+        print("- response.reason: ${response?.reason}");
+        print("- response.taskId: ${response?.taskId}");
+        print("- response.data: ${response?.data}");
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,9 +89,18 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: ElevatedButton(
-            onPressed: _onButtonPressed,
-            child: const Text("Launch Transact"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _onButtonPressed,
+                child: const Text("Launch Transact"),
+              ),
+              ElevatedButton(
+                onPressed: _onActionButtonPressed,
+                child: const Text("Launch Action"),
+              ),
+            ],
           ),
         ),
       ),
