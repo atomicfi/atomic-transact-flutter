@@ -28,6 +28,15 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     );
   }
 
+  /// Present the Atomic Action SDK
+  ///   - [id] The id of the action to present
+  @override
+  Future<void> presentAction({
+    required String id,
+  }) async {
+    await _channel.invokeMethod('presentAction', {'id': id});
+  }
+
   /// Handles receiving messages on the [MethodChannel]
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
@@ -56,6 +65,10 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
             : null;
 
         onCompletion?.call(type, response, error);
+        break;
+
+      case 'onLaunch':
+        onLaunch?.call();
         break;
 
       default:

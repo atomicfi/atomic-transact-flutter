@@ -27,11 +27,20 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
   /// Response with more information when Transact completes and dismisses.
   AtomicCompletionHandler? onCompletion;
 
+  /// Closure that will be called when a Transact Action launch event occurs
+  AtomicLaunchHandler? onLaunch;
+
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK
   Future<void> presentTransact({
     required AtomicConfig configuration,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
+  }
+
+  Future<void> presentAction({
+    required String id,
+  }) async {
+    throw UnimplementedError('presentAction() has not been implemented.');
   }
 }
