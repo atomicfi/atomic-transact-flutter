@@ -33,10 +33,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     if (call.method == "presentTransact") {
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
-      val scope = configuration?.get("scope") as? String
+      val scope = configuration?.get("scope") as String
       val language = configuration?.get("language") as String
       val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
-      val product = configuration?.get("product") as? String
       val additionalProduct = configuration?.get("additionalProduct") as? String
       val distribution = configuration?.get("distribution") as? Map<String, Any>
       val handoff = configuration?.get("handoff") as? List<String>
@@ -49,37 +48,21 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       val config : Config
 
-      if (product != null) {
         config = Config(
-                publicToken = publicToken,
-                product = Config.Product.valueOf(product.uppercase()),
-                scope = scope,
-                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
-                distribution = configDistributionFromMap(distribution),
-                linkedAccount = linkedAccount,
-                handoff = configHandoffFromList(handoff),
-                language = Config.Language.valueOf(language),
-                metadata = metadata,
-                theme = configThemeFromMap(theme),
-                deeplink = configDeeplinkFromMap(deeplink),
-                experiments = configExperimentsFromMap(experiments),
-                search = configSearchFromMap(search))
-      } else {
-        config = Config(
-                publicToken = publicToken,
-                tasks = configTaskFromList(tasks),
-                scope = scope,
-                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
-                distribution = configDistributionFromMap(distribution),
-                linkedAccount = linkedAccount,
-                handoff = configHandoffFromList(handoff),
-                language = Config.Language.valueOf(language),
-                metadata = metadata,
-                theme = configThemeFromMap(theme),
-                deeplink = configDeeplinkFromMap(deeplink),
-                experiments = configExperimentsFromMap(experiments),
-                search = configSearchFromMap(search))
-      }
+          publicToken = publicToken,
+          tasks = configTaskFromList(tasks),
+          scope = configScopeFromString(scope),
+          additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
+          distribution = configDistributionFromMap(distribution),
+          linkedAccount = linkedAccount,
+          handoff = configHandoffFromList(handoff),
+          language = Config.Language.valueOf(language),
+          metadata = metadata,
+          theme = configThemeFromMap(theme),
+          deeplink = configDeeplinkFromMap(deeplink),
+          experiments = configExperimentsFromMap(experiments),
+          search = configSearchFromMap(search)
+        )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
@@ -141,6 +124,15 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     }
 
     return null
+  }
+
+  private fun configScopeFromString(value: String?): Config.Scope {
+    if (value == "user-link") {
+      return Config.Scope.USER_LINK
+    } else if (value == "pay-link") {
+      return Config.Scope.PAY_LINK
+    }
+    return Config.Scope.USER_LINK
   }
 
   private fun configTaskFromList(value: List<Map<String, Any?>>?): List<Config.Task> {
