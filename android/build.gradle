@@ -7,6 +7,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = 'https://s01.oss.sonatype.org/content/groups/staging'
+        }
     }
 
     dependencies {
@@ -19,6 +22,9 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = 'https://s01.oss.sonatype.org/content/groups/staging'
+        }
     }
 }
 
@@ -48,5 +54,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "financial.atomic:transact:3.5.6"
+    implementation "financial.atomic:transact:3.5.6-9-15c1a7c"
 }

@@ -30,78 +30,106 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "presentTransact") {
-      val configuration = call.argument<Map<String, Any>>("configuration")
-      val publicToken = configuration?.get("publicToken") as String
-      val scope = configuration?.get("scope") as? String
-      val language = configuration?.get("language") as String
-      val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
-      val product = configuration?.get("product") as? String
-      val additionalProduct = configuration?.get("additionalProduct") as? String
-      val distribution = configuration?.get("distribution") as? Map<String, Any>
-      val handoff = configuration?.get("handoff") as? List<String>
-      val linkedAccount = configuration?.get("linkedAccount") as? String
-      val metadata = configuration?.get("metadata") as? JSONObject
-      val theme = configuration?.get("theme") as? Map<String, Any>
-      val deeplink = configuration?.get("deeplink") as? Map<String, Any>
-      val search = configuration?.get("search") as? Map<String, Any>
-      val experiments = configuration?.get("experiments") as? Map<String, Any>
+    when (call.method) {
+      "presentTransact" -> {
+        val configuration = call.argument<Map<String, Any>>("configuration")
+        val publicToken = configuration?.get("publicToken") as String
+        val scope = configuration?.get("scope") as? String
+        val language = configuration?.get("language") as String
+        val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
+        val product = configuration?.get("product") as? String
+        val additionalProduct = configuration?.get("additionalProduct") as? String
+        val distribution = configuration?.get("distribution") as? Map<String, Any>
+        val handoff = configuration?.get("handoff") as? List<String>
+        val linkedAccount = configuration?.get("linkedAccount") as? String
+        val metadata = configuration?.get("metadata") as? JSONObject
+        val theme = configuration?.get("theme") as? Map<String, Any>
+        val deeplink = configuration?.get("deeplink") as? Map<String, Any>
+        val search = configuration?.get("search") as? Map<String, Any>
+        val experiments = configuration?.get("experiments") as? Map<String, Any>
 
-      val config : Config
+        val config : Config
 
-      if (product != null) {
-        config = Config(
-                publicToken = publicToken,
-                product = Config.Product.valueOf(product.uppercase()),
-                scope = scope,
-                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
-                distribution = configDistributionFromMap(distribution),
-                linkedAccount = linkedAccount,
-                handoff = configHandoffFromList(handoff),
-                language = Config.Language.valueOf(language),
-                metadata = metadata,
-                theme = configThemeFromMap(theme),
-                deeplink = configDeeplinkFromMap(deeplink),
-                experiments = configExperimentsFromMap(experiments),
-                search = configSearchFromMap(search))
-      } else {
-        config = Config(
-                publicToken = publicToken,
-                tasks = configTaskFromList(tasks),
-                scope = scope,
-                additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
-                distribution = configDistributionFromMap(distribution),
-                linkedAccount = linkedAccount,
-                handoff = configHandoffFromList(handoff),
-                language = Config.Language.valueOf(language),
-                metadata = metadata,
-                theme = configThemeFromMap(theme),
-                deeplink = configDeeplinkFromMap(deeplink),
-                experiments = configExperimentsFromMap(experiments),
-                search = configSearchFromMap(search))
+        if (product != null) {
+          config = Config(
+                  publicToken = publicToken,
+                  product = Config.Product.valueOf(product.uppercase()),
+                  scope = scope,
+                  additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
+                  distribution = configDistributionFromMap(distribution),
+                  linkedAccount = linkedAccount,
+                  handoff = configHandoffFromList(handoff),
+                  language = Config.Language.valueOf(language),
+                  metadata = metadata,
+                  theme = configThemeFromMap(theme),
+                  deeplink = configDeeplinkFromMap(deeplink),
+                  experiments = configExperimentsFromMap(experiments),
+                  search = configSearchFromMap(search))
+        } else {
+          config = Config(
+                  publicToken = publicToken,
+                  tasks = configTaskFromList(tasks),
+                  scope = scope,
+                  additionalProduct = if (additionalProduct != null) Config.Product.valueOf(additionalProduct.uppercase()) else null,
+                  distribution = configDistributionFromMap(distribution),
+                  linkedAccount = linkedAccount,
+                  handoff = configHandoffFromList(handoff),
+                  language = Config.Language.valueOf(language),
+                  metadata = metadata,
+                  theme = configThemeFromMap(theme),
+                  deeplink = configDeeplinkFromMap(deeplink),
+                  experiments = configExperimentsFromMap(experiments),
+                  search = configSearchFromMap(search))
+        }
+
+        Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
+          override fun onClose(data: JSONObject) {
+            Transact.unregisterReceiver(activity, this)
+            channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
+          }
+          override fun onFinish(data: JSONObject) {
+            Transact.unregisterReceiver(activity, this)
+            channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
+          }
+          override fun onInteraction(data: JSONObject) {
+            channel.invokeMethod("onInteraction", mapOf("interaction" to mapFromTransactInteraction(data)))
+          }
+          override fun onDataRequest(data: JSONObject) {
+            channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
+          }
+        })
+
+        Transact.present(activity, config)
       }
+      "presentAction" -> {
+        val id = call.argument<String>("id")
 
-      Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
-        override fun onClose(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
-          channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
-        }
-        override fun onFinish(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
-          channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
-        }
-        override fun onInteraction(data: JSONObject) {
-          channel.invokeMethod("onInteraction", mapOf("interaction" to mapFromTransactInteraction(data)))
-        }
-        override fun onDataRequest(data: JSONObject) {
-          channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
-        }
-      })
+        val config = ActionConfig(
+          id = id
+        )
 
-      Transact.present(activity, config)
+        Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
+          override fun onClose(data: JSONObject) {
+            Transact.unregisterReceiver(activity, this)
+            channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
+          }
+          override fun onFinish(data: JSONObject) {
+            Transact.unregisterReceiver(activity, this)
+            channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
+          }
+          override fun onInteraction(data: JSONObject) {
+            channel.invokeMethod("onInteraction", mapOf("interaction" to mapFromTransactInteraction(data)))
+          }
+          override fun onDataRequest(data: JSONObject) {
+            channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
+          }
+        })
 
-    } else {
-      result.notImplemented()
+        Transact.presentAction(activity, config)
+      }
+      else -> {
+        result.notImplemented()
+      }
     }
   }
 
