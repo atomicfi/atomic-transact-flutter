@@ -1,6 +1,7 @@
 package atomic.financial.atomic_transact_flutter
 
 import android.app.Activity
+import android.util.Log
 import androidx.annotation.NonNull
 import financial.atomic.transact.*
 import financial.atomic.transact.receiver.TransactBroadcastReceiver
@@ -83,6 +84,29 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       Transact.present(activity, config)
 
+    } 
+    else if (call.method == "presentAction") {
+      val id = call.argument<String>("id") ?: return
+      val config = ActionConfig(
+          id = id
+      )
+
+      Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
+        override fun onClose(data: JSONObject) {
+          Transact.unregisterReceiver(activity, this)
+          channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
+        }
+        override fun onFinish(data: JSONObject) {
+          Transact.unregisterReceiver(activity, this)
+          channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
+        }
+        override fun onLaunch() {
+          Transact.unregisterReceiver(activity, this)
+          channel.invokeMethod("onLaunch", null)
+        }
+      })
+
+      Transact.presentAction(activity, config)
     } else {
       result.notImplemented()
     }
