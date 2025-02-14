@@ -1,3 +1,8 @@
+## 3.5.0
+
+- Add support for iOS SDK v3.9.4
+- Add support for Android SDK v3.6.1
+
 ## 2.7.1
 
 - Add support for iOS SDK v2.7.1

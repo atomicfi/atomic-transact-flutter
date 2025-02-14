@@ -1,0 +1,52 @@
+name: publish to pub.dev
+
+on:
+  push:
+    branches: master
+    paths: pubspec.yaml
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: Install dependencies
+        run: dart pub get
+      - name: Setup Pub Credentials again
+        run: |
+          mkdir -p $XDG_CONFIG_HOME/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      - name: Publish Package
+        run: dart pub publish -f
+
+  tag:
+    needs: publish
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: node
+        uses: actions/setup-node@v3
+      - name: Install js-yaml
+        run: npm install js-yaml
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            const pubspec = yaml.load(fs.readFileSync('pubspec.yaml', 'utf8'));
+            const version = pubspec.version;
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${version}`,
+              sha: context.sha
+            });

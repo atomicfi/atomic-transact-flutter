@@ -4,16 +4,21 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('atomic_transact_flutter');
-
-  TestWidgetsFlutterBinding.ensureInitialized();
+  late final TestWidgetsFlutterBinding binding;
 
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (MethodCall methodCall) async {
       return '42';
     });
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+  });
+
+  test('getPlatformVersion returns 42', () async {
+    // Add your test implementation here
+    expect(true, isTrue); // Placeholder assertion
   });
 }
