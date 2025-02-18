@@ -101,7 +101,6 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
         }
         override fun onLaunch() {
-          Transact.unregisterReceiver(activity, this)
           channel.invokeMethod("onLaunch", null)
         }
       })
