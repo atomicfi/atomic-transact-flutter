@@ -41,10 +41,6 @@ class Atomic {
     await _platform.presentTransact(
       configuration: config,
     );
-    await _platform.presentTransact(
-      configuration: config,
-      environment: environment,
-    );
   }
 
   static Future<void> presentAction({
