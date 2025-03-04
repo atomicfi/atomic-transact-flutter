@@ -4,6 +4,8 @@ import 'types.dart';
 import 'config.dart';
 
 class Atomic {
+  static bool _isLoading = false;
+  
   static AtomicPlatformInterface get _platform =>
       AtomicPlatformInterface.instance;
 
@@ -21,12 +23,24 @@ class Atomic {
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
   }) async {
+    if (_isLoading) {
+      return; 
+    }
+    _isLoading = true;
+
     _platform.onInteraction = onInteraction;
     _platform.onDataRequest = onDataRequest;
     _platform.onAuthStatusUpdate = onAuthStatusUpdate;
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
 
+    Future.delayed(Duration(seconds: 5), () {
+        _isLoading = false; 
+    });
+
+    await _platform.presentTransact(
+      configuration: config,
+    );
     await _platform.presentTransact(
       configuration: config,
       environment: environment,
@@ -41,10 +55,19 @@ class Atomic {
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
   }) async {
+    if (_isLoading) {
+      return; 
+    }
+    _isLoading = true;
+
     _platform.onLaunch = onLaunch;
     _platform.onAuthStatusUpdate = onAuthStatusUpdate;
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
+
+    Future.delayed(Duration(seconds: 5), () {
+        _isLoading = false; 
+    });
 
     await _platform.presentAction(
       id: id,
