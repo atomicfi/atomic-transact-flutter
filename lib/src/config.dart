@@ -168,7 +168,8 @@ class AtomicTask {
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'product': product == AtomicProductType.switchPayment ? 'switch' : product.name,
+      'product':
+          product == AtomicProductType.switchPayment ? 'switch' : product.name,
       'onComplete': onComplete,
       'onFail': onFail,
       'distribution': distribution?.toJson(),
@@ -265,4 +266,17 @@ class AtomicConfig {
       'experiments': experiments?.toJson(),
     }..removeWhere((key, value) => value == null);
   }
+}
+
+class TransactEnvironment {
+  final String path;
+
+  /// Production environment
+  static const TransactEnvironment production =
+      TransactEnvironment._('https://transact.atomicfi.com');
+
+  /// Custom environment with specified path
+  static TransactEnvironment custom(String path) => TransactEnvironment._(path);
+
+  const TransactEnvironment._(this.path);
 }

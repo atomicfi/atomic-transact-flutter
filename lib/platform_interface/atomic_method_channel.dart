@@ -19,11 +19,13 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
   @override
   Future<void> presentTransact({
     required AtomicConfig configuration,
+    required TransactEnvironment environment,
   }) async {
     await _channel.invokeMethod(
       'presentTransact',
       {
         'configuration': configuration.toJson(),
+        'environmentURL': environment.path,
       },
     );
   }
@@ -33,8 +35,12 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
   @override
   Future<void> presentAction({
     required String id,
+    required TransactEnvironment environment,
   }) async {
-    await _channel.invokeMethod('presentAction', {'id': id});
+    await _channel.invokeMethod('presentAction', {
+      'id': id,
+      'environmentURL': environment.path,
+    });
   }
 
   /// Handles receiving messages on the [MethodChannel]
@@ -69,6 +75,22 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
 
       case 'onLaunch':
         onLaunch?.call();
+        break;
+
+      case 'onAuthStatusUpdate':
+        final authData = call.arguments['auth'];
+        onAuthStatusUpdate?.call(
+          AtomicTransactAuthStatusUpdate.fromJson(
+            Map<String, dynamic>.from(authData),
+          ),
+        );
+        break;
+
+      case 'onTaskStatusUpdate':
+        final taskData = call.arguments['task'];
+        final mappedData = Map<String, dynamic>.from(taskData);
+        final update = AtomicTransactTaskStatusUpdate.fromJson(mappedData);
+        onTaskStatusUpdate?.call(update);
         break;
 
       default:
