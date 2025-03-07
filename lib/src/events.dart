@@ -105,3 +105,123 @@ class AtomicTransactInteraction {
     );
   }
 }
+
+class AtomicTransactAuthStatusUpdate {
+  final String status;
+  final AtomicTransactCompany company;
+
+  AtomicTransactAuthStatusUpdate({
+    required this.status,
+    required this.company,
+  });
+
+  factory AtomicTransactAuthStatusUpdate.fromJson(Map<Object?, Object?> json) {
+    return AtomicTransactAuthStatusUpdate(
+      status: json['status']?.toString() ?? '',
+      company: AtomicTransactCompany.fromJson(
+          Map<String, dynamic>.from(json['company'] as Map<Object?, Object?>)),
+    );
+  }
+}
+
+class AtomicTransactTaskStatusUpdate {
+  final String taskId;
+  final String product;
+  final String status;
+  final String? failReason;
+  final AtomicTransactCompany company;
+  final Map<String, dynamic>? switchData;
+  final Map<String, dynamic>? depositData;
+  final Map<String, dynamic>? managedBy;
+
+  AtomicTransactTaskStatusUpdate({
+    required this.taskId,
+    required this.product,
+    required this.status,
+    this.failReason,
+    required this.company,
+    this.switchData,
+    this.depositData,
+    this.managedBy,
+  });
+
+  factory AtomicTransactTaskStatusUpdate.fromJson(Map<Object?, Object?> json) {
+    return AtomicTransactTaskStatusUpdate(
+      taskId: json['taskId']?.toString() ?? '',
+      product: json['product']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      failReason: json['failReason']?.toString(),
+      company: AtomicTransactCompany.fromJson(
+          Map<String, dynamic>.from(json['company'] as Map<Object?, Object?>)),
+      switchData: json['switchData'] != null
+          ? Map<String, dynamic>.from(
+              json['switchData'] as Map<Object?, Object?>)
+          : null,
+      depositData: json['depositData'] != null
+          ? Map<String, dynamic>.from(
+              json['depositData'] as Map<Object?, Object?>)
+          : null,
+      managedBy: json['managedBy'] != null
+          ? Map<String, dynamic>.from(
+              json['managedBy'] as Map<Object?, Object?>)
+          : null,
+    );
+  }
+}
+
+class AtomicTransactCompany {
+  final String id;
+  final String name;
+  final AtomicTransactBranding? branding;
+
+  AtomicTransactCompany({
+    required this.id,
+    required this.name,
+    this.branding,
+  });
+
+  factory AtomicTransactCompany.fromJson(Map<Object?, Object?> json) {
+    return AtomicTransactCompany(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      branding: json['branding'] != null
+          ? AtomicTransactBranding.fromJson(
+              json['branding'] as Map<Object?, Object?>)
+          : null,
+    );
+  }
+}
+
+class AtomicTransactBranding {
+  final String color;
+  final AtomicTransactLogo logo;
+
+  AtomicTransactBranding({
+    required this.color,
+    required this.logo,
+  });
+
+  factory AtomicTransactBranding.fromJson(Map<Object?, Object?> json) {
+    return AtomicTransactBranding(
+      color: json['color']?.toString() ?? '',
+      logo: AtomicTransactLogo.fromJson(json['logo'] as Map<Object?, Object?>),
+    );
+  }
+}
+
+class AtomicTransactLogo {
+  final String url;
+  final String? backgroundColor;
+
+  AtomicTransactLogo({
+    required this.url,
+    this.backgroundColor,
+  });
+
+  factory AtomicTransactLogo.fromJson(Map<Object?, Object?> json) {
+    return AtomicTransactLogo(
+      url: json['url']?.toString() ?? '',
+      backgroundColor: json['backgroundColor']?.toString(),
+    );
+  }
+}

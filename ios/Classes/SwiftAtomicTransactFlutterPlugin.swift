@@ -21,6 +21,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
           
         case "presentTransact":
             let arguments = call.arguments as! [String: Any]
+            let environmentURL = arguments["environmentURL"] as! String
             let decoder = JSONDecoder()
             
             if let configuration = arguments["configuration"] as? [String: Any] {
@@ -37,8 +38,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     var config = try decoder.decode(AtomicConfig.self, from: data)
                     
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                        Atomic.presentTransact(from: controller, config: config,
-                                               onInteraction: onInteraction, onDataRequest: onDataRequest, onCompletion: onCompletion)
+                        Atomic.presentTransact(from: controller, config: config, environment: .custom(path: environmentURL), onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                         result(nil)
                     } else {
                         result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -51,9 +51,9 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
         case "presentAction":
             let arguments = call.arguments as! [String: Any]
             let id = arguments["id"] as! String
-
+            let environmentURL = arguments["environmentURL"] as! String
             if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                Atomic.presentAction(from: controller, id: id, onLaunch: onLaunch, onCompletion: onCompletion)
+                Atomic.presentAction(from: controller, id: id, environment: .custom(path: environmentURL), onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                 result(nil)
             } else {
                 result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -111,8 +111,68 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             self.channel.invokeMethod("onCompletion", arguments: arguments)
         }
     }
+
+    func onAuthStatusUpdate(_ authStatus: TransactAuthStatusUpdate) {
+        self.channel.invokeMethod("onAuthStatusUpdate", arguments: ["auth": mapFromTransactAuthStatusUpdate(authStatus)])
+    }
     
+    func onTaskStatusUpdate(_ taskStatus: TransactTaskStatusUpdate) {
+        self.channel.invokeMethod("onTaskStatusUpdate", arguments: ["task": mapFromTransactTaskStatusUpdate(taskStatus)])
+    }
     // MARK: - Helpers
+
+    func mapFromTransactAuthStatusUpdate(_ value: TransactAuthStatusUpdate) -> [String: Any?] {
+        return [
+            "status": value.status.rawValue,
+            "company": mapFromTransactCompany(value.company),
+        ]
+    }
+
+    func mapFromTransactTaskStatusUpdate(_ value: TransactTaskStatusUpdate) -> [String: Any?] {
+        var switchData: [String: Any?]? = nil
+        if let data = value.switchData {
+            var paymentMethod: [String: Any?] = [
+                "_id": data.paymentMethod.id,
+                "title": data.paymentMethod.title,
+                "type": data.paymentMethod.type.rawValue
+            ]
+
+            if data.paymentMethod.type == .card {
+                paymentMethod["expiry"] = data.paymentMethod.expiry
+                paymentMethod["brand"] = data.paymentMethod.brand
+                paymentMethod["lastFour"] = data.paymentMethod.lastFour
+            } else if data.paymentMethod.type == .bank {
+                paymentMethod["routingNumber"] = data.paymentMethod.routingNumber
+                paymentMethod["accountType"] = data.paymentMethod.accountType
+                paymentMethod["lastFourAccountNumber"] = data.paymentMethod.lastFourAccountNumber
+            }
+
+            switchData = ["paymentMethod": paymentMethod]
+        }
+
+        var managedBy: [String: Any?]? = nil
+        if let data = value.managedBy {
+            managedBy = ["company": mapFromTransactCompany(data.company)]
+        }
+
+        return [
+            "status": value.status.rawValue,
+            "taskId": value.taskId,
+            "product": value.product.rawValue,
+            "company": mapFromTransactCompany(value.company),
+            "failReason": value.failReason,
+            "switchData": switchData,
+            "depositData": value.depositData != nil ? [
+                "accountType": value.depositData?.accountType,
+                "distributionAmount": value.depositData?.distributionAmount,
+                "distributionType": value.depositData?.distributionType,
+                "lastFour": value.depositData?.lastFour,
+                "routingNumber": value.depositData?.routingNumber,
+                "title": value.depositData?.title
+            ] : nil,
+            "managedBy": managedBy
+        ]
+    }
 
     func mapFromTransactInteraction(_ value: TransactInteraction) -> [String: Any?] {
         return [
@@ -143,5 +203,19 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             "handoff": value.handoff,
             "reason": value.reason,
         ];
+    }
+
+    func mapFromTransactCompany(_ company: TransactCompany?) -> [String: Any?] {
+        return [
+            "_id": company?.id,
+            "name": company?.name,
+            "branding": company?.branding != nil ? [
+                "color": company?.branding?.color,
+                "logo": [
+                    "url": company?.branding?.logo.url,
+                    "backgroundColor": company?.branding?.logo.backgroundColor
+                ]
+            ] : nil
+        ]
     }
 }

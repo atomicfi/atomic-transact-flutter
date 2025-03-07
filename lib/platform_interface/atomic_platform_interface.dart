@@ -30,16 +30,24 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
   /// Closure that will be called when a Transact Action launch event occurs
   AtomicLaunchHandler? onLaunch;
 
+  /// Closure that will be called when a Transact auth status update event occurs
+  AtomicAuthStatusUpdateHandler? onAuthStatusUpdate;
+
+  /// Closure that will be called when a Transact task status update event occurs
+  AtomicTaskStatusUpdateHandler? onTaskStatusUpdate;
+
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK
   Future<void> presentTransact({
     required AtomicConfig configuration,
+    required TransactEnvironment environment,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
   }
 
   Future<void> presentAction({
     required String id,
+    required TransactEnvironment environment,
   }) async {
     throw UnimplementedError('presentAction() has not been implemented.');
   }
