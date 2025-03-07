@@ -32,6 +32,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "presentTransact") {
+      val environmentURL = call.argument<String>("environmentURL") ?: return
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
@@ -46,7 +47,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val deeplink = configuration?.get("deeplink") as? Map<String, Any>
       val search = configuration?.get("search") as? Map<String, Any>
       val experiments = configuration?.get("experiments") as? Map<String, Any>
-
+      
       val config : Config
 
         config = Config(
@@ -62,16 +63,16 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           theme = configThemeFromMap(theme),
           deeplink = configDeeplinkFromMap(deeplink),
           experiments = configExperimentsFromMap(experiments),
-          search = configSearchFromMap(search)
+          search = configSearchFromMap(search),
+          environment = Config.Environment.CUSTOM,
+          environmentURL = environmentURL
         )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
           channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
         }
         override fun onFinish(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
           channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
         }
         override fun onInteraction(data: JSONObject) {
@@ -80,28 +81,40 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         override fun onDataRequest(data: JSONObject) {
           channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
         }
+        override fun onAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate) {
+          channel.invokeMethod("onAuthStatusUpdate", mapOf("auth" to mapFromTransactAuthStatusUpdate(authData)))
+        }
+        override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
+          channel.invokeMethod("onTaskStatusUpdate", mapOf("task" to mapFromTransactTaskStatusUpdate(taskData)))
+        }
       })
 
       Transact.present(activity, config)
-
     } 
     else if (call.method == "presentAction") {
       val id = call.argument<String>("id") ?: return
+      val environmentURL = call.argument<String>("environmentURL") ?: return
       val config = ActionConfig(
-          id = id
+        id = id,
+        environment = Config.Environment.CUSTOM,
+        environmentURL = environmentURL
       )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
           channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
         }
         override fun onFinish(data: JSONObject) {
-          Transact.unregisterReceiver(activity, this)
           channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
         }
         override fun onLaunch() {
           channel.invokeMethod("onLaunch", null)
+        }
+        override fun onAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate) {
+          channel.invokeMethod("onAuthStatusUpdate", mapOf("auth" to mapFromTransactAuthStatusUpdate(authData)))
+        }
+        override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
+          channel.invokeMethod("onTaskStatusUpdate", mapOf("task" to mapFromTransactTaskStatusUpdate(taskData)))
         }
       })
 
@@ -344,5 +357,122 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           json
         }
     }
+  }
+
+  private fun mapFromTransactAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate): Map<String, Any?> {
+    val result = mutableMapOf<String, Any?>()
+    
+    // Map company data
+    val company = mutableMapOf<String, Any?>()
+    company["id"] = authData.company.id
+    company["name"] = authData.company.name
+    
+    // Map branding if present
+    authData.company.branding?.let { branding ->
+        val brandingMap = mutableMapOf<String, Any?>()
+        brandingMap["color"] = branding.color
+        
+        // Map logo data
+        val logoMap = mutableMapOf<String, Any?>()
+        logoMap["url"] = branding.logo.url
+        branding.logo.backgroundColor?.let { logoMap["backgroundColor"] = it }
+        
+        brandingMap["logo"] = logoMap
+        company["branding"] = brandingMap
+    }
+    
+    result["company"] = company
+    result["status"] = authData.status.name.lowercase()
+    
+    return result.toMap()
+  }
+
+  private fun mapFromTransactTaskStatusUpdate(taskData: Config.TaskStatusUpdate): Map<String, Any?> {
+    val result = mutableMapOf<String, Any?>()
+    
+    result["taskId"] = taskData.taskId
+    result["product"] = taskData.product.name.lowercase()
+    result["status"] = taskData.status.name.lowercase()
+    result["failReason"] = taskData.failReason
+    
+    // Map company data
+    val company = mutableMapOf<String, Any?>()
+    company["id"] = taskData.company.id
+    company["name"] = taskData.company.name
+    
+    // Map branding if present
+    taskData.company.branding?.let { branding ->
+        val brandingMap = mutableMapOf<String, Any?>()
+        brandingMap["color"] = branding.color
+        
+        val logoMap = mutableMapOf<String, Any?>()
+        logoMap["url"] = branding.logo.url
+        branding.logo.backgroundColor?.let { logoMap["backgroundColor"] = it }
+        
+        brandingMap["logo"] = logoMap
+        company["branding"] = brandingMap
+    }
+    result["company"] = company
+    
+    // Map switch data if present
+    taskData.switchData?.let { switchData ->
+        val switchMap = mutableMapOf<String, Any?>()
+        val paymentMethod = mutableMapOf<String, Any?>()
+        
+        with(switchData.paymentMethod) {
+            paymentMethod["id"] = id
+            paymentMethod["title"] = title
+            paymentMethod["type"] = type.name.lowercase()
+            expiry?.let { paymentMethod["expiry"] = it }
+            brand?.let { paymentMethod["brand"] = it }
+            lastFour?.let { paymentMethod["lastFour"] = it }
+            routingNumber?.let { paymentMethod["routingNumber"] = it }
+            accountType?.let { paymentMethod["accountType"] = it }
+            lastFourAccountNumber?.let { paymentMethod["lastFourAccountNumber"] = it }
+        }
+        
+        switchMap["paymentMethod"] = paymentMethod
+        result["switchData"] = switchMap
+    }
+    
+    // Map deposit data if present
+    taskData.depositData?.let { depositData ->
+        val depositMap = mutableMapOf<String, Any?>()
+        
+        depositData.accountType?.let { depositMap["accountType"] = it }
+        depositData.distributionAmount?.let { depositMap["distributionAmount"] = it }
+        depositData.distributionType?.let { depositMap["distributionType"] = it }
+        depositData.lastFour?.let { depositMap["lastFour"] = it }
+        depositData.routingNumber?.let { depositMap["routingNumber"] = it }
+        depositData.title?.let { depositMap["title"] = it }
+        
+        result["depositData"] = depositMap
+    }
+    
+    // Map managedBy if present
+    taskData.managedBy?.let { managedBy ->
+        val managedByMap = mutableMapOf<String, Any?>()
+        val managedByCompany = mutableMapOf<String, Any?>()
+        
+        managedByCompany["id"] = managedBy.company.id
+        managedByCompany["name"] = managedBy.company.name
+        
+        managedBy.company.branding?.let { branding ->
+            val brandingMap = mutableMapOf<String, Any?>()
+            brandingMap["color"] = branding.color
+            
+            val logoMap = mutableMapOf<String, Any?>()
+            logoMap["url"] = branding.logo.url
+            branding.logo.backgroundColor?.let { logoMap["backgroundColor"] = it }
+            
+            brandingMap["logo"] = logoMap
+            managedByCompany["branding"] = brandingMap
+        }
+        
+        managedByMap["company"] = managedByCompany
+        result["managedBy"] = managedByMap
+    }
+    
+    return result.toMap()
   }
 }
