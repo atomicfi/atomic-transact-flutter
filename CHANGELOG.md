@@ -1,3 +1,7 @@
+## 3.6.0
+
+- Add support for present action
+
 ## 3.5.0
 
 - Add support for iOS SDK v3.9.4
