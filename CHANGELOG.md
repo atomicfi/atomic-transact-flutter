@@ -1,3 +1,7 @@
+## 3.7.0
+
+- add onAuthStatusUpdate & onTaskStatusUpdate callbacks
+
 ## 3.6.0
 
 - Add support for present action
