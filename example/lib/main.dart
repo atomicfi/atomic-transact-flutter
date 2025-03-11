@@ -31,6 +31,7 @@ class _MyAppState extends State<MyApp> {
   void _onButtonPressed() {
     Atomic.transact(
       config: _config,
+      environment: TransactEnvironment.custom(''),
       onInteraction: (AtomicTransactInteraction interaction) {
         print("onInteraction");
         print("- name: ${interaction.name}");
@@ -50,6 +51,15 @@ class _MyAppState extends State<MyApp> {
         print("- fields: ${request.fields}");
         print("- data: ${request.data}");
       },
+      onAuthStatusUpdate: (AtomicTransactAuthStatusUpdate authStatus) {
+        print("onAuthStatusUpdate");
+        print("- status: ${authStatus.status}");
+      },
+      onTaskStatusUpdate: (AtomicTransactTaskStatusUpdate taskStatus) {
+        print("onTaskStatusUpdate");
+        print("- status: ${taskStatus.status}");
+        print("- taskId: ${taskStatus.taskId}");
+      },
       onCompletion: (AtomicTransactCompletionType type,
           AtomicTransactResponse? response, AtomicTransactError? error) {
         print("onCompletion");
@@ -66,8 +76,18 @@ class _MyAppState extends State<MyApp> {
   void _onActionButtonPressed() {
     Atomic.presentAction(
       id: '',
+      environment: TransactEnvironment.custom(''),
       onLaunch: () {
         print("onLaunch");
+      },
+      onAuthStatusUpdate: (AtomicTransactAuthStatusUpdate authStatus) {
+        print("onAuthStatusUpdate");
+        print("- status: ${authStatus.status}");
+      },
+      onTaskStatusUpdate: (AtomicTransactTaskStatusUpdate taskStatus) {
+        print("onTaskStatusUpdate");
+        print("- status: ${taskStatus.status}");
+        print("- taskId: ${taskStatus.taskId}");
       },
       onCompletion: (AtomicTransactCompletionType type,
           AtomicTransactResponse? response, AtomicTransactError? error) {

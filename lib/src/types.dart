@@ -96,3 +96,13 @@ typedef AtomicCompletionHandler = void Function(
 
 /// Closure that will be called when a Transact Action launch event occurs
 typedef AtomicLaunchHandler = void Function();
+
+/// Closure that will be called when a Transact auth status update event occurs
+typedef AtomicAuthStatusUpdateHandler = void Function(
+  AtomicTransactAuthStatusUpdate authStatus,
+);
+
+/// Closure that will be called when a Transact task status update event occurs
+typedef AtomicTaskStatusUpdateHandler = void Function(
+  AtomicTransactTaskStatusUpdate taskStatus,
+);

@@ -14,29 +14,41 @@ class Atomic {
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
   static Future<void> transact({
     required AtomicConfig config,
+    TransactEnvironment environment = TransactEnvironment.production,
     AtomicInteractionHandler? onInteraction,
     AtomicDataRequestHandler? onDataRequest,
+    AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
+    AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
   }) async {
     _platform.onInteraction = onInteraction;
     _platform.onDataRequest = onDataRequest;
+    _platform.onAuthStatusUpdate = onAuthStatusUpdate;
+    _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
 
     await _platform.presentTransact(
       configuration: config,
+      environment: environment,
     );
   }
 
   static Future<void> presentAction({
     required String id,
+    TransactEnvironment environment = TransactEnvironment.production,
     AtomicLaunchHandler? onLaunch,
+    AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
+    AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
   }) async {
     _platform.onLaunch = onLaunch;
+    _platform.onAuthStatusUpdate = onAuthStatusUpdate;
+    _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
 
     await _platform.presentAction(
       id: id,
+      environment: environment,
     );
   }
 }
