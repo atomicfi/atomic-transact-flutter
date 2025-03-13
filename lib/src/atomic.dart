@@ -1,11 +1,11 @@
 import '../platform_interface/atomic_platform_interface.dart';
+import '../src/events.dart';
 
 import 'types.dart';
 import 'config.dart';
 
 class Atomic {
   static bool _isLoading = false;
-  
   static AtomicPlatformInterface get _platform =>
       AtomicPlatformInterface.instance;
 
@@ -24,7 +24,7 @@ class Atomic {
     AtomicCompletionHandler? onCompletion,
   }) async {
     if (_isLoading) {
-      return; 
+      return;
     }
     _isLoading = true;
 
@@ -32,14 +32,20 @@ class Atomic {
     _platform.onDataRequest = onDataRequest;
     _platform.onAuthStatusUpdate = onAuthStatusUpdate;
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
-    _platform.onCompletion = onCompletion;
-
-    Future.delayed(Duration(seconds: 5), () {
-        _isLoading = false; 
-    });
+    _platform.onCompletion = (
+      AtomicTransactCompletionType type,
+      AtomicTransactResponse? response,
+      AtomicTransactError? error,
+    ) {
+      _isLoading = false;
+      if (onCompletion != null) {
+        return onCompletion(type, response, error);
+      }
+    };
 
     await _platform.presentTransact(
       configuration: config,
+      environment: environment,
     );
   }
 
@@ -52,22 +58,20 @@ class Atomic {
     AtomicCompletionHandler? onCompletion,
   }) async {
     if (_isLoading) {
-      return; 
+      return;
     }
     _isLoading = true;
 
-    _platform.onLaunch = onLaunch;
+    _platform.onLaunch = () {
+      _isLoading = false;
+      if (onLaunch != null) {
+        return onLaunch();
+      }
+    };
     _platform.onAuthStatusUpdate = onAuthStatusUpdate;
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
 
-    Future.delayed(Duration(seconds: 5), () {
-        _isLoading = false; 
-    });
-
-    await _platform.presentAction(
-      id: id,
-      environment: environment,
-    );
+    await _platform.presentAction(id: id, environment: environment);
   }
 }
