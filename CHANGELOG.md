@@ -1,3 +1,7 @@
+## 3.8.0
+
+- Prevent initiating multiple Transact instances 
+
 ## 3.7.0
 
 - add onAuthStatusUpdate & onTaskStatusUpdate callbacks
