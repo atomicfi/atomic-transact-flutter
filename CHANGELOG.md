@@ -1,3 +1,7 @@
+## 3.9.0
+
+- Add theme argument to presentAction method and funnel through to sdks
+
 ## 3.8.0
 
 - Prevent initiating multiple Transact instances 
