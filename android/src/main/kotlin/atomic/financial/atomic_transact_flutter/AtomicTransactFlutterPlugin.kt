@@ -94,10 +94,12 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     else if (call.method == "presentAction") {
       val id = call.argument<String>("id") ?: return
       val environmentURL = call.argument<String>("environmentURL") ?: return
+      var theme = call.argument<Map<String, Any>>("theme")
       val config = ActionConfig(
         id = id,
         environment = Config.Environment.CUSTOM,
-        environmentURL = environmentURL
+        environmentURL = environmentURL,
+        theme = configThemeFromMap(theme),
       )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {

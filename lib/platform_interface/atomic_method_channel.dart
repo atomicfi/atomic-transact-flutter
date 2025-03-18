@@ -36,10 +36,12 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
   Future<void> presentAction({
     required String id,
     required TransactEnvironment environment,
+    AtomicTheme? theme,
   }) async {
     await _channel.invokeMethod('presentAction', {
       'id': id,
       'environmentURL': environment.path,
+      'theme': theme?.toJson(),
     });
   }
 
