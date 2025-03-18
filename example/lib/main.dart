@@ -14,17 +14,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AtomicConfig _config;
+  late AtomicTheme _theme;
 
   @override
   void initState() {
     super.initState();
 
+    _theme = AtomicTheme(dark: true);
     _config = AtomicConfig(
-      scope: 'user-link',
+      scope: 'pay-link',
       publicToken: '',
       tasks: [AtomicTask(product: AtomicProductType.present)],
+      theme: _theme,
     );
-
     print("config: ${_config.toJson()}");
   }
 
@@ -77,6 +79,7 @@ class _MyAppState extends State<MyApp> {
     Atomic.presentAction(
       id: '',
       environment: TransactEnvironment.custom(''),
+      theme: _theme,
       onLaunch: () {
         print("onLaunch");
       },

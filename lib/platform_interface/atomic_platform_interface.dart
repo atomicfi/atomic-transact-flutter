@@ -48,6 +48,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
   Future<void> presentAction({
     required String id,
     required TransactEnvironment environment,
+    AtomicTheme? theme,
   }) async {
     throw UnimplementedError('presentAction() has not been implemented.');
   }

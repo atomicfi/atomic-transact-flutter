@@ -56,6 +56,7 @@ class Atomic {
     AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
+    AtomicTheme? theme,
   }) async {
     if (_isLoading) {
       return;
@@ -72,6 +73,7 @@ class Atomic {
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
     _platform.onCompletion = onCompletion;
 
-    await _platform.presentAction(id: id, environment: environment);
+    await _platform.presentAction(
+        id: id, environment: environment, theme: theme);
   }
 }
