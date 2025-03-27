@@ -1,10 +1,14 @@
+## 3.10.0
+
+- Add support for iOS SDK v3.10.0 with background task fix
+
 ## 3.9.0
 
 - Add theme argument to presentAction method and funnel through to sdks
 
 ## 3.8.0
 
-- Prevent initiating multiple Transact instances 
+- Prevent initiating multiple Transact instances
 
 ## 3.7.0
 
