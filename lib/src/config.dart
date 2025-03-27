@@ -177,6 +177,23 @@ class AtomicTask {
   }
 }
 
+/// Represents customer information
+class Customer {
+  /// The name of the customer
+  final String name;
+
+  Customer({
+    required this.name,
+  });
+
+  /// Returns a JSON object representation.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'name': name,
+    };
+  }
+}
+
 /// Configure for how you interact with the Atomic Transact SDK
 class AtomicConfig {
   /// The public token returned during AccessToken creation.
@@ -228,6 +245,9 @@ class AtomicConfig {
   /// Used to override feature flags
   final AtomicExperiments? experiments;
 
+  /// Customer information
+  final Customer? customer;
+
   AtomicConfig({
     required this.publicToken,
     this.scope,
@@ -243,6 +263,7 @@ class AtomicConfig {
     this.search,
     this.handoff,
     this.experiments,
+    this.customer,
   }) : assert(tasks != null || product != null,
             'AtomicConfig requires a valid tasks list or a valid product type');
 
@@ -264,6 +285,7 @@ class AtomicConfig {
       'search': search?.toJson(),
       'handoff': handoff?.map((e) => e.name.replaceAll("_", "-")).toList(),
       'experiments': experiments?.toJson(),
+      'customer': customer?.toJson(),
     }..removeWhere((key, value) => value == null);
   }
 }
