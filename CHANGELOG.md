@@ -1,3 +1,7 @@
+## 3.11.0
+
+- Add support for iOS SDK v3.11.0
+
 ## 3.10.0
 
 - Add support for iOS SDK v3.10.0 with background task fix
