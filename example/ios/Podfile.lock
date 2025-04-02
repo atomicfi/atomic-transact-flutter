@@ -1,14 +1,14 @@
 PODS:
   - atomic_transact_flutter (3.10.0):
-    - AtomicSDK (= 3.10.0)
+    - AtomicSDK (= 3.11.0)
     - Flutter
-  - AtomicSDK (3.10.0):
-    - QuantumIOS (= 3.10.0)
+  - AtomicSDK (3.11.0):
+    - QuantumIOS (= 3.11.0)
   - Flutter (1.0.0)
-  - QuantumIOS (3.10.0):
-    - QuantumIOS/QuantumIOS (= 3.10.0)
-  - QuantumIOS/MuppetIOS (3.10.0)
-  - QuantumIOS/QuantumIOS (3.10.0):
+  - QuantumIOS (3.11.0):
+    - QuantumIOS/QuantumIOS (= 3.11.0)
+  - QuantumIOS/MuppetIOS (3.11.0)
+  - QuantumIOS/QuantumIOS (3.11.0):
     - QuantumIOS/MuppetIOS
 
 DEPENDENCIES:
@@ -27,10 +27,10 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  atomic_transact_flutter: cab8babc20e848744d6799d03681a9d1606a4687
-  AtomicSDK: c81c01db29fb0347727867290d1e4cfd7f07b3a3
+  atomic_transact_flutter: 3be6c9f262ea465c1559f6b5b34200643c6b12d9
+  AtomicSDK: 2e21ad3aee0f8271a35c812f8a575e6cbeb184ba
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  QuantumIOS: 630d00a6929ffbe985ff919082d7a2f4bf4fa758
+  QuantumIOS: 2dcabb7fd77a51b3c6c2c822b5dd5c1c3e726f93
 
 PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
 
