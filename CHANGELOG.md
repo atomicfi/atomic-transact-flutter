@@ -1,3 +1,7 @@
+## 3.12.1
+
+- Add support for iOS SDK v3.12.1
+
 ## 3.11.0
 
 - Add support for iOS SDK v3.11.0
