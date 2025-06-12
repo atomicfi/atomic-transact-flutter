@@ -291,14 +291,20 @@ class AtomicConfig {
 }
 
 class TransactEnvironment {
-  final String path;
+  final String transactPath;
+  final String apiPath;
 
   /// Production environment
   static const TransactEnvironment production =
-      TransactEnvironment._('https://transact.atomicfi.com');
+      TransactEnvironment._('https://transact.atomicfi.com', 'https://api.atomicfi.com');
+
+  /// Sandbox environment
+  static const TransactEnvironment sandbox =
+      TransactEnvironment._('https://transact.atomicfi.com', 'https://sandbox-api.atomicfi.com');
 
   /// Custom environment with specified path
-  static TransactEnvironment custom(String path) => TransactEnvironment._(path);
+  static TransactEnvironment custom(String transactPath, String apiPath) =>
+      TransactEnvironment._(transactPath, apiPath);
 
-  const TransactEnvironment._(this.path);
+  const TransactEnvironment._(this.transactPath, this.apiPath);
 }

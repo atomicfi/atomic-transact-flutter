@@ -32,7 +32,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "presentTransact") {
-      val environmentURL = call.argument<String>("environmentURL") ?: return
+      val transactPath = call.argument<String>("transactPath") as String? ?: ""
+      val apiPath = call.argument<String>("apiPath") as String? ?: ""
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
@@ -65,7 +66,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           experiments = configExperimentsFromMap(experiments),
           search = configSearchFromMap(search),
           environment = Config.Environment.CUSTOM,
-          environmentURL = environmentURL
+          environmentURL = transactPath
         )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
@@ -93,13 +94,14 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     } 
     else if (call.method == "presentAction") {
       val id = call.argument<String>("id") ?: return
-      val environmentURL = call.argument<String>("environmentURL") ?: return
+      val transactPath = call.argument<String>("transactPath") as String? ?: ""
+      val apiPath = call.argument<String>("apiPath") as String? ?: ""
       var theme = call.argument<Map<String, Any>>("theme")
       val config = ActionConfig(
         id = id,
         environment = Config.Environment.CUSTOM,
-        environmentURL = environmentURL,
-        theme = configThemeFromMap(theme),
+        environmentURL = transactPath,
+        theme = configThemeFromMap(theme)
       )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {

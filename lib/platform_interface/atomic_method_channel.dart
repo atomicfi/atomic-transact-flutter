@@ -25,7 +25,8 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
       'presentTransact',
       {
         'configuration': configuration.toJson(),
-        'environmentURL': environment.path,
+        'transactPath': environment.transactPath,
+        'apiPath': environment.apiPath,
       },
     );
   }
@@ -40,7 +41,8 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
   }) async {
     await _channel.invokeMethod('presentAction', {
       'id': id,
-      'environmentURL': environment.path,
+      'transactPath': environment.transactPath,
+      'apiPath': environment.apiPath,
       'theme': theme?.toJson(),
     });
   }

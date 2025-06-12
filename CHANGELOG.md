@@ -1,3 +1,8 @@
+## 3.13.0
+
+- Add support for iOS SDK v3.20.0 and Android 3.11.0
+- Add support for custom environments
+
 ## 3.12.1
 
 - Add support for iOS SDK v3.12.1
