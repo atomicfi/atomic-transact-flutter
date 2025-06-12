@@ -22,9 +22,9 @@ class _MyAppState extends State<MyApp> {
 
     _theme = AtomicTheme(dark: true);
     _config = AtomicConfig(
-      scope: 'pay-link',
+      scope: 'user-link',
       publicToken: '',
-      tasks: [AtomicTask(product: AtomicProductType.present)],
+      tasks: [AtomicTask(product: AtomicProductType.deposit)],
       theme: _theme,
     );
     print("config: ${_config.toJson()}");
@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   void _onButtonPressed() {
     Atomic.transact(
       config: _config,
-      environment: TransactEnvironment.custom(''),
+      environment: TransactEnvironment.production,
       onInteraction: (AtomicTransactInteraction interaction) {
         print("onInteraction");
         print("- name: ${interaction.name}");
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
   void _onActionButtonPressed() {
     Atomic.presentAction(
       id: '',
-      environment: TransactEnvironment.custom(''),
+      environment: TransactEnvironment.custom('http://localhost:4545', 'http://localhost:3003'),
       theme: _theme,
       onLaunch: () {
         print("onLaunch");

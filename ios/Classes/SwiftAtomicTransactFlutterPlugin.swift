@@ -21,7 +21,8 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
           
         case "presentTransact":
             let arguments = call.arguments as! [String: Any]
-            let environmentURL = arguments["environmentURL"] as! String
+            let transactPath = arguments["transactPath"] as! String
+            let apiPath = arguments["apiPath"] as! String
             let decoder = JSONDecoder()
             
             if let configuration = arguments["configuration"] as? [String: Any] {
@@ -38,7 +39,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     var config = try decoder.decode(AtomicConfig.self, from: data)
                     
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                        Atomic.presentTransact(from: controller, config: config, environment: .custom(path: environmentURL), onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
+                        Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                         result(nil)
                     } else {
                         result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -51,7 +52,8 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
         case "presentAction":
             let arguments = call.arguments as! [String: Any]
             let id = arguments["id"] as! String
-            let environmentURL = arguments["environmentURL"] as! String
+            let transactPath = arguments["transactPath"] as! String
+            let apiPath = arguments["apiPath"] as! String
             let decoder = JSONDecoder()
             let theme: AtomicConfig.Theme = {
                 if let themeData = arguments["theme"] as? [String: Any],
@@ -63,7 +65,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             }()
 
             if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                Atomic.presentAction(from: controller, id: id, environment: .custom(path: environmentURL), theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
+                Atomic.presentAction(from: controller, id: id, environment: .custom(transactPath: transactPath, apiPath: apiPath), theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                 result(nil)
             } else {
                 result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
