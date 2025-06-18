@@ -283,18 +283,29 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   private fun mapFromTransactInteraction(data: JSONObject): Map<String, Any?> {
     val result = mutableMapOf<String, Any?>();
-    val name = data.getString("name")
-    val value = data.getJSONObject("value")
+    val name = data.optString("name")
+    val value = data.optJSONObject("value")
 
     result["name"] = name
-    result["identifier"] = value.optString("identifier")
-    result["customer"] = value.optString("customer")
-    result["language"] = value.optString("language")
-    result["product"] = value.optString("product")
-    result["additionalProduct"] = value.optString("additionalProduct")
-    result["payroll"] = value.optString("payroll")
-    result["company"] = value.optString("company")
-    result["value"] = toMap(value)
+    if (value != null) {
+      result["identifier"] = value.optString("identifier")
+      result["customer"] = value.optString("customer")
+      result["language"] = value.optString("language")
+      result["product"] = value.optString("product")
+      result["additionalProduct"] = value.optString("additionalProduct")
+      result["payroll"] = value.optString("payroll")
+      result["company"] = value.optString("company")
+      result["value"] = toMap(value)
+    } else {
+      result["identifier"] = ""
+      result["customer"] = ""
+      result["language"] = ""
+      result["product"] = ""
+      result["additionalProduct"] = ""
+      result["payroll"] = ""
+      result["company"] = ""
+      result["value"] = null
+    }
 
     return result.toMap()
   }
