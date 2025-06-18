@@ -1,3 +1,7 @@
+## 3.13.1
+
+- Fix issue with null value in mapFromTransactInteraction for Android
+
 ## 3.13.0
 
 - Add support for iOS SDK v3.20.0 and Android 3.11.0
