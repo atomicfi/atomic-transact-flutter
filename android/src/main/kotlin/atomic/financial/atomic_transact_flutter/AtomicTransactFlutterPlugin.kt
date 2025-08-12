@@ -255,7 +255,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val companyName = value["companyName"] as? String
       val connectorId = value["connectorId"] as? String
 
-      val stepFormatted = step.replace('-', '_').toUpperCase()
+      val stepFormatted = step.replace('-', '_').uppercase()
 
       return Config.Deeplink(
               step = Config.Deeplink.Step.valueOf(stepFormatted),
