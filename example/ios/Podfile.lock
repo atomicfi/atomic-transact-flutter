@@ -1,8 +1,8 @@
 PODS:
   - atomic_transact_flutter (3.10.0):
-    - AtomicSDK (= 3.20.0)
+    - AtomicSDK (= 3.20.5)
     - Flutter
-  - AtomicSDK (3.20.0)
+  - AtomicSDK (3.20.5)
   - Flutter (1.0.0)
 
 DEPENDENCIES:
@@ -20,8 +20,8 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  atomic_transact_flutter: 5b0dd17ef098f9d5d4801c423717f144a5a37242
-  AtomicSDK: 0f28dc75a8dcc75bb4ee62bda65e9436e3cfaf7f
+  atomic_transact_flutter: fb5a7e3d74a2ed44c9477c8f7b08a3d51659c5fb
+  AtomicSDK: 8f1f770c7be40dfa75e266f3f35311fe0a04cd08
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
 
 PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
