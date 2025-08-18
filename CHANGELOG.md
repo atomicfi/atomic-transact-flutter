@@ -1,3 +1,7 @@
+## 3.13.4
+
+- [Release Notes](https://github.com/atomicfi/atomic-transact-flutter/releases/tag/3.13.4)
+
 ## 3.13.3
 
 - Add support for iOS SDK v3.20.5

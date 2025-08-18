@@ -1,0 +1,64 @@
+name: Update SDKs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-sdks:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Android SDK
+        id: update-android
+        run: |
+          bash ./scripts/update_android_sdk.sh > android_update.log 2>&1 || true
+
+          # Extract version information from the log
+          if grep -q "Successfully updated Android Transact SDK to" android_update.log; then
+            NEW_VERSION=$(grep "Successfully updated Android Transact SDK to" android_update.log | sed 's/.*to //')
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "Android SDK updated to $NEW_VERSION"
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+            echo "No Android SDK update needed or update failed"
+          fi
+
+      - name: Update iOS SDK
+        id: update-ios
+        run: |
+          bash ./scripts/update_atomic_sdk.sh > ios_update.log 2>&1 || true
+
+          # Extract version information from the log
+          if grep -q "Successfully updated AtomicSDK to" ios_update.log; then
+            NEW_VERSION=$(grep "Successfully updated AtomicSDK to" ios_update.log | sed 's/.*to //')
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "iOS SDK updated to $NEW_VERSION"
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+            echo "No iOS SDK update needed or update failed"
+          fi
+
+      - name: Commit Android SDK changes
+        if: steps.update-android.outputs.updated == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        env:
+          ANDROID_VERSION: ${{ steps.update-android.outputs.version }}
+        with:
+          commit_message: "chore: updated android sdk to $ANDROID_VERSION"
+          file_pattern: "android/build.gradle"
+
+      - name: Commit iOS SDK changes
+        if: steps.update-ios.outputs.updated == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        env:
+          IOS_VERSION: ${{ steps.update-ios.outputs.version }}
+        with:
+          commit_message: "chore: updated ios sdk to $IOS_VERSION"
+          file_pattern: "ios/atomic_transact_flutter.podspec"
