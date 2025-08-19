@@ -1,0 +1,47 @@
+name: Bump Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: "Version bump type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version
+        id: bump
+        env:
+          BUMP_TYPE: ${{ github.event.inputs.bump_type }}
+        run: |
+          bash ./scripts/bump_version.sh --"${BUMP_TYPE}" > bump_output.log 2>&1
+
+          # Extract the new version from the output
+          NEW_VERSION=$(grep "New version:" bump_output.log | sed 's/New version: //')
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Bumped version to $NEW_VERSION"
+
+          # Show what was updated
+          cat bump_output.log
+
+      - name: Commit version changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        env:
+          NEW_VERSION: ${{ steps.bump.outputs.version }}
+        with:
+          commit_message: "chore: bump version to $NEW_VERSION"
+          file_pattern: "pubspec.yaml ios/atomic_transact_flutter.podspec CHANGELOG.md"
