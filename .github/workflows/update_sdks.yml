@@ -40,6 +40,8 @@ jobs:
 
       - name: Create Android SDK PR
         if: steps.commit-android.outputs.changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --base master \
@@ -81,6 +83,8 @@ jobs:
 
       - name: Create iOS SDK PR
         if: steps.commit-ios.outputs.changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --base master \
