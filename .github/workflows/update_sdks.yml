@@ -1,4 +1,4 @@
-name: Update SDKs
+name: update sdk's
 
 on:
   workflow_dispatch:
@@ -53,6 +53,8 @@ jobs:
         with:
           commit_message: "chore: updated android sdk to $ANDROID_VERSION"
           file_pattern: "android/build.gradle"
+          branch: update_android_sdk_$ANDROID_VERSION
+          create_branch: true
 
       - name: Commit iOS SDK changes
         if: steps.update-ios.outputs.updated == 'true'
@@ -62,3 +64,5 @@ jobs:
         with:
           commit_message: "chore: updated ios sdk to $IOS_VERSION"
           file_pattern: "ios/atomic_transact_flutter.podspec"
+          branch: update_ios_sdk_$IOS_VERSION
+          create_branch: true
