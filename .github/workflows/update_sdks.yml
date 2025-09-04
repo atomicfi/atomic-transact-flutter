@@ -1,11 +1,13 @@
-name: Update SDKs
+name: update sdk's
 
 on:
   workflow_dispatch:
 
 jobs:
-  update-sdks:
-    runs-on: macos-latest
+  update-android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -16,49 +18,72 @@ jobs:
       - name: Update Android SDK
         id: update-android
         run: |
-          bash ./scripts/update_android_sdk.sh > android_update.log 2>&1 || true
-
-          # Extract version information from the log
-          if grep -q "Successfully updated Android Transact SDK to" android_update.log; then
-            NEW_VERSION=$(grep "Successfully updated Android Transact SDK to" android_update.log | sed 's/.*to //')
-            echo "updated=true" >> $GITHUB_OUTPUT
-            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          if NEW_VERSION=$(bash ./scripts/update_android_sdk.sh); then
+            echo "ANDROID_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+            echo "ANDROID_BRANCH=update_android_sdk_$NEW_VERSION" >> $GITHUB_ENV
             echo "Android SDK updated to $NEW_VERSION"
           else
-            echo "updated=false" >> $GITHUB_OUTPUT
             echo "No Android SDK update needed or update failed"
           fi
+
+      - name: Commit Android SDK changes
+        id: commit-android
+        uses: stefanzweifel/git-auto-commit-action@v5
+        env:
+          ANDROID_VERSION: ${{ env.ANDROID_VERSION }}
+          ANDROID_BRANCH: ${{ env.ANDROID_BRANCH }}
+        with:
+          commit_message: "chore: updated android sdk to ${{ env.ANDROID_VERSION }}"
+          file_pattern: "android/build.gradle"
+          branch: ${{ env.ANDROID_BRANCH }}
+          create_branch: true
+
+      - name: Create Android SDK PR
+        if: steps.commit-android.outputs.changes_detected == 'true'
+        run: |
+          gh pr create \
+            --base master \
+            --head $ANDROID_BRANCH \
+            --title "chore: update Android SDK to $ANDROID_VERSION" \
+            --body "Automated update of Android Transact SDK to version $ANDROID_VERSION"
+
+  update-ios:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Update iOS SDK
         id: update-ios
         run: |
-          bash ./scripts/update_atomic_sdk.sh > ios_update.log 2>&1 || true
-
-          # Extract version information from the log
-          if grep -q "Successfully updated AtomicSDK to" ios_update.log; then
-            NEW_VERSION=$(grep "Successfully updated AtomicSDK to" ios_update.log | sed 's/.*to //')
-            echo "updated=true" >> $GITHUB_OUTPUT
-            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          if NEW_VERSION=$(bash ./scripts/update_atomic_sdk.sh); then
+            echo "IOS_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+            echo "IOS_BRANCH=update_ios_sdk_$NEW_VERSION" >> $GITHUB_ENV
             echo "iOS SDK updated to $NEW_VERSION"
           else
-            echo "updated=false" >> $GITHUB_OUTPUT
             echo "No iOS SDK update needed or update failed"
           fi
 
-      - name: Commit Android SDK changes
-        if: steps.update-android.outputs.updated == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        env:
-          ANDROID_VERSION: ${{ steps.update-android.outputs.version }}
-        with:
-          commit_message: "chore: updated android sdk to $ANDROID_VERSION"
-          file_pattern: "android/build.gradle"
-
       - name: Commit iOS SDK changes
-        if: steps.update-ios.outputs.updated == 'true'
+        id: commit-ios
         uses: stefanzweifel/git-auto-commit-action@v5
         env:
-          IOS_VERSION: ${{ steps.update-ios.outputs.version }}
+          IOS_VERSION: ${{ env.IOS_VERSION }}
+          IOS_BRANCH: ${{ env.IOS_BRANCH }}
         with:
-          commit_message: "chore: updated ios sdk to $IOS_VERSION"
+          commit_message: "chore: updated ios sdk to ${{ env.IOS_VERSION }}"
           file_pattern: "ios/atomic_transact_flutter.podspec"
+          branch: ${{ env.IOS_BRANCH }}
+          create_branch: true
+
+      - name: Create iOS SDK PR
+        if: steps.commit-ios.outputs.changes_detected == 'true'
+        run: |
+          gh pr create \
+            --base master \
+            --head $IOS_BRANCH \
+            --title "chore: update iOS SDK to $IOS_VERSION" \
+            --body "Automated update of iOS Transact SDK to version $IOS_VERSION"
