@@ -25,6 +25,8 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             let apiPath = arguments["apiPath"] as! String
             let decoder = JSONDecoder()
             
+            let presentationStyle = getPresentationStyle(from: arguments["presentationStyleIOS"] as? String)
+            
             if let configuration = arguments["configuration"] as? [String: Any] {
                 do {
                     var json = configuration
@@ -39,7 +41,7 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     var config = try decoder.decode(AtomicConfig.self, from: data)
                     
                     if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                        Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
+                        Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                         result(nil)
                     } else {
                         result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -63,9 +65,11 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                 }
                 return AtomicConfig.Theme(dark: .system)
             }()
+            
+            let presentationStyle = getPresentationStyle(from: arguments["presentationStyleIOS"] as? String)
 
             if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                Atomic.presentAction(from: controller, id: id, environment: .custom(transactPath: transactPath, apiPath: apiPath), theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
+                Atomic.presentAction(from: controller, id: id, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                 result(nil)
             } else {
                 result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -241,5 +245,22 @@ extension TransactTaskStatusUpdate {
         }
         
         return result
+    }
+}
+
+// MARK: - Helper Functions
+
+private func getPresentationStyle(from styleString: String?) -> UIModalPresentationStyle {
+    guard let styleString = styleString else {
+        return .formSheet
+    }
+    
+    switch styleString {
+    case "fullScreen":
+        return .fullScreen
+    case "formSheet":
+        return .formSheet
+    default:
+        return .formSheet
     }
 }
