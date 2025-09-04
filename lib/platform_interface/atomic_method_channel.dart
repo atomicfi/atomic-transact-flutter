@@ -20,6 +20,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
   Future<void> presentTransact({
     required AtomicConfig configuration,
     required TransactEnvironment environment,
+    AtomicPresentationStyleIOS? presentationStyleIOS,
   }) async {
     await _channel.invokeMethod(
       'presentTransact',
@@ -27,6 +28,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         'configuration': configuration.toJson(),
         'transactPath': environment.transactPath,
         'apiPath': environment.apiPath,
+        'presentationStyleIOS': presentationStyleIOS?.name,
       },
     );
   }
@@ -38,12 +40,14 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     required String id,
     required TransactEnvironment environment,
     AtomicTheme? theme,
+    AtomicPresentationStyleIOS? presentationStyleIOS,
   }) async {
     await _channel.invokeMethod('presentAction', {
       'id': id,
       'transactPath': environment.transactPath,
       'apiPath': environment.apiPath,
       'theme': theme?.toJson(),
+      'presentationStyleIOS': presentationStyleIOS?.name,
     });
   }
 

@@ -106,3 +106,12 @@ typedef AtomicAuthStatusUpdateHandler = void Function(
 typedef AtomicTaskStatusUpdateHandler = void Function(
   AtomicTransactTaskStatusUpdate taskStatus,
 );
+
+/// iOS modal presentation styles
+enum AtomicPresentationStyleIOS {
+  /// Full screen presentation style
+  fullScreen,
+  
+  /// Form sheet presentation style (default)
+  formSheet,
+}

@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> {
     Atomic.transact(
       config: _config,
       environment: TransactEnvironment.production,
+      presentationStyleIOS: AtomicPresentationStyleIOS.formSheet,
       onInteraction: (AtomicTransactInteraction interaction) {
         print("onInteraction");
         print("- name: ${interaction.name}");
@@ -78,8 +79,10 @@ class _MyAppState extends State<MyApp> {
   void _onActionButtonPressed() {
     Atomic.presentAction(
       id: '',
-      environment: TransactEnvironment.custom('http://localhost:4545', 'http://localhost:3003'),
+      environment: TransactEnvironment.custom(
+          'http://localhost:4545', 'http://localhost:3003'),
       theme: _theme,
+      presentationStyleIOS: AtomicPresentationStyleIOS.formSheet,
       onLaunch: () {
         print("onLaunch");
       },

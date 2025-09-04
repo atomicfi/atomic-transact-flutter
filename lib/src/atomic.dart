@@ -14,6 +14,7 @@ class Atomic {
   ///   - [onInteraction] Closure that will be called when a Transact Interaction event occurs.
   ///   - [onDataRequest] Closure that will be called when a Transact data request event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
+  ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).
   static Future<void> transact({
     required AtomicConfig config,
     TransactEnvironment environment = TransactEnvironment.production,
@@ -22,6 +23,7 @@ class Atomic {
     AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
+    AtomicPresentationStyleIOS? presentationStyleIOS,
   }) async {
     if (_isLoading) {
       return;
@@ -46,6 +48,7 @@ class Atomic {
     await _platform.presentTransact(
       configuration: config,
       environment: environment,
+      presentationStyleIOS: presentationStyleIOS,
     );
   }
 
@@ -57,6 +60,7 @@ class Atomic {
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
     AtomicTheme? theme,
+    AtomicPresentationStyleIOS? presentationStyleIOS,
   }) async {
     if (_isLoading) {
       return;
@@ -74,6 +78,6 @@ class Atomic {
     _platform.onCompletion = onCompletion;
 
     await _platform.presentAction(
-        id: id, environment: environment, theme: theme);
+        id: id, environment: environment, theme: theme, presentationStyleIOS: presentationStyleIOS);
   }
 }
