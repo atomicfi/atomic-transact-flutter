@@ -6,34 +6,29 @@ PUBSPEC_FILE="pubspec.yaml"
 PODSPEC_FILE="ios/atomic_transact_flutter.podspec"
 CHANGELOG_FILE="CHANGELOG.md"
 
-# Default bump type
-BUMP_TYPE="patch"
+NEW_VERSION=""
 
 # Function to show usage
 show_usage() {
-    echo "Usage: $0 [--major|--minor|--patch]"
+    echo "Usage: $0 --version VERSION"
     echo ""
     echo "Options:"
-    echo "  --major    Bump major version (x.y.z -> (x+1).0.0)"
-    echo "  --minor    Bump minor version (x.y.z -> x.(y+1).0)"
-    echo "  --patch    Bump patch version (x.y.z -> x.y.(z+1)) [default]"
-    echo "  -h, --help Show this help message"
+    echo "  --version VERSION Set specific version (e.g., --version 1.2.3)"
+    echo "  -h, --help        Show this help message"
 }
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --major)
-            BUMP_TYPE="major"
-            shift
-            ;;
-        --minor)
-            BUMP_TYPE="minor"
-            shift
-            ;;
-        --patch)
-            BUMP_TYPE="patch"
-            shift
+        --version)
+            if [[ -n "$2" ]]; then
+                NEW_VERSION="$2"
+                shift 2
+            else
+                echo "Error: --version requires a value"
+                show_usage
+                exit 1
+            fi
             ;;
         -h|--help)
             show_usage
@@ -46,6 +41,13 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Check if version was provided
+if [[ -z "$NEW_VERSION" ]]; then
+    echo "Error: Version is required"
+    show_usage
+    exit 1
+fi
 
 # Check if files exist
 if [[ ! -f "$PUBSPEC_FILE" ]]; then
@@ -73,36 +75,14 @@ fi
 
 echo "Current version: $current_version"
 
-# Parse version components
-if [[ ! "$current_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-    echo "Error: Version format should be x.y.z (found: $current_version)"
+# Validate new version format
+if [[ ! "$NEW_VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    echo "Error: Version format should be x.y.z (found: $NEW_VERSION)"
     exit 1
 fi
 
-major=${BASH_REMATCH[1]}
-minor=${BASH_REMATCH[2]}
-patch=${BASH_REMATCH[3]}
-
-# Bump version based on type
-case $BUMP_TYPE in
-    "major")
-        new_major=$((major + 1))
-        new_version="${new_major}.0.0"
-        echo "Bumping major version"
-        ;;
-    "minor")
-        new_minor=$((minor + 1))
-        new_version="${major}.${new_minor}.0"
-        echo "Bumping minor version"
-        ;;
-    "patch")
-        new_patch=$((patch + 1))
-        new_version="${major}.${minor}.${new_patch}"
-        echo "Bumping patch version"
-        ;;
-esac
-
-echo "New version: $new_version"
+new_version="$NEW_VERSION"
+echo "Setting version to: $new_version"
 
 # Function to update changelog
 update_changelog() {
