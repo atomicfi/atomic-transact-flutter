@@ -80,27 +80,27 @@ done
 
 # Get current version
 current_version=$(get_current_version)
-echo "📦 Current Android Transact SDK version: $current_version"
+echo "📦 Current Android Transact SDK version: $current_version" >&2
 
 # Get latest version
-echo "🔍 Fetching latest Android Transact SDK version from Maven Central..."
+echo "🔍 Fetching latest Android Transact SDK version from Maven Central..." >&2
 latest_version=$(get_latest_version)
-echo "🚀 Latest Android Transact SDK version: $latest_version"
+echo "🚀 Latest Android Transact SDK version: $latest_version" >&2
 
 # Compare versions
 if [[ "$current_version" == "$latest_version" ]]; then
-    echo "✅ Android Transact SDK is already up to date!"
-    exit 0
+    echo "✅ Android Transact SDK is already up to date!" >&2
+    exit 1
 fi
 
 if [[ "$CHECK_ONLY" == true ]]; then
-    echo "📋 Update available: $current_version → $latest_version"
-    echo "Run without --check flag to update"
+    echo "📋 Update available: $current_version → $latest_version" >&2
+    echo "Run without --check flag to update" >&2
     exit 0
 fi
 
 # Update the gradle file
-echo "🔄 Updating Android Transact SDK from $current_version to $latest_version..."
+echo "🔄 Updating Android Transact SDK from $current_version to $latest_version..." >&2
 
 # Create backup
 cp "$GRADLE_FILE" "$GRADLE_FILE.bak"
@@ -113,11 +113,12 @@ rm "$GRADLE_FILE.tmp"
 new_version=$(get_current_version)
 if [[ "$new_version" == "$latest_version" ]]; then
     rm "$GRADLE_FILE.bak"
-    echo "✅ Successfully updated Android Transact SDK to $latest_version"
-    echo "📝 Updated file: $GRADLE_FILE"
+    echo "✅ Successfully updated Android Transact SDK to $latest_version" >&2
+    echo "📝 Updated file: $GRADLE_FILE" >&2
+    echo "$latest_version"
 else
     # Restore backup if update failed
     mv "$GRADLE_FILE.bak" "$GRADLE_FILE"
-    echo "❌ Failed to update Android Transact SDK dependency"
+    echo "❌ Failed to update Android Transact SDK dependency" >&2
     exit 1
 fi
