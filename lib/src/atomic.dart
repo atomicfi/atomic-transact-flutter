@@ -88,4 +88,9 @@ class Atomic {
     _isLoading = false;
     await _platform.dismissTransact();
   }
+
+  static Future<void> hide() async {
+    _isLoading = false;
+    await _platform.hideTransact();
+  }
 }

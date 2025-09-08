@@ -77,6 +77,8 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             break;        
         case "dismissTransact":
             Atomic.dismissTransact()
+        case "hideTransact":
+            Atomic.hideTransact()
 
         default:
             result(FlutterMethodNotImplemented)
