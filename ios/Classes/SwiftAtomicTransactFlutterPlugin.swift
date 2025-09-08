@@ -74,7 +74,12 @@ public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             } else {
                 result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
             }
-            break;
+            break;        
+        case "dismissTransact":
+            Atomic.dismissTransact()
+        case "hideTransact":
+            Atomic.hideTransact()
+
         default:
             result(FlutterMethodNotImplemented)
         }

@@ -78,6 +78,19 @@ class Atomic {
     _platform.onCompletion = onCompletion;
 
     await _platform.presentAction(
-        id: id, environment: environment, theme: theme, presentationStyleIOS: presentationStyleIOS);
+        id: id,
+        environment: environment,
+        theme: theme,
+        presentationStyleIOS: presentationStyleIOS);
+  }
+
+  static Future<void> close() async {
+    _isLoading = false;
+    await _platform.dismissTransact();
+  }
+
+  static Future<void> hide() async {
+    _isLoading = false;
+    await _platform.hideTransact();
   }
 }

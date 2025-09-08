@@ -123,6 +123,10 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       })
 
       Transact.presentAction(activity, config)
+    } else if (call.method == "dismissTransact") {
+      Transact.close(activity)
+    } else if (call.method == "hideTransact") {
+      Transact.hideTransact(activity)
     } else {
       result.notImplemented()
     }
