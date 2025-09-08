@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:io' show Platform;
 
 import 'types.dart';
@@ -145,7 +147,11 @@ class AtomicExperiments {
 /// Defines configuration for the tasks you wish to execute as part of the task workflow.
 class AtomicTask {
   /// One of deposit, verify, switch, or present.
-  final AtomicProductType product;
+  @Deprecated('Use operation instead')
+  final AtomicProductType? product;
+
+  /// One of deposit, verify, switch, present, or tax.
+  final AtomicOperationType? operation;
 
   /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
   /// Default value: "continue"
@@ -159,17 +165,25 @@ class AtomicTask {
   final AtomicDistribution? distribution;
 
   AtomicTask({
-    required this.product,
+    @Deprecated('Use operation instead') this.product,
+    this.operation,
     this.onComplete = "continue",
     this.onFail = "continue",
     this.distribution,
-  });
+  }) : assert(operation != null || product != null,
+            'Either operation or product must be provided');
 
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
+    String? operationValue;
+    if (operation != null) {
+      operationValue = operation!.operationName;
+    } else if (product != null) {
+      operationValue = product!.productName;
+    }
+
     return <String, dynamic>{
-      'product':
-          product == AtomicProductType.switchPayment ? 'switch' : product.name,
+      'operation': operationValue,
       'onComplete': onComplete,
       'onFail': onFail,
       'distribution': distribution?.toJson(),
@@ -295,12 +309,12 @@ class TransactEnvironment {
   final String apiPath;
 
   /// Production environment
-  static const TransactEnvironment production =
-      TransactEnvironment._('https://transact.atomicfi.com', 'https://api.atomicfi.com');
+  static const TransactEnvironment production = TransactEnvironment._(
+      'https://transact.atomicfi.com', 'https://api.atomicfi.com');
 
   /// Sandbox environment
-  static const TransactEnvironment sandbox =
-      TransactEnvironment._('https://transact.atomicfi.com', 'https://sandbox-api.atomicfi.com');
+  static const TransactEnvironment sandbox = TransactEnvironment._(
+      'https://transact.atomicfi.com', 'https://sandbox-api.atomicfi.com');
 
   /// Custom environment with specified path
   static TransactEnvironment custom(String transactPath, String apiPath) =>

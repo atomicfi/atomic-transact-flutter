@@ -4,17 +4,15 @@ import '../src/events.dart';
 
 /// The product to initiate
 enum AtomicProductType {
-  /// Update the destination bank account of paychecks
-  deposit,
+  deposit('deposit'),
+  verify('verify'),
+  switchPayment('switch'),
+  present('present'),
+  tax('tax');
 
-  /// Verify a user's income and employment status
-  verify,
+  final String productName;
 
-  /// Switch a user's payment method
-  switchPayment,
-
-  /// Subscription management
-  present,
+  const AtomicProductType(this.productName);
 }
 
 /// Type of distribution
@@ -111,7 +109,20 @@ typedef AtomicTaskStatusUpdateHandler = void Function(
 enum AtomicPresentationStyleIOS {
   /// Full screen presentation style
   fullScreen,
-  
+
   /// Form sheet presentation style (default)
   formSheet,
+}
+
+/// The operation type to initiate
+enum AtomicOperationType {
+  deposit('deposit'),
+  verify('verify'),
+  switchPayment('switch'),
+  present('present'),
+  tax('tax');
+
+  final String operationName;
+
+  const AtomicOperationType(this.operationName);
 }

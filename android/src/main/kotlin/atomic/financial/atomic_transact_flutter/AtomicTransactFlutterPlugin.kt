@@ -179,10 +179,11 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     val result = mutableListOf<Config.Task>()
 
     value?.forEach {
-      result.add(Config.Task(
-              product = Config.Product.valueOf((it["product"] as String).uppercase()),
-              distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any> )))
-    }
+        result.add(Config.Task(
+              product = (it["product"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
+              operation = (it["operation"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
+                distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any> )))
+      }
 
     return result
   }

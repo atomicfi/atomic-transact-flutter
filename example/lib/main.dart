@@ -13,26 +13,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late AtomicConfig _config;
-  late AtomicTheme _theme;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _theme = AtomicTheme(dark: true);
-    _config = AtomicConfig(
+  void _onButtonPressed() {
+    final AtomicConfig config = AtomicConfig(
       scope: 'user-link',
       publicToken: '',
       tasks: [AtomicTask(product: AtomicProductType.deposit)],
-      theme: _theme,
+      theme: AtomicTheme(dark: true),
     );
-    print("config: ${_config.toJson()}");
-  }
 
-  void _onButtonPressed() {
     Atomic.transact(
-      config: _config,
+      config: config,
       environment: TransactEnvironment.production,
       presentationStyleIOS: AtomicPresentationStyleIOS.formSheet,
       onInteraction: (AtomicTransactInteraction interaction) {
@@ -81,7 +71,7 @@ class _MyAppState extends State<MyApp> {
       id: '',
       environment: TransactEnvironment.custom(
           'http://localhost:4545', 'http://localhost:3003'),
-      theme: _theme,
+      theme: AtomicTheme(dark: true),
       presentationStyleIOS: AtomicPresentationStyleIOS.formSheet,
       onLaunch: () {
         print("onLaunch");
