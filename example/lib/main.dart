@@ -116,6 +116,15 @@ class _MyAppState extends State<MyApp> {
                 onPressed: _onActionButtonPressed,
                 child: const Text("Launch Action"),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  _onButtonPressed();
+                  Future.delayed(Duration(seconds: 10), () {
+                    Atomic.close();
+                  });
+                },
+                child: const Text("Launch And Close"),
+              ),
             ],
           ),
         ),
