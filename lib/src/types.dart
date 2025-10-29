@@ -39,6 +39,9 @@ enum AtomicDeeplinkStep {
 
   /// This value requires companyName and connectorId.
   login_payroll,
+
+  /// This value requires payments parameter.
+  pay_now,
 }
 
 enum AtomicTransactCompletionType {

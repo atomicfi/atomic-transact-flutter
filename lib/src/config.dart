@@ -77,11 +77,15 @@ class AtomicDeeplink {
   /// Required if the step is login_payroll.
   final String? connectorId;
 
+  /// Required if the step is pay_now. Accepts a list of payment types.
+  final List<String>? payments;
+
   AtomicDeeplink({
     required this.step,
     this.companyId,
     this.companyName,
     this.connectorId,
+    this.payments,
   });
 
   /// Returns a JSON object representation.
@@ -91,6 +95,7 @@ class AtomicDeeplink {
       'companyId': companyId,
       'companyName': companyName,
       'connectorId': connectorId,
+      'payments': payments,
     }..removeWhere((key, value) => value == null);
   }
 }
@@ -287,8 +292,8 @@ class AtomicConfig {
       'publicToken': publicToken,
       'scope': scope,
       'tasks': tasks?.map((e) => e.toJson()).toList(),
-      'product': product?.name,
-      'additionalProduct': additionalProduct?.name,
+      'product': product?.productName,
+      'additionalProduct': additionalProduct?.productName,
       'distribution': distribution?.toJson(),
       'linkedAccount': linkedAccount,
       'theme': theme?.toJson(),
