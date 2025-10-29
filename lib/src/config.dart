@@ -80,12 +80,15 @@ class AtomicDeeplink {
   /// Required if the step is pay_now. Accepts a list of payment types.
   final List<String>? payments;
 
+  final bool? singleSwitch;
+
   AtomicDeeplink({
     required this.step,
     this.companyId,
     this.companyName,
     this.connectorId,
     this.payments,
+    this.singleSwitch,
   });
 
   /// Returns a JSON object representation.
@@ -96,6 +99,7 @@ class AtomicDeeplink {
       'companyName': companyName,
       'connectorId': connectorId,
       'payments': payments,
+      'singleSwitch': singleSwitch,
     }..removeWhere((key, value) => value == null);
   }
 }
