@@ -22,9 +22,13 @@ class _MyAppState extends State<MyApp> {
         tasks: [
           AtomicTask(product: AtomicProductType.switchPayment),
         ],
+        // deeplink: AtomicDeeplink(
+        //   step: AtomicDeeplinkStep.pay_now,
+        // )
         deeplink: AtomicDeeplink(
-          step: AtomicDeeplinkStep.search_company,
-          // payments: ['phone-bill'],
+          step: AtomicDeeplinkStep.login_company,
+          companyId: "",
+          singleSwitch: true,
         ));
 
     Atomic.transact(

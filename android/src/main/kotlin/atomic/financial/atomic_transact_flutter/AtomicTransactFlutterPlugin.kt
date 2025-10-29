@@ -259,6 +259,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val companyId = value["companyId"] as? String
       val companyName = value["companyName"] as? String
       val connectorId = value["connectorId"] as? String
+      val singleSwitch = value["singleSwitch"] as? Boolean ?: false
+      val payments = value["payments"] as? List<String>
 
       val stepFormatted = step.replace('-', '_').uppercase()
 
@@ -266,7 +268,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
               step = Config.Deeplink.Step.valueOf(stepFormatted),
               companyId = companyId,
               companyName = companyName,
-              connectorId = connectorId
+              connectorId = connectorId,
+              singleSwitch = singleSwitch,
+              payments = payments
       )
     }
 
