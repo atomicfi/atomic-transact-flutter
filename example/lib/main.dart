@@ -15,11 +15,17 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   void _onButtonPressed() {
     final AtomicConfig config = AtomicConfig(
-      scope: 'user-link',
-      publicToken: '',
-      tasks: [AtomicTask(product: AtomicProductType.deposit)],
-      theme: AtomicTheme(dark: true),
-    );
+        publicToken: '',
+        scope: 'pay-link',
+        product: AtomicProductType.switchPayment,
+        theme: AtomicTheme(dark: true),
+        tasks: [
+          AtomicTask(product: AtomicProductType.switchPayment),
+        ],
+        deeplink: AtomicDeeplink(
+          step: AtomicDeeplinkStep.search_company,
+          // payments: ['phone-bill'],
+        ));
 
     Atomic.transact(
       config: config,
