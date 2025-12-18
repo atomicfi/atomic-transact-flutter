@@ -64,42 +64,207 @@ class AtomicDistribution {
   }
 }
 
-/// Deeplink users into a specific step
-class AtomicDeeplink {
-  final AtomicDeeplinkStep step;
+/// Deeplink step options
+abstract class DeeplinkStep {
+  const DeeplinkStep();
 
-  /// Required if the step is login_company. Accepts the ID of the company.
-  final String? companyId;
+  AtomicDeeplinkStep get step;
+  String get id => step.name.replaceAll("_", "-");
 
-  /// Required if the step is search_payroll or login_payroll. Accepts a string of the company name.
-  final String? companyName;
+  /// Deeplink to the company search step
+  static const DeeplinkStep searchCompany = _SearchCompanyStep();
 
-  /// Required if the step is login_payroll.
+  /// Deeplink to the payroll search step
+  static const DeeplinkStep searchPayroll = _SearchPayrollStep();
+
+  /// Deeplink to the add card step
+  static const DeeplinkStep addCard = _AddCardStep();
+
+  /// Deeplink to the company login step
+  static DeeplinkStepLoginCompany loginCompany({
+    required String companyId,
+    String? connectorId,
+    bool? singleSwitch,
+  }) =>
+      DeeplinkStepLoginCompany(
+        companyId: companyId,
+        connectorId: connectorId,
+        singleSwitch: singleSwitch,
+      );
+
+  /// Deeplink to the payroll login step
+  static DeeplinkStepLoginPayroll loginPayroll({
+    required String connectorId,
+    required String companyName,
+  }) =>
+      DeeplinkStepLoginPayroll(
+        connectorId: connectorId,
+        companyName: companyName,
+      );
+}
+
+class _SearchCompanyStep extends DeeplinkStep {
+  const _SearchCompanyStep();
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.search_company;
+}
+
+class _SearchPayrollStep extends DeeplinkStep {
+  const _SearchPayrollStep();
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.search_payroll;
+}
+
+class _AddCardStep extends DeeplinkStep {
+  const _AddCardStep();
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.add_card;
+}
+
+/// Deeplink to the company login step with associated data
+class DeeplinkStepLoginCompany extends DeeplinkStep {
+  final String companyId;
   final String? connectorId;
-
-  /// Required if the step is pay_now. Accepts a list of payment types.
-  final List<String>? payments;
-
   final bool? singleSwitch;
 
-  AtomicDeeplink({
-    required this.step,
-    this.companyId,
-    this.companyName,
+  const DeeplinkStepLoginCompany({
+    required this.companyId,
     this.connectorId,
-    this.payments,
     this.singleSwitch,
   });
 
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.login_company;
+}
+
+/// Deeplink to the payroll login step with associated data
+class DeeplinkStepLoginPayroll extends DeeplinkStep {
+  final String connectorId;
+  final String companyName;
+
+  const DeeplinkStepLoginPayroll({
+    required this.connectorId,
+    required this.companyName,
+  });
+
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.login_payroll;
+}
+
+/// Deeplink app options for Payments Hub
+abstract class DeeplinkApp {
+  const DeeplinkApp();
+
+  String get id;
+
+  /// Deeplink to the Transactions app
+  static const DeeplinkApp transactions = _TransactionsApp();
+
+  /// Deeplink to the Orders app
+  static const DeeplinkApp orders = _OrdersApp();
+
+  /// Deeplink to the Suggestions app
+  static const DeeplinkApp suggestions = _SuggestionsApp();
+
+  /// Deeplink to the Pay Now app
+  static DeeplinkAppPayNow payNow({
+    required List<String> payments,
+    required String accountId,
+  }) =>
+      DeeplinkAppPayNow(
+        payments: payments,
+        accountId: accountId,
+      );
+}
+
+class _TransactionsApp extends DeeplinkApp {
+  const _TransactionsApp();
+  @override
+  String get id => 'transactions';
+}
+
+class _OrdersApp extends DeeplinkApp {
+  const _OrdersApp();
+  @override
+  String get id => 'orders';
+}
+
+class _SuggestionsApp extends DeeplinkApp {
+  const _SuggestionsApp();
+  @override
+  String get id => 'suggestions';
+}
+
+/// Deeplink to the Pay Now app with associated data
+class DeeplinkAppPayNow extends DeeplinkApp {
+  final List<String> payments;
+  final String accountId;
+
+  const DeeplinkAppPayNow({
+    required this.payments,
+    required this.accountId,
+  });
+
+  @override
+  String get id => 'pay-now';
+}
+
+/// Deeplink users into a specific step or app
+class AtomicDeeplink {
+  final DeeplinkStep? _step;
+  final DeeplinkApp? _app;
+
+  const AtomicDeeplink._({
+    DeeplinkStep? step,
+    DeeplinkApp? app,
+  })  : _step = step,
+        _app = app;
+
+  /// Create a deeplink to a specific step
+  factory AtomicDeeplink.step(DeeplinkStep step) {
+    return AtomicDeeplink._(step: step);
+  }
+
+  /// Create a deeplink to a specific app in the Payments Hub
+  factory AtomicDeeplink.app(DeeplinkApp app) {
+    return AtomicDeeplink._(app: app);
+  }
+
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
+    final step = _step;
+    final app = _app;
+
+    String? companyId;
+    String? connectorId;
+    String? companyName;
+    bool? singleSwitch;
+    List<String>? payments;
+    String? accountId;
+
+    if (step is DeeplinkStepLoginCompany) {
+      companyId = step.companyId;
+      connectorId = step.connectorId;
+      singleSwitch = step.singleSwitch;
+    } else if (step is DeeplinkStepLoginPayroll) {
+      connectorId = step.connectorId;
+      companyName = step.companyName;
+    }
+
+    if (app is DeeplinkAppPayNow) {
+      payments = app.payments;
+      accountId = app.accountId;
+    }
+
     return <String, dynamic>{
-      'step': step.name.replaceAll("_", "-"),
+      'step': step?.id,
+      'app': app?.id,
       'companyId': companyId,
-      'companyName': companyName,
       'connectorId': connectorId,
-      'payments': payments,
+      'companyName': companyName,
       'singleSwitch': singleSwitch,
+      'payments': payments,
+      'accountId': accountId,
     }..removeWhere((key, value) => value == null);
   }
 }
