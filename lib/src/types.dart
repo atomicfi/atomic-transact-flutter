@@ -27,6 +27,8 @@ enum AtomicDistributionType {
   percent,
 }
 
+@Deprecated(
+    'Use AtomicDeeplink.step() with DeeplinkStep instead (e.g., AtomicDeeplink.step(DeeplinkStep.loginCompany(...)))')
 enum AtomicDeeplinkStep {
   ///
   search_company,
@@ -40,8 +42,8 @@ enum AtomicDeeplinkStep {
   /// This value requires companyName and connectorId.
   login_payroll,
 
-  /// This value requires payments parameter.
-  pay_now,
+  /// Add card step.
+  add_card,
 }
 
 enum AtomicTransactCompletionType {
