@@ -13,8 +13,7 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Sean Hill' => 'sean@atomicfi.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'atomic_transact_flutter/Sources/atomic_transact_flutter/**/*.{h,m,swift}'
-  s.public_header_files = 'atomic_transact_flutter/Sources/atomic_transact_flutter/include/**/*.h'
+  s.source_files = 'atomic_transact_flutter/Sources/atomic_transact_flutter/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '13.0'
   s.static_framework = true
