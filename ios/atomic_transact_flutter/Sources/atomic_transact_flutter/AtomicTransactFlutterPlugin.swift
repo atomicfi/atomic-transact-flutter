@@ -2,13 +2,13 @@ import Flutter
 import UIKit
 import AtomicTransact
 
-public class SwiftAtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
+public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
     
     let channel: FlutterMethodChannel;
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "atomic_transact_flutter", binaryMessenger: registrar.messenger())
-        let instance = SwiftAtomicTransactFlutterPlugin(withChannel: channel)
+        let instance = AtomicTransactFlutterPlugin(withChannel: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
