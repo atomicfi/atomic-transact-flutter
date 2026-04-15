@@ -5,7 +5,7 @@ Demonstrates the `atomic_transact_flutter` plugin with a multi-tab UI for testin
 ## Prerequisites
 
 - Flutter `>=3.41.0` (required for Swift Package Manager support)
-- Xcode 16+ (for iOS builds)
+- Xcode 16+ (for iOS builds, minimum iOS 15 deployment target)
 - Android Studio / JDK 17 (for Android builds)
 - For CocoaPods mode: `sudo gem install cocoapods`
 

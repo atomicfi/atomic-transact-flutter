@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "atomic_transact_flutter",
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v15)],
     products: [
         .library(name: "atomic-transact-flutter", targets: ["atomic_transact_flutter"])
     ],
