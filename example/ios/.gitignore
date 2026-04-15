@@ -11,6 +11,9 @@
 **/DerivedData/
 Icon?
 **/Pods/
+# The example app uses Swift Package Manager, so CocoaPods files should never be committed
+Podfile
+Podfile.lock
 **/.symlinks/
 profile
 xcuserdata
