@@ -34,6 +34,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     if (call.method == "presentTransact") {
       val transactPath = call.argument<String>("transactPath") as String? ?: ""
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
+      val debug = call.argument<Boolean>("debug") ?: false
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
@@ -66,7 +67,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           experiments = configExperimentsFromMap(experiments),
           search = configSearchFromMap(search),
           environment = Config.Environment.CUSTOM,
-          environmentURL = transactPath
+          environmentURL = transactPath,
+          webContentsDebuggingEnabled = debug
         )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
@@ -96,12 +98,14 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val id = call.argument<String>("id") ?: return
       val transactPath = call.argument<String>("transactPath") as String? ?: ""
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
+      val debug = call.argument<Boolean>("debug") ?: false
       var theme = call.argument<Map<String, Any>>("theme")
       val config = ActionConfig(
         id = id,
         environment = Config.Environment.CUSTOM,
         environmentURL = transactPath,
-        theme = configThemeFromMap(theme)
+        theme = configThemeFromMap(theme),
+        webContentsDebuggingEnabled = debug
       )
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {

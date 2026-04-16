@@ -24,6 +24,7 @@ class Atomic {
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicCompletionHandler? onCompletion,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     if (_isLoading) {
       return;
@@ -49,6 +50,7 @@ class Atomic {
       configuration: config,
       environment: environment,
       presentationStyleIOS: presentationStyleIOS,
+      debug: debug,
     );
   }
 
@@ -61,6 +63,7 @@ class Atomic {
     AtomicCompletionHandler? onCompletion,
     AtomicTheme? theme,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     if (_isLoading) {
       return;
@@ -81,7 +84,8 @@ class Atomic {
         id: id,
         environment: environment,
         theme: theme,
-        presentationStyleIOS: presentationStyleIOS);
+        presentationStyleIOS: presentationStyleIOS,
+        debug: debug);
   }
 
   static Future<void> close() async {

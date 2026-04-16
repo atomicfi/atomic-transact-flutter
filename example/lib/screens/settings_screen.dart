@@ -58,6 +58,11 @@ class SettingsScreen extends StatelessWidget {
                   value: state.darkMode,
                   onChanged: (v) => state.darkMode = v,
                 ),
+                ToggleRow(
+                  title: 'Debug Mode',
+                  value: state.debug,
+                  onChanged: (v) => state.debug = v,
+                ),
                 const SizedBox(height: 32),
               ],
             ),
