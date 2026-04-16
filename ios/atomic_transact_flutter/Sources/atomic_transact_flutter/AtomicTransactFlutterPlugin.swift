@@ -23,6 +23,7 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! [String: Any]
             let transactPath = arguments["transactPath"] as! String
             let apiPath = arguments["apiPath"] as! String
+            let pluginVersion = arguments["pluginVersion"] as? String ?? ""
             let debugEnabled = arguments["debug"] as? Bool ?? false
             let decoder = JSONDecoder()
 
@@ -31,11 +32,8 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             if let configuration = arguments["configuration"] as? [String: Any] {
                 do {
                     var json = configuration
-
-                    if var platform = AtomicConfig.Platform().encode() as? [String: Any] {
-                        platform["sdkVersion"] = platform["sdkVersion"] as! String + "-flutter"
-                        json["platform"] = platform
-                    }
+                    let suffix = pluginVersion.isEmpty ? "flutter" : "flutter-\(pluginVersion)"
+                    json["platform"] = AtomicConfig.Platform(suffixed: suffix).encode()
 
                     guard let data = try? JSONSerialization.data(withJSONObject: json, options: []) else { return }
 

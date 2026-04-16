@@ -34,6 +34,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     if (call.method == "presentTransact") {
       val transactPath = call.argument<String>("transactPath") as String? ?: ""
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
+      val pluginVersion = call.argument<String>("pluginVersion") ?: ""
+      val suffix = if (pluginVersion.isNotEmpty()) "flutter-$pluginVersion" else "flutter"
       val debug = call.argument<Boolean>("debug") ?: false
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
@@ -71,6 +73,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           webContentsDebuggingEnabled = debug
         )
 
+      config.platform = Config.Platform.suffixed(suffix)
+
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
           channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
@@ -93,11 +97,13 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       })
 
       Transact.present(activity, config)
-    } 
+    }
     else if (call.method == "presentAction") {
       val id = call.argument<String>("id") ?: return
       val transactPath = call.argument<String>("transactPath") as String? ?: ""
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
+      val actionPluginVersion = call.argument<String>("pluginVersion") ?: ""
+      val actionSuffix = if (actionPluginVersion.isNotEmpty()) "flutter-$actionPluginVersion" else "flutter"
       val debug = call.argument<Boolean>("debug") ?: false
       var theme = call.argument<Map<String, Any>>("theme")
       val config = ActionConfig(
@@ -107,6 +113,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         theme = configThemeFromMap(theme),
         webContentsDebuggingEnabled = debug
       )
+      config.platform = Config.Platform.suffixed(actionSuffix)
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
