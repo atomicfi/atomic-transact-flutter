@@ -181,6 +181,14 @@ class PayLinkScreen extends StatelessWidget {
                   labelOf: (t) => t.label,
                   onSelect: (t) => state.payLinkTask = t,
                 ),
+                if (state.payLinkTask == PayLinkTask.manage)
+                  MultiSelectGrid<PayLinkApp>(
+                    title: 'Apps',
+                    options: PayLinkApp.values,
+                    selected: state.payLinkApps,
+                    labelOf: (a) => a.label,
+                    onToggle: (a) => state.togglePayLinkApp(a),
+                  ),
                 const SizedBox(height: 8),
                 SingleSelectGrid<StartingScreen>(
                   title: 'Starting Screen',

@@ -155,8 +155,8 @@ abstract class DeeplinkApp {
 
   String get id;
 
-  /// Deeplink to the Transactions app
-  static const DeeplinkApp transactions = _TransactionsApp();
+  /// Deeplink to the Expenses app
+  static const DeeplinkApp expenses = _ExpensesApp();
 
   /// Deeplink to the Orders app
   static const DeeplinkApp orders = _OrdersApp();
@@ -175,10 +175,10 @@ abstract class DeeplinkApp {
       );
 }
 
-class _TransactionsApp extends DeeplinkApp {
-  const _TransactionsApp();
+class _ExpensesApp extends DeeplinkApp {
+  const _ExpensesApp();
   @override
-  String get id => 'transactions';
+  String get id => 'expenses';
 }
 
 class _OrdersApp extends DeeplinkApp {
@@ -205,6 +205,49 @@ class DeeplinkAppPayNow extends DeeplinkApp {
 
   @override
   String get id => 'pay-now';
+}
+
+/// Task app options
+abstract class TaskApp {
+  const TaskApp();
+
+  String get id;
+
+  /// Pay Now app
+  static const TaskApp payNow = _TaskPayNowApp();
+
+  /// Expenses app
+  static const TaskApp expenses = _TaskExpensesApp();
+
+  /// Orders app
+  static const TaskApp orders = _TaskOrdersApp();
+
+  /// Suggestions app
+  static const TaskApp suggestions = _TaskSuggestionsApp();
+}
+
+class _TaskPayNowApp extends TaskApp {
+  const _TaskPayNowApp();
+  @override
+  String get id => 'pay-now';
+}
+
+class _TaskExpensesApp extends TaskApp {
+  const _TaskExpensesApp();
+  @override
+  String get id => 'expenses';
+}
+
+class _TaskOrdersApp extends TaskApp {
+  const _TaskOrdersApp();
+  @override
+  String get id => 'orders';
+}
+
+class _TaskSuggestionsApp extends TaskApp {
+  const _TaskSuggestionsApp();
+  @override
+  String get id => 'suggestions';
 }
 
 /// Deeplink users into a specific step or app
@@ -322,7 +365,7 @@ class AtomicTask {
   @Deprecated('Use operation instead')
   final AtomicProductType? product;
 
-  /// One of deposit, verify, switch, present, or tax.
+  /// One of deposit, verify, switch, present, tax, or manage.
   final AtomicOperationType? operation;
 
   /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
@@ -336,12 +379,16 @@ class AtomicTask {
   /// Optionally pass in enforced deposit settings. Enforcing deposit settings will eliminate company search results that do not support the distribution settings.
   final AtomicDistribution? distribution;
 
+  /// Optionally specify which apps to include in the task.
+  final List<TaskApp>? apps;
+
   AtomicTask({
     @Deprecated('Use operation instead') this.product,
     this.operation,
     this.onComplete = "continue",
     this.onFail = "continue",
     this.distribution,
+    this.apps,
   }) : assert(operation != null || product != null,
             'Either operation or product must be provided');
 
@@ -359,6 +406,7 @@ class AtomicTask {
       'onComplete': onComplete,
       'onFail': onFail,
       'distribution': distribution?.toJson(),
+      'apps': apps?.map((a) => a.id).toList(),
     }..removeWhere((key, value) => value == null);
   }
 }

@@ -4,10 +4,21 @@ import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
 // Pay Link enums
 enum PayLinkTask {
   switchPayment('Payment Switching'),
-  present('Bill Manage Present');
+  present('Bill Manage Present'),
+  manage('Bill Manage Bundled UI');
 
   final String label;
   const PayLinkTask(this.label);
+}
+
+enum PayLinkApp {
+  payNow('Pay Now'),
+  expenses('Expenses'),
+  orders('Orders'),
+  suggestions('Suggestions');
+
+  final String label;
+  const PayLinkApp(this.label);
 }
 
 enum StartingScreen {
@@ -62,6 +73,17 @@ class AppState extends ChangeNotifier {
   PayLinkTask _payLinkTask = PayLinkTask.switchPayment;
   PayLinkTask get payLinkTask => _payLinkTask;
   set payLinkTask(PayLinkTask v) { _payLinkTask = v; notifyListeners(); }
+
+  Set<PayLinkApp> _payLinkApps = {};
+  Set<PayLinkApp> get payLinkApps => _payLinkApps;
+  void togglePayLinkApp(PayLinkApp app) {
+    if (_payLinkApps.contains(app)) {
+      _payLinkApps = Set.from(_payLinkApps)..remove(app);
+    } else {
+      _payLinkApps = Set.from(_payLinkApps)..add(app);
+    }
+    notifyListeners();
+  }
 
   StartingScreen _payLinkStartingScreen = StartingScreen.welcome;
   StartingScreen get payLinkStartingScreen => _payLinkStartingScreen;
@@ -119,6 +141,24 @@ class AppState extends ChangeNotifier {
         op = AtomicOperationType.switchPayment;
       case PayLinkTask.present:
         op = AtomicOperationType.present;
+      case PayLinkTask.manage:
+        op = AtomicOperationType.manage;
+    }
+
+    List<TaskApp>? apps;
+    if (_payLinkTask == PayLinkTask.manage && _payLinkApps.isNotEmpty) {
+      apps = _payLinkApps.map((a) {
+        switch (a) {
+          case PayLinkApp.payNow:
+            return TaskApp.payNow;
+          case PayLinkApp.expenses:
+            return TaskApp.expenses;
+          case PayLinkApp.orders:
+            return TaskApp.orders;
+          case PayLinkApp.suggestions:
+            return TaskApp.suggestions;
+        }
+      }).toList();
     }
 
     DeeplinkStep? step;
@@ -136,7 +176,7 @@ class AppState extends ChangeNotifier {
     return AtomicConfig(
       publicToken: _publicToken,
       scope: 'pay-link',
-      tasks: [AtomicTask(operation: op)],
+      tasks: [AtomicTask(operation: op, apps: apps)],
       theme: theme,
       deeplink: step != null ? AtomicDeeplink.step(step) : null,
     );
