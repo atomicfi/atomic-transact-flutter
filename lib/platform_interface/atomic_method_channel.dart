@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../src/config.dart';
 import '../src/types.dart';
+import '../src/version.dart';
 import 'atomic_platform_interface.dart';
 
 class AtomicMethodChannel extends AtomicPlatformInterface {
@@ -31,6 +32,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         'transactPath': environment.transactPath,
         'apiPath': environment.apiPath,
         'presentationStyleIOS': presentationStyleIOS?.name,
+        'pluginVersion': packageVersion,
         'debug': debug,
       },
     );
@@ -52,6 +54,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
       'apiPath': environment.apiPath,
       'theme': theme?.toJson(),
       'presentationStyleIOS': presentationStyleIOS?.name,
+      'pluginVersion': packageVersion,
       'debug': debug,
     });
   }

@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import 'dart:io' show Platform;
-
 import 'types.dart';
 
 /// Provide colors to customize Transact.
@@ -424,12 +422,6 @@ class AtomicConfig {
   /// Handoff allows views to be handled outside of Transact.
   final List<AtomicTransactHandoff>? handoff;
 
-  /// The platform being used
-  final Map<String, String> platform = {
-    'version': Platform.operatingSystemVersion,
-    'name': Platform.operatingSystem
-  };
-
   /// Used to override feature flags
   final AtomicExperiments? experiments;
 
@@ -467,7 +459,6 @@ class AtomicConfig {
       'linkedAccount': linkedAccount,
       'theme': theme?.toJson(),
       'language': language,
-      'platform': platform,
       'deeplink': deeplink?.toJson(),
       'metadata': metadata,
       'search': search?.toJson(),
