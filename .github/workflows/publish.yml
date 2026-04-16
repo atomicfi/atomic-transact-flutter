@@ -20,6 +20,16 @@ jobs:
           NEW_VERSION="${NEW_VERSION#v}"
           ./scripts/bump_version.sh --version "$NEW_VERSION"
 
+      - name: Verify version sync
+        run: |
+          PUBSPEC_VERSION=$(grep "^version:" pubspec.yaml | sed 's/version: //')
+          DART_VERSION=$(grep "packageVersion" lib/src/version.dart | sed "s/.*'\(.*\)'.*/\1/")
+          if [ "$PUBSPEC_VERSION" != "$DART_VERSION" ]; then
+            echo "::error::Version mismatch: pubspec.yaml ($PUBSPEC_VERSION) != lib/src/version.dart ($DART_VERSION)"
+            exit 1
+          fi
+          echo "Versions in sync: $PUBSPEC_VERSION"
+
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
