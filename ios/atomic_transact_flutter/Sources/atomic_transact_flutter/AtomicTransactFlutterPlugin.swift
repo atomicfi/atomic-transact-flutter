@@ -23,10 +23,11 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! [String: Any]
             let transactPath = arguments["transactPath"] as! String
             let apiPath = arguments["apiPath"] as! String
+            let debugEnabled = arguments["debug"] as? Bool ?? false
             let decoder = JSONDecoder()
-            
+
             let presentationStyle = getPresentationStyle(from: arguments["presentationStyleIOS"] as? String)
-            
+
             if let configuration = arguments["configuration"] as? [String: Any] {
                 do {
                     var json = configuration
@@ -41,6 +42,12 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                     var config = try decoder.decode(AtomicConfig.self, from: data)
 
                     Task { @MainActor in
+                        await Atomic.setDebug(isEnabled: debugEnabled, forwardLogs: { logMessage in
+                            DispatchQueue.main.async {
+                                self.channel.invokeMethod("onDebugLog", arguments: ["message": logMessage])
+                            }
+                        })
+
                         if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
                             Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                             result(nil)
@@ -58,6 +65,7 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             let id = arguments["id"] as! String
             let transactPath = arguments["transactPath"] as! String
             let apiPath = arguments["apiPath"] as! String
+            let debugEnabled = arguments["debug"] as? Bool ?? false
             let decoder = JSONDecoder()
             let theme: AtomicConfig.Theme = {
                 if let themeData = arguments["theme"] as? [String: Any],
@@ -67,10 +75,16 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                 }
                 return AtomicConfig.Theme(dark: .system)
             }()
-            
+
             let presentationStyle = getPresentationStyle(from: arguments["presentationStyleIOS"] as? String)
 
             Task { @MainActor in
+                await Atomic.setDebug(isEnabled: debugEnabled, forwardLogs: { logMessage in
+                    DispatchQueue.main.async {
+                        self.channel.invokeMethod("onDebugLog", arguments: ["message": logMessage])
+                    }
+                })
+
                 if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
                     Atomic.presentAction(from: controller, id: id, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
                     result(nil)

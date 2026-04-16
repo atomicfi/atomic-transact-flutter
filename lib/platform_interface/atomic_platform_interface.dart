@@ -42,6 +42,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
   }
@@ -51,6 +52,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     required TransactEnvironment environment,
     AtomicTheme? theme,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     throw UnimplementedError('presentAction() has not been implemented.');
   }

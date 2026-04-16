@@ -1,4 +1,5 @@
 import 'package:atomic_transact_flutter/src/events.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../src/config.dart';
@@ -21,6 +22,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     await _channel.invokeMethod(
       'presentTransact',
@@ -29,6 +31,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         'transactPath': environment.transactPath,
         'apiPath': environment.apiPath,
         'presentationStyleIOS': presentationStyleIOS?.name,
+        'debug': debug,
       },
     );
   }
@@ -41,6 +44,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     required TransactEnvironment environment,
     AtomicTheme? theme,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    bool debug = false,
   }) async {
     await _channel.invokeMethod('presentAction', {
       'id': id,
@@ -48,6 +52,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
       'apiPath': environment.apiPath,
       'theme': theme?.toJson(),
       'presentationStyleIOS': presentationStyleIOS?.name,
+      'debug': debug,
     });
   }
 
@@ -93,6 +98,11 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
 
       case 'onLaunch':
         onLaunch?.call();
+        break;
+
+      case 'onDebugLog':
+        final message = call.arguments['message'] as String? ?? '';
+        debugPrint('[AtomicTransact] $message');
         break;
 
       case 'onAuthStatusUpdate':

@@ -28,6 +28,7 @@ class UserLinkScreen extends StatelessWidget {
     Atomic.transact(
       config: config,
       environment: state.environment,
+      debug: state.debug,
       onInteraction: (interaction) {
         eventLog.add(EventEntry(
           type: EventType.interaction,

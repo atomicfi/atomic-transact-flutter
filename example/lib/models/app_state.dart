@@ -54,6 +54,10 @@ class AppState extends ChangeNotifier {
   bool get darkMode => _darkMode;
   set darkMode(bool v) { _darkMode = v; notifyListeners(); }
 
+  bool _debug = false;
+  bool get debug => _debug;
+  set debug(bool v) { _debug = v; notifyListeners(); }
+
   // Pay Link
   PayLinkTask _payLinkTask = PayLinkTask.switchPayment;
   PayLinkTask get payLinkTask => _payLinkTask;
