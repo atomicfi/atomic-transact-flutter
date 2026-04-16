@@ -4,6 +4,7 @@ set -e
 
 PUBSPEC_FILE="pubspec.yaml"
 PODSPEC_FILE="ios/atomic_transact_flutter.podspec"
+VERSION_DART_FILE="lib/src/version.dart"
 CHANGELOG_FILE="CHANGELOG.md"
 
 NEW_VERSION=""
@@ -113,6 +114,13 @@ rm "$PUBSPEC_FILE.bak"
 sed -i.bak "s/s\.version *= *'[^']*'/s.version          = '$new_version'/" "$PODSPEC_FILE"
 rm "$PODSPEC_FILE.bak"
 
+# Update version.dart
+cat > "$VERSION_DART_FILE" << DART
+// GENERATED — do not edit by hand.
+// Updated by scripts/bump_version.sh
+const String packageVersion = '$new_version';
+DART
+
 # Update changelog
 update_changelog "$new_version"
 
@@ -120,4 +128,5 @@ echo "✅ Successfully updated version to $new_version in all files"
 echo "📝 Updated files:"
 echo "  - $PUBSPEC_FILE"
 echo "  - $PODSPEC_FILE"
+echo "  - $VERSION_DART_FILE"
 echo "  - $CHANGELOG_FILE"
