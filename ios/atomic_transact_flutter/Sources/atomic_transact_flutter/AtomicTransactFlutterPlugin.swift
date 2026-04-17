@@ -3,8 +3,9 @@ import UIKit
 import AtomicTransact
 
 public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
-    
+
     let channel: FlutterMethodChannel;
+    var pausedTransactRef: Atomic.PausedTransactRef?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "atomic_transact_flutter", binaryMessenger: registrar.messenger())
@@ -95,6 +96,29 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             Atomic.dismissTransact()
         case "hideTransact":
             Atomic.hideTransact()
+        case "pauseTransact":
+            Task { @MainActor in
+                do {
+                    let ref = try await Atomic.pauseTransact()
+                    self.pausedTransactRef = ref
+                    result(nil)
+                } catch {
+                    result(FlutterError(code: "PauseTransactError", message: "No Transact is currently presented", details: nil))
+                }
+            }
+            return
+        case "resumeTransact":
+            Task { @MainActor in
+                if let ref = self.pausedTransactRef,
+                   let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
+                    ref.resume(source: controller)
+                    self.pausedTransactRef = nil
+                    result(nil)
+                } else {
+                    result(FlutterError(code: "ResumeTransactError", message: "No paused Transact to resume", details: nil))
+                }
+            }
+            return
 
         default:
             result(FlutterMethodNotImplemented)

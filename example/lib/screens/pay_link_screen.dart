@@ -10,7 +10,7 @@ import 'company_login_screen.dart';
 import '../widgets/public_token_banner.dart';
 import '../widgets/select_grid.dart';
 
-class PayLinkScreen extends StatelessWidget {
+class PayLinkScreen extends StatefulWidget {
   final AppState state;
   final EventLog eventLog;
   final VoidCallback onNavigateToSettings;
@@ -22,8 +22,30 @@ class PayLinkScreen extends StatelessWidget {
     required this.onNavigateToSettings,
   });
 
+  @override
+  State<PayLinkScreen> createState() => _PayLinkScreenState();
+}
+
+class _PayLinkScreenState extends State<PayLinkScreen> {
+  AppState get state => widget.state;
+  EventLog get eventLog => widget.eventLog;
+
+  bool _transactActive = false;
+  PausedTransactRef? _pausedRef;
+
   void _onInitialize() {
     final config = state.buildPayLinkConfig();
+    final shouldPause = state.pauseAfterInit;
+    final delaySeconds = state.pauseDelaySeconds;
+
+    setState(() {
+      _transactActive = true;
+      _pausedRef = null;
+    });
+
+    if (shouldPause) {
+      _schedulePause(delaySeconds);
+    }
 
     Atomic.transact(
       config: config,
@@ -75,6 +97,10 @@ class PayLinkScreen extends StatelessWidget {
         ));
       },
       onCompletion: (type, response, error) {
+        setState(() {
+          _transactActive = false;
+          _pausedRef = null;
+        });
         if (type == AtomicTransactCompletionType.error) {
           eventLog.add(EventEntry(
             type: EventType.error,
@@ -97,6 +123,27 @@ class PayLinkScreen extends StatelessWidget {
         }
       },
     );
+  }
+
+  void _schedulePause(int delaySeconds) {
+    Future.delayed(Duration(seconds: delaySeconds), () async {
+      if (!mounted || !_transactActive || _pausedRef != null) return;
+      try {
+        final ref = await Atomic.pauseTransact();
+        if (mounted) setState(() => _pausedRef = ref);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to pause: $e')),
+          );
+        }
+      }
+    });
+  }
+
+  Future<void> _onResume() async {
+    await _pausedRef?.resume();
+    setState(() => _pausedRef = null);
   }
 
   void _showConfigPreview(BuildContext context) {
@@ -152,6 +199,21 @@ class PayLinkScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildBottomButtons() {
+    if (_pausedRef != null) {
+      return FullWidthButton(
+        text: 'Resume',
+        onPressed: _onResume,
+      );
+    }
+    final label = state.pauseAfterInit ? 'Initialize and Pause' : 'Initialize';
+    return FullWidthButton(
+      text: label,
+      enabled: state.publicToken.isNotEmpty && !_transactActive,
+      onPressed: _onInitialize,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -172,7 +234,7 @@ class PayLinkScreen extends StatelessWidget {
               children: [
                 PublicTokenBanner(
                   publicToken: state.publicToken,
-                  onNavigateToSettings: onNavigateToSettings,
+                  onNavigateToSettings: widget.onNavigateToSettings,
                 ),
                 SingleSelectGrid<PayLinkTask>(
                   title: 'Task',
@@ -222,11 +284,7 @@ class PayLinkScreen extends StatelessWidget {
             ),
           ),
         ),
-        FullWidthButton(
-          text: 'Initialize',
-          enabled: state.publicToken.isNotEmpty,
-          onPressed: _onInitialize,
-        ),
+        _buildBottomButtons(),
         const SizedBox(height: 16),
       ],
     );

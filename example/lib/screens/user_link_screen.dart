@@ -10,7 +10,7 @@ import '../widgets/public_token_banner.dart';
 import '../widgets/select_grid.dart';
 import 'company_login_screen.dart';
 
-class UserLinkScreen extends StatelessWidget {
+class UserLinkScreen extends StatefulWidget {
   final AppState state;
   final EventLog eventLog;
   final VoidCallback onNavigateToSettings;
@@ -22,8 +22,30 @@ class UserLinkScreen extends StatelessWidget {
     required this.onNavigateToSettings,
   });
 
+  @override
+  State<UserLinkScreen> createState() => _UserLinkScreenState();
+}
+
+class _UserLinkScreenState extends State<UserLinkScreen> {
+  AppState get state => widget.state;
+  EventLog get eventLog => widget.eventLog;
+
+  bool _transactActive = false;
+  PausedTransactRef? _pausedRef;
+
   void _onInitialize() {
     final config = state.buildUserLinkConfig();
+    final shouldPause = state.pauseAfterInit;
+    final delaySeconds = state.pauseDelaySeconds;
+
+    setState(() {
+      _transactActive = true;
+      _pausedRef = null;
+    });
+
+    if (shouldPause) {
+      _schedulePause(delaySeconds);
+    }
 
     Atomic.transact(
       config: config,
@@ -66,6 +88,10 @@ class UserLinkScreen extends StatelessWidget {
         ));
       },
       onCompletion: (type, response, error) {
+        setState(() {
+          _transactActive = false;
+          _pausedRef = null;
+        });
         if (type == AtomicTransactCompletionType.error) {
           eventLog.add(EventEntry(
             type: EventType.error,
@@ -87,6 +113,27 @@ class UserLinkScreen extends StatelessWidget {
         }
       },
     );
+  }
+
+  void _schedulePause(int delaySeconds) {
+    Future.delayed(Duration(seconds: delaySeconds), () async {
+      if (!mounted || !_transactActive || _pausedRef != null) return;
+      try {
+        final ref = await Atomic.pauseTransact();
+        if (mounted) setState(() => _pausedRef = ref);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to pause: $e')),
+          );
+        }
+      }
+    });
+  }
+
+  Future<void> _onResume() async {
+    await _pausedRef?.resume();
+    setState(() => _pausedRef = null);
   }
 
   void _showConfigPreview(BuildContext context) {
@@ -142,6 +189,21 @@ class UserLinkScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildBottomButtons() {
+    if (_pausedRef != null) {
+      return FullWidthButton(
+        text: 'Resume',
+        onPressed: _onResume,
+      );
+    }
+    final label = state.pauseAfterInit ? 'Initialize and Pause' : 'Initialize';
+    return FullWidthButton(
+      text: label,
+      enabled: state.publicToken.isNotEmpty && !_transactActive,
+      onPressed: _onInitialize,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -162,7 +224,7 @@ class UserLinkScreen extends StatelessWidget {
               children: [
                 PublicTokenBanner(
                   publicToken: state.publicToken,
-                  onNavigateToSettings: onNavigateToSettings,
+                  onNavigateToSettings: widget.onNavigateToSettings,
                 ),
                 SingleSelectGrid<UserLinkTask>(
                   title: 'Task',
@@ -204,11 +266,7 @@ class UserLinkScreen extends StatelessWidget {
             ),
           ),
         ),
-        FullWidthButton(
-          text: 'Initialize',
-          enabled: state.publicToken.isNotEmpty,
-          onPressed: _onInitialize,
-        ),
+        _buildBottomButtons(),
         const SizedBox(height: 16),
       ],
     );

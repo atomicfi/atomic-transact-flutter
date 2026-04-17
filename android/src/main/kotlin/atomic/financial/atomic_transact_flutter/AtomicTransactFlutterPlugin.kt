@@ -12,6 +12,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.json.JSONArray
 
@@ -24,6 +27,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
   private lateinit var activity : Activity
+  private var pausedTransactRef: PausedTransactRef? = null
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "atomic_transact_flutter")
@@ -138,6 +142,24 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       Transact.close(activity)
     } else if (call.method == "hideTransact") {
       Transact.hideTransact(activity)
+    } else if (call.method == "pauseTransact") {
+      CoroutineScope(Dispatchers.Main).launch {
+        try {
+          pausedTransactRef = Transact.pauseTransact()
+          result.success(null)
+        } catch (e: Transact.PauseTransactException) {
+          result.error("PauseTransactError", e.message, null)
+        }
+      }
+    } else if (call.method == "resumeTransact") {
+      val ref = pausedTransactRef
+      if (ref != null) {
+        ref.resume(activity)
+        pausedTransactRef = null
+        result.success(null)
+      } else {
+        result.error("ResumeTransactError", "No paused Transact to resume", null)
+      }
     } else {
       result.notImplemented()
     }

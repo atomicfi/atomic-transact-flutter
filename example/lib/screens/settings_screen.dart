@@ -63,6 +63,21 @@ class SettingsScreen extends StatelessWidget {
                   value: state.debug,
                   onChanged: (v) => state.debug = v,
                 ),
+                const SizedBox(height: 16),
+                const Divider(indent: 16, endIndent: 16),
+                const SizedBox(height: 8),
+                const SectionHeader('Pause'),
+                ToggleRow(
+                  title: 'Pause After Initialize',
+                  subtitle: 'Automatically pause Transact after a delay',
+                  value: state.pauseAfterInit,
+                  onChanged: (v) => state.pauseAfterInit = v,
+                ),
+                if (state.pauseAfterInit)
+                  _PauseDelayPicker(
+                    seconds: state.pauseDelaySeconds,
+                    onChanged: (v) => state.pauseDelaySeconds = v,
+                  ),
                 const SizedBox(height: 32),
               ],
             ),
@@ -103,6 +118,51 @@ class _UrlModeSelector extends StatelessWidget {
             );
           }).toList(),
         ),
+      ),
+    );
+  }
+}
+
+class _PauseDelayPicker extends StatelessWidget {
+  final int seconds;
+  final ValueChanged<int> onChanged;
+
+  const _PauseDelayPicker({required this.seconds, required this.onChanged});
+
+  static const _options = [1, 2, 3, 5, 10, 15, 30];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Delay (seconds)',
+            style: TextStyle(fontSize: 14, color: atomicOnSurfaceVariant),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: _options.map((s) {
+              final selected = s == seconds;
+              return ChoiceChip(
+                label: Text('${s}s'),
+                selected: selected,
+                onSelected: (_) => onChanged(s),
+                selectedColor: atomicPurple,
+                backgroundColor: atomicSurface,
+                side: BorderSide(
+                  color: selected ? atomicPurple : atomicOutline,
+                ),
+                labelStyle: TextStyle(
+                  color: selected ? Colors.white : atomicOnBackground,
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }

@@ -110,6 +110,15 @@ typedef AtomicTaskStatusUpdateHandler = void Function(
   AtomicTransactTaskStatusUpdate taskStatus,
 );
 
+/// Error thrown when pauseTransact fails
+class PauseTransactException implements Exception {
+  final String message;
+  PauseTransactException(this.message);
+
+  @override
+  String toString() => 'PauseTransactException: $message';
+}
+
 /// iOS modal presentation styles
 enum AtomicPresentationStyleIOS {
   /// Full screen presentation style

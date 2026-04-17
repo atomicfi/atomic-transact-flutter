@@ -69,6 +69,14 @@ class AppState extends ChangeNotifier {
   bool get debug => _debug;
   set debug(bool v) { _debug = v; notifyListeners(); }
 
+  bool _pauseAfterInit = false;
+  bool get pauseAfterInit => _pauseAfterInit;
+  set pauseAfterInit(bool v) { _pauseAfterInit = v; notifyListeners(); }
+
+  int _pauseDelaySeconds = 3;
+  int get pauseDelaySeconds => _pauseDelaySeconds;
+  set pauseDelaySeconds(int v) { _pauseDelaySeconds = v; notifyListeners(); }
+
   // Pay Link
   PayLinkTask _payLinkTask = PayLinkTask.switchPayment;
   PayLinkTask get payLinkTask => _payLinkTask;
