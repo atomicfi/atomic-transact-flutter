@@ -197,7 +197,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         result.add(Config.Task(
               product = (it["product"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
               operation = (it["operation"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
-                distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any> )))
+              distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any>),
+              apps = it["apps"] as? List<String>))
       }
 
     return result
@@ -266,22 +267,38 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   private fun configDeeplinkFromMap(value: Map<String, Any?>?): Config.Deeplink? {
     if (value != null) {
-      val step = value["step"] as String
+      val step = value["step"] as? String
+      val app = value["app"] as? String
       val companyId = value["companyId"] as? String
       val companyName = value["companyName"] as? String
       val connectorId = value["connectorId"] as? String
       val singleSwitch = value["singleSwitch"] as? Boolean ?: false
       val payments = value["payments"] as? List<String>
+      val accountId = value["accountId"] as? String
 
-      val stepFormatted = step.replace('-', '_').uppercase()
+      val stepEnum = if (step != null) {
+        val stepFormatted = step.replace('-', '_').uppercase()
+        Config.Deeplink.Step.valueOf(stepFormatted)
+      } else {
+        Config.Deeplink.Step.EMPTY
+      }
+
+      val appEnum = if (app != null) {
+        val appFormatted = app.replace('-', '_').uppercase()
+        Config.Deeplink.App.valueOf(appFormatted)
+      } else {
+        Config.Deeplink.App.EMPTY
+      }
 
       return Config.Deeplink(
-              step = Config.Deeplink.Step.valueOf(stepFormatted),
+              step = stepEnum,
+              app = appEnum,
               companyId = companyId,
               companyName = companyName,
               connectorId = connectorId,
               singleSwitch = singleSwitch,
-              payments = payments
+              payments = payments,
+              accountId = accountId
       )
     }
 
