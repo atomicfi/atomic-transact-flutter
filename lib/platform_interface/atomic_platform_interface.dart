@@ -64,4 +64,12 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
   Future<void> hideTransact() async {
     throw UnimplementedError('hideTransact() has not been implemented.');
   }
+
+  Future<void> pauseTransact() async {
+    throw UnimplementedError('pauseTransact() has not been implemented.');
+  }
+
+  Future<void> resumeTransact() async {
+    throw UnimplementedError('resumeTransact() has not been implemented.');
+  }
 }

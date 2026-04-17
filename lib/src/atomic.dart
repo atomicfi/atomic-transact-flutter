@@ -97,4 +97,24 @@ class Atomic {
     _isLoading = false;
     await _platform.hideTransact();
   }
+
+  /// Hides any currently open Transact views and returns a reference to present them again later.
+  /// Call [PausedTransactRef.resume] to present the Transact view again.
+  /// Throws [PauseTransactException] if no Transact is currently presented.
+  static Future<PausedTransactRef> pauseTransact() async {
+    await _platform.pauseTransact();
+    return PausedTransactRef._(_platform);
+  }
+}
+
+/// A reference to a paused Transact session. Call [resume] to present the Transact view again.
+class PausedTransactRef {
+  final AtomicPlatformInterface _platform;
+
+  PausedTransactRef._(this._platform);
+
+  /// Presents the paused Transact view again.
+  Future<void> resume() async {
+    await _platform.resumeTransact();
+  }
 }

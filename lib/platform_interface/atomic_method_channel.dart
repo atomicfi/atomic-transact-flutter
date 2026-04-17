@@ -69,6 +69,16 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     await _channel.invokeMethod('hideTransact');
   }
 
+  @override
+  Future<void> pauseTransact() async {
+    await _channel.invokeMethod('pauseTransact');
+  }
+
+  @override
+  Future<void> resumeTransact() async {
+    await _channel.invokeMethod('resumeTransact');
+  }
+
   /// Handles receiving messages on the [MethodChannel]
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
