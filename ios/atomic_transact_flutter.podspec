@@ -26,7 +26,7 @@ A new flutter plugin project.
   s.vendored_frameworks = [
     "frameworks/AtomicTransact.xcframework",
     "frameworks/MuppetIOS.xcframework",
-    "frameworks/QuantumIOS.xcframework"
+    "frameworks/Uplink.xcframework"
   ]
 
 end

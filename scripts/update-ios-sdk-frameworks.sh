@@ -34,7 +34,7 @@ BASE_URL="https://github.com/${REPO}/releases/download/${VERSION}"
 FRAMEWORKS=(
   "AtomicTransact.xcframework.tar.gz"
   "MuppetIOS.xcframework.tar.gz"
-  "QuantumIOS.xcframework.tar.gz"
+  "Uplink.xcframework.tar.gz"
 )
 
 echo "Updating iOS SDK to version ${VERSION} (from Package.swift)..."
