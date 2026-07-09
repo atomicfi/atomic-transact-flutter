@@ -92,40 +92,6 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         override fun onDataRequest(data: JSONObject) {
           channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
         }
-        override fun onAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate) {
-          channel.invokeMethod("onAuthStatusUpdate", mapOf("auth" to mapFromTransactAuthStatusUpdate(authData)))
-        }
-        override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
-          channel.invokeMethod("onTaskStatusUpdate", mapOf("task" to mapFromTransactTaskStatusUpdate(taskData)))
-        }
-      })
-
-      Transact.present(activity, config)
-    }
-    else if (call.method == "presentAction") {
-      val id = call.argument<String>("id") ?: return
-      val transactPath = call.argument<String>("transactPath") as String? ?: ""
-      val apiPath = call.argument<String>("apiPath") as String? ?: ""
-      val actionPluginVersion = call.argument<String>("pluginVersion") ?: ""
-      val actionSuffix = if (actionPluginVersion.isNotEmpty()) "flutter-$actionPluginVersion" else "flutter"
-      val debug = call.argument<Boolean>("debug") ?: false
-      var theme = call.argument<Map<String, Any>>("theme")
-      val config = ActionConfig(
-        id = id,
-        environment = Config.Environment.CUSTOM,
-        environmentURL = transactPath,
-        theme = configThemeFromMap(theme),
-        webContentsDebuggingEnabled = debug
-      )
-      config.platform = Config.Platform.suffixed(actionSuffix)
-
-      Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
-        override fun onClose(data: JSONObject) {
-          channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
-        }
-        override fun onFinish(data: JSONObject) {
-          channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
-        }
         override fun onLaunch() {
           channel.invokeMethod("onLaunch", null)
         }
@@ -137,8 +103,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         }
       })
 
-      Transact.presentAction(activity, config)
-    } else if (call.method == "dismissTransact") {
+      Transact.present(activity, config)
+    }
+    else if (call.method == "dismissTransact") {
       Transact.close(activity)
     } else if (call.method == "hideTransact") {
       Transact.hideTransact(activity)
