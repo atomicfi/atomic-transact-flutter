@@ -74,7 +74,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           search = configSearchFromMap(search),
           environment = Config.Environment.CUSTOM,
           environmentURL = transactPath,
-          webContentsDebuggingEnabled = debug
+          debug = debug
         )
 
       config.platform = Config.Platform.suffixed(suffix)
@@ -100,6 +100,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
         }
         override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
           channel.invokeMethod("onTaskStatusUpdate", mapOf("task" to mapFromTransactTaskStatusUpdate(taskData)))
+        }
+        override fun onDebugLog(level: String, tag: String, message: String, data: JSONObject) {
+          channel.invokeMethod("onDebugLog", mapOf("message" to "[$level] $tag: $message"))
         }
       })
 
