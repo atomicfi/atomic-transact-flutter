@@ -48,7 +48,7 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                         })
 
                         if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                            Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
+                            Atomic.presentTransact(from: controller, config: config, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, onInteraction: onInteraction, onDataRequest: onDataRequest, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onLaunch: onLaunch, onCompletion: onCompletion)
                             result(nil)
                         } else {
                             result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
@@ -59,39 +59,6 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
                 }
             }
             break;
-        case "presentAction":
-            let arguments = call.arguments as! [String: Any]
-            let id = arguments["id"] as! String
-            let transactPath = arguments["transactPath"] as! String
-            let apiPath = arguments["apiPath"] as! String
-            let debugEnabled = arguments["debug"] as? Bool ?? false
-            let decoder = JSONDecoder()
-            let theme: AtomicConfig.Theme = {
-                if let themeData = arguments["theme"] as? [String: Any],
-                   let themeJsonData = try? JSONSerialization.data(withJSONObject: themeData, options: []),
-                   let decodedTheme = try? decoder.decode(AtomicConfig.Theme.self, from: themeJsonData) {
-                    return decodedTheme
-                }
-                return AtomicConfig.Theme(dark: .system)
-            }()
-
-            let presentationStyle = getPresentationStyle(from: arguments["presentationStyleIOS"] as? String)
-
-            Task { @MainActor in
-                await Atomic.setDebug(isEnabled: debugEnabled, forwardLogs: { logMessage in
-                    DispatchQueue.main.async {
-                        self.channel.invokeMethod("onDebugLog", arguments: ["message": logMessage])
-                    }
-                })
-
-                if let controller = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-                    Atomic.presentAction(from: controller, id: id, environment: .custom(transactPath: transactPath, apiPath: apiPath), presentationStyle: presentationStyle, theme: theme, onLaunch: onLaunch, onAuthStatusUpdate: onAuthStatusUpdate, onTaskStatusUpdate: onTaskStatusUpdate, onCompletion: onCompletion)
-                    result(nil)
-                } else {
-                    result(FlutterError(code: "PlatformError", message: "No keyWindow found", details: nil))
-                }
-            }
-            break;        
         case "dismissTransact":
             Atomic.dismissTransact()
         case "hideTransact":
@@ -138,7 +105,7 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
     func onLaunch() {
         self.channel.invokeMethod("onLaunch", arguments: nil)
     }
-    
+
     func onCompletion(_ response: TransactResponse) {
         var arguments: Any?
         

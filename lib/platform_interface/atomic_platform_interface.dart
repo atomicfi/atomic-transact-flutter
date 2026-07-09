@@ -27,7 +27,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
   /// Response with more information when Transact completes and dismisses.
   AtomicCompletionHandler? onCompletion;
 
-  /// Closure that will be called when a Transact Action launch event occurs
+  /// Closure that will be called when a Transact launch event occurs
   AtomicLaunchHandler? onLaunch;
 
   /// Closure that will be called when a Transact auth status update event occurs
@@ -45,16 +45,6 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     bool debug = false,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
-  }
-
-  Future<void> presentAction({
-    required String id,
-    required TransactEnvironment environment,
-    AtomicTheme? theme,
-    AtomicPresentationStyleIOS? presentationStyleIOS,
-    bool debug = false,
-  }) async {
-    throw UnimplementedError('presentAction() has not been implemented.');
   }
 
   Future<void> dismissTransact() async {

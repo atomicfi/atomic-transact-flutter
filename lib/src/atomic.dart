@@ -13,6 +13,7 @@ class Atomic {
   ///   - [config] Configuration of the Transact SDK.
   ///   - [onInteraction] Closure that will be called when a Transact Interaction event occurs.
   ///   - [onDataRequest] Closure that will be called when a Transact data request event occurs.
+  ///   - [onLaunch] Closure that will be called when a Transact launch event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
   ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).
   static Future<void> transact({
@@ -22,6 +23,7 @@ class Atomic {
     AtomicDataRequestHandler? onDataRequest,
     AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
+    AtomicLaunchHandler? onLaunch,
     AtomicCompletionHandler? onCompletion,
     AtomicPresentationStyleIOS? presentationStyleIOS,
     bool debug = false,
@@ -35,6 +37,7 @@ class Atomic {
     _platform.onDataRequest = onDataRequest;
     _platform.onAuthStatusUpdate = onAuthStatusUpdate;
     _platform.onTaskStatusUpdate = onTaskStatusUpdate;
+    _platform.onLaunch = onLaunch;
     _platform.onCompletion = (
       AtomicTransactCompletionType type,
       AtomicTransactResponse? response,
@@ -52,40 +55,6 @@ class Atomic {
       presentationStyleIOS: presentationStyleIOS,
       debug: debug,
     );
-  }
-
-  static Future<void> presentAction({
-    required String id,
-    TransactEnvironment environment = TransactEnvironment.production,
-    AtomicLaunchHandler? onLaunch,
-    AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
-    AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
-    AtomicCompletionHandler? onCompletion,
-    AtomicTheme? theme,
-    AtomicPresentationStyleIOS? presentationStyleIOS,
-    bool debug = false,
-  }) async {
-    if (_isLoading) {
-      return;
-    }
-    _isLoading = true;
-
-    _platform.onLaunch = () {
-      _isLoading = false;
-      if (onLaunch != null) {
-        return onLaunch();
-      }
-    };
-    _platform.onAuthStatusUpdate = onAuthStatusUpdate;
-    _platform.onTaskStatusUpdate = onTaskStatusUpdate;
-    _platform.onCompletion = onCompletion;
-
-    await _platform.presentAction(
-        id: id,
-        environment: environment,
-        theme: theme,
-        presentationStyleIOS: presentationStyleIOS,
-        debug: debug);
   }
 
   static Future<void> close() async {

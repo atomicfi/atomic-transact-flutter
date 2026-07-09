@@ -38,27 +38,6 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     );
   }
 
-  /// Present the Atomic Action SDK
-  ///   - [id] The id of the action to present
-  @override
-  Future<void> presentAction({
-    required String id,
-    required TransactEnvironment environment,
-    AtomicTheme? theme,
-    AtomicPresentationStyleIOS? presentationStyleIOS,
-    bool debug = false,
-  }) async {
-    await _channel.invokeMethod('presentAction', {
-      'id': id,
-      'transactPath': environment.transactPath,
-      'apiPath': environment.apiPath,
-      'theme': theme?.toJson(),
-      'presentationStyleIOS': presentationStyleIOS?.name,
-      'pluginVersion': packageVersion,
-      'debug': debug,
-    });
-  }
-
   @override
   Future<void> dismissTransact() async {
     await _channel.invokeMethod('dismissTransact');
