@@ -1,9 +1,11 @@
 name: Document Releases
 
 on:
-  release:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["publish to pub.dev"]
     types:
-      - created
+      - completed
 
 jobs:
   notify:
