@@ -45,3 +45,34 @@ jobs:
 
       - name: Publish Package
         run: dart pub publish -f
+
+  sync_linear_release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+
+      - id: release
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: echo "version=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: linear/linear-release-action@c0cb8354a362c24c6d3e0948f37fd66d07588e3f
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY_FLUTTER }}
+          command: sync
+          name: Flutter ${{ steps.release.outputs.version }}
+          version: ${{ steps.release.outputs.version }}
+          links: |
+            Source release=${{ github.event.release.html_url }}
+
+      - uses: linear/linear-release-action@c0cb8354a362c24c6d3e0948f37fd66d07588e3f
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY_FLUTTER }}
+          command: complete
+          version: ${{ steps.release.outputs.version }}
