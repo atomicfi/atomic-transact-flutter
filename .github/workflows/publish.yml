@@ -11,7 +11,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       - name: Set version
         run: |
@@ -52,7 +52,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.release.tag_name }}
           fetch-depth: 0
@@ -62,7 +62,7 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: echo "version=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
 
-      - uses: linear/linear-release-action@c0cb8354a362c24c6d3e0948f37fd66d07588e3f
+      - uses: linear/linear-release-action@af56a9a388625921f3757a2f988e4d7aca958377
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY_FLUTTER }}
           command: sync
@@ -71,7 +71,7 @@ jobs:
           links: |
             Source release=${{ github.event.release.html_url }}
 
-      - uses: linear/linear-release-action@c0cb8354a362c24c6d3e0948f37fd66d07588e3f
+      - uses: linear/linear-release-action@af56a9a388625921f3757a2f988e4d7aca958377
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY_FLUTTER }}
           command: complete
