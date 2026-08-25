@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: linear/linear-release-action@af56a9a388625921f3757a2f988e4d7aca958377
+      - uses: linear/linear-release-action@0a25abab892a91062ebf42260dbb2ce6277aa205
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY_FLUTTER }}
           command: sync
