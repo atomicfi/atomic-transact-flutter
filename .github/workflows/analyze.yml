@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, ready_for_review, synchronize]
+    types: [opened, synchronize]
 
 jobs:
   analyze:
