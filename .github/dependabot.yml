@@ -1,9 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: 'swift'
-    directories:
-      - '/ios/atomic_transact_flutter'
-      - '/example/ios'
+    directory: '/example/ios'
     schedule:
       interval: 'daily'
     commit-message:
