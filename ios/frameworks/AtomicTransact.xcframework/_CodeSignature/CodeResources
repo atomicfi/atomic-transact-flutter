@@ -4,45 +4,61 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>ios-arm64/AtomicTransact.framework/AtomicTransact</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/AtomicTransact</key>
 		<data>
-		foaDRIoEin5hp3oXYQNtX6tZvDg=
+		6oNQH5B4Buqob/JF0b88OzMWCB8=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Headers/AtomicTransact.h</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Headers/AtomicTransact.h</key>
 		<data>
 		JB1ZyxKiOCMakS1nJSYdP3hldiA=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Info.plist</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Info.plist</key>
 		<data>
-		8P++vqLskVt36AcTaF25MMe4U54=
+		oStZtwhUVsKatOoYEskrHnjn0eA=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.abi.json</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
-		fQ4Y7jEqWxKXpoETeEvo8HE1Mdg=
+		GLIhLDMRqsK7UwIUy8ZqLrmcqBA=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<data>
-		3apXReZLw8lz5GAPOzdcOHemyMg=
+		idyuwBOqKYe+BVXPbpNd6gbhh5Q=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		Y1SerEu3oeCkuh80mzTagJV998U=
+		T4b/aEFU3IBlS/zpTsYjo121P5w=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		3apXReZLw8lz5GAPOzdcOHemyMg=
+		idyuwBOqKYe+BVXPbpNd6gbhh5Q=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/Modules/module.modulemap</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.abi.json</key>
+		<data>
+		GLIhLDMRqsK7UwIUy8ZqLrmcqBA=
+		</data>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.private.swiftinterface</key>
+		<data>
+		FX5yKeRMzV1l5PF01oK6hyEbzqQ=
+		</data>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.swiftdoc</key>
+		<data>
+		iomvGPCacM8/UEmrpSNDhCreMJw=
+		</data>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.swiftinterface</key>
+		<data>
+		FX5yKeRMzV1l5PF01oK6hyEbzqQ=
+		</data>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/module.modulemap</key>
 		<data>
 		Dl8p4o02kvxNrPDE3dx0CYzj6X4=
 		</data>
-		<key>ios-arm64/AtomicTransact.framework/PrivacyInfo.xcprivacy</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/PrivacyInfo.xcprivacy</key>
 		<data>
 		n1Tior/Z23JWo5dZj/4GmktJKDA=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/AtomicTransact</key>
 		<data>
-		QckwkdB5sx0hvlQPxDtsJHyJ8bA=
+		HDQ8qTy1Z4wMNfcITJnrNUa0qUQ=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Headers/AtomicTransact.h</key>
 		<data>
@@ -50,39 +66,39 @@
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Info.plist</key>
 		<data>
-		6T0+MhlY8b9Ch0dUbLusLu8eCZg=
+		m0AgZqJRmcnDaSTSzWnYxZ7gobc=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		fQ4Y7jEqWxKXpoETeEvo8HE1Mdg=
+		9qrwlWfoRnFkErlESOoZkHhwNmc=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		xm8SukI+MpQhJYVSVXwfkFINiLQ=
+		eyWTphKOnDP75O0NdpwsgkrG0FI=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		F95x17VhC7yx3JMhsU7axrgVf8A=
+		7pCdQ6ThlzzRRXyFbaU0fGNTOoI=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		xm8SukI+MpQhJYVSVXwfkFINiLQ=
+		eyWTphKOnDP75O0NdpwsgkrG0FI=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		fQ4Y7jEqWxKXpoETeEvo8HE1Mdg=
+		9qrwlWfoRnFkErlESOoZkHhwNmc=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		q61dis1fWqBNrX6+lg/72kr65gg=
+		QPQBDnJ6+4PxFOn5ku+KaO56v0U=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		qRpe3JxDC0Z1tkzHV0xdqE8c3C8=
+		Jognixvcd+/X7MAKGrASVqIERAg=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		q61dis1fWqBNrX6+lg/72kr65gg=
+		QPQBDnJ6+4PxFOn5ku+KaO56v0U=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/module.modulemap</key>
 		<data>
@@ -94,7 +110,7 @@
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeDirectory</key>
 		<data>
-		1BFJ0DH64Xm4i9sk+ZAF1m/WXj0=
+		NY1hnCjvzYGsmo10kXkthCyx5YE=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeRequirements</key>
 		<data>
@@ -102,7 +118,7 @@
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeResources</key>
 		<data>
-		t6IQMT898kVml+jKFySX0igWCEg=
+		CkQD+pgq1AlvrK4FkKh+7g+9zHc=
 		</data>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeSignature</key>
 		<data>
@@ -111,63 +127,91 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>ios-arm64/AtomicTransact.framework/AtomicTransact</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/AtomicTransact</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+kmmW0WIxlo4zt2y1YNiw5+J9Ly+ag3blgNKzJ9h8OA=
+			zv0g3IMgY6y2JFfUXWgZ7mqJdM2ZTm/oJLqVsE41u7U=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Headers/AtomicTransact.h</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Headers/AtomicTransact.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			6JBpFJy5hCIHEajgeAF8QC3huDp+2FQwITv0U8p4+t8=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Info.plist</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qZtQS25J2GIh9gLIXLTEoc2Kg8b8/RcvdqJYxknIjqk=
+			MIN4Hi7XAzqiLqEXW4ROFq+3BDu72tr/fM4FBJYehzk=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.abi.json</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E4o6JT79yqWinOoNTBnx4//6CbhzfnNkWfCI9n1eh/Q=
+			LzpfCPtYdFd0itj6/eGIbxO1mdppJBmfAatbVjkD7PA=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			yisk1ctsp82pBk+nXcUJOVGVYrgImknya+UwmDAq0wA=
+			klfBhFVMOv4Dl3ONtS/iQ4p4kDN/vERTtPB2g3FNwCg=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			2npyI1tazDScthCiIhVb/ok//oGqrY57MvkaH1nCpoU=
+			SqepSrk80XKBZyyWIq6EWecik+HcFJeBqiG+1+B/unA=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			yisk1ctsp82pBk+nXcUJOVGVYrgImknya+UwmDAq0wA=
+			klfBhFVMOv4Dl3ONtS/iQ4p4kDN/vERTtPB2g3FNwCg=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/Modules/module.modulemap</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.abi.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			LzpfCPtYdFd0itj6/eGIbxO1mdppJBmfAatbVjkD7PA=
+			</data>
+		</dict>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.private.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0NgVHg9toraxoQGoP2qvrT+vIXHotjWt+yCvZrDlfus=
+			</data>
+		</dict>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			puGxaO8POfBPJosmQ2qs+qVyS1RYFVeTlLYNezO/xWI=
+			</data>
+		</dict>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64e-apple-ios.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0NgVHg9toraxoQGoP2qvrT+vIXHotjWt+yCvZrDlfus=
+			</data>
+		</dict>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/Modules/module.modulemap</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			a2MewFI5lVCCxHLB2fZxaZBPhcZdff77obiC0QCoGfI=
 			</data>
 		</dict>
-		<key>ios-arm64/AtomicTransact.framework/PrivacyInfo.xcprivacy</key>
+		<key>ios-arm64_arm64e/AtomicTransact.framework/PrivacyInfo.xcprivacy</key>
 		<dict>
 			<key>hash2</key>
 			<data>
@@ -178,7 +222,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aLRONZyHE4JwnPlYp3IQND39Kk+qfmRnRpdbm2sxCTk=
+			kazxwg1EyxGnwxD9r9QFAC6YHPeaaurCv3ry2dF7Hc0=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Headers/AtomicTransact.h</key>
@@ -192,63 +236,63 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			NHnwWI7yhKM2D3qE2IyXO1QUBhC6qarJkMj6omsK7tc=
+			RRV/0KwbKBOiM9xcO+pHDi9etglWTKUWHcF8H2R5UkA=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E4o6JT79yqWinOoNTBnx4//6CbhzfnNkWfCI9n1eh/Q=
+			OvzLAmaNoA3/QS4lm3SXHV2CoGIcbWppmiJwjMxGgV0=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5yDzO+UnSYAgBUpx95MpX9OKS3cJXHUok1eDkk8XtUs=
+			qSxTfC+Mn22H5gU0+TwQtgxfqAxpy8cyYh98X7gaV2g=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZQBk+p293iFaYWm3kvUmyNr9S23QvH5OAfABsuzZIcM=
+			iJuz0x5a5AOJWpJXz/bqUSpzZr3BMfzjKBQLQ5fQT4w=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			5yDzO+UnSYAgBUpx95MpX9OKS3cJXHUok1eDkk8XtUs=
+			qSxTfC+Mn22H5gU0+TwQtgxfqAxpy8cyYh98X7gaV2g=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E4o6JT79yqWinOoNTBnx4//6CbhzfnNkWfCI9n1eh/Q=
+			OvzLAmaNoA3/QS4lm3SXHV2CoGIcbWppmiJwjMxGgV0=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			s33LbR3mFVr+ET72ZR6tciMNgG0PyeDcf7oG6V6HhYM=
+			a/3B1CuXOcQM2gclJjRash73jBsZLybc/Og9JAqOLxQ=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			wKQdsFyNCtCIPDRZJW4e7VAXXRjfSYvSHNAwwwfKBSI=
+			fmLsPScMgT2haJSNdx2XkZQ+wM8lSMZy/F0HPM/uMGc=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/AtomicTransact.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			s33LbR3mFVr+ET72ZR6tciMNgG0PyeDcf7oG6V6HhYM=
+			a/3B1CuXOcQM2gclJjRash73jBsZLybc/Og9JAqOLxQ=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/Modules/module.modulemap</key>
@@ -269,7 +313,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7pTh3HerKA2jjYesiiEn9nST2GqVbU1a7NBXst/HSl8=
+			R6FIWlvR4uG9ITjVRXUb8k6BUys2sVKgdCQMfjfQX1s=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeRequirements</key>
@@ -283,7 +327,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			UyVnLii6C2/A6GrlFD50Ao6OzgIDa9SI0LRW3RX+Les=
+			hONmY6DxgGI674WYThC+Cq2oFEBxinM6PSjGOxzjFdw=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-simulator/AtomicTransact.framework/_CodeSignature/CodeSignature</key>
