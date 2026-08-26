@@ -24,7 +24,8 @@ enum PayLinkApp {
 enum StartingScreen {
   welcome('Welcome'),
   search('Search'),
-  companyLogin('Company Login');
+  companyLogin('Company Login'),
+  account('Account');
 
   final String label;
   const StartingScreen(this.label);
@@ -107,6 +108,10 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _payLinkAccountId = '';
+  String get payLinkAccountId => _payLinkAccountId;
+  set payLinkAccountId(String v) { _payLinkAccountId = v; notifyListeners(); }
+
   // User Link
   UserLinkTask _userLinkTask = UserLinkTask.deposit;
   UserLinkTask get userLinkTask => _userLinkTask;
@@ -179,6 +184,10 @@ class AppState extends ChangeNotifier {
         if (_payLinkCompanyId.isNotEmpty) {
           step = DeeplinkStep.loginCompany(companyId: _payLinkCompanyId);
         }
+      case StartingScreen.account:
+        if (_payLinkAccountId.isNotEmpty) {
+          step = DeeplinkStep.account(accountId: _payLinkAccountId);
+        }
     }
 
     return AtomicConfig(
@@ -212,6 +221,8 @@ class AppState extends ChangeNotifier {
         if (_userLinkCompanyId.isNotEmpty) {
           step = DeeplinkStep.loginCompany(companyId: _userLinkCompanyId);
         }
+      case StartingScreen.account:
+        break;
     }
 
     return AtomicConfig(

@@ -236,7 +236,9 @@ class _UserLinkScreenState extends State<UserLinkScreen> {
                 const Divider(indent: 16, endIndent: 16, height: 24),
                 SingleSelectGrid<StartingScreen>(
                   title: 'Starting Screen',
-                  options: StartingScreen.values,
+                  options: StartingScreen.values
+                      .where((s) => s != StartingScreen.account)
+                      .toList(),
                   selected: state.userLinkStartingScreen,
                   labelOf: (s) => s.label,
                   onSelect: (s) => state.userLinkStartingScreen = s,

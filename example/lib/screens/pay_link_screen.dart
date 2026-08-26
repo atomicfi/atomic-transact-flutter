@@ -5,6 +5,7 @@ import '../data/company_data.dart';
 import '../models/app_state.dart';
 import '../models/event_log.dart';
 import '../theme/atomic_theme.dart';
+import '../widgets/clearable_text_field.dart';
 import '../widgets/full_width_button.dart';
 import 'company_login_screen.dart';
 import '../widgets/public_token_banner.dart';
@@ -278,6 +279,13 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
                             : 'Select Company',
                       ),
                     ),
+                  ),
+                if (state.payLinkStartingScreen == StartingScreen.account)
+                  ClearableTextField(
+                    label: 'Account ID',
+                    value: state.payLinkAccountId,
+                    onChanged: (v) => state.payLinkAccountId = v,
+                    hint: 'Enter the account ID to deeplink to',
                   ),
                 const SizedBox(height: 16),
               ],
