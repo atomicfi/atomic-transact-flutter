@@ -44,6 +44,9 @@ enum AtomicDeeplinkStep {
 
   /// Add card step.
   add_card,
+
+  /// This value requires accountId parameter.
+  account,
 }
 
 enum AtomicTransactCompletionType {

@@ -78,6 +78,14 @@ abstract class DeeplinkStep {
   /// Deeplink to the add card step
   static const DeeplinkStep addCard = _AddCardStep();
 
+  /// Deeplink to the account step
+  static DeeplinkStepAccount account({
+    required String accountId,
+  }) =>
+      DeeplinkStepAccount(
+        accountId: accountId,
+      );
+
   /// Deeplink to the company login step
   static DeeplinkStepLoginCompany loginCompany({
     required String companyId,
@@ -117,6 +125,18 @@ class _AddCardStep extends DeeplinkStep {
   const _AddCardStep();
   @override
   AtomicDeeplinkStep get step => AtomicDeeplinkStep.add_card;
+}
+
+/// Deeplink to the account step with associated data
+class DeeplinkStepAccount extends DeeplinkStep {
+  final String accountId;
+
+  const DeeplinkStepAccount({
+    required this.accountId,
+  });
+
+  @override
+  AtomicDeeplinkStep get step => AtomicDeeplinkStep.account;
 }
 
 /// Deeplink to the company login step with associated data
@@ -290,6 +310,8 @@ class AtomicDeeplink {
     } else if (step is DeeplinkStepLoginPayroll) {
       connectorId = step.connectorId;
       companyName = step.companyName;
+    } else if (step is DeeplinkStepAccount) {
+      accountId = step.accountId;
     }
 
     if (app is DeeplinkAppPayNow) {
