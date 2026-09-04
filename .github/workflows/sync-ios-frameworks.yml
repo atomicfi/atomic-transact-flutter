@@ -7,19 +7,32 @@ on:
       - "example/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
       - "example/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 
+# The push is authenticated via a GitHub App token (see below), so the default
+# GITHUB_TOKEN stays read-only.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync-frameworks:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Create dependency automation token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.DEPENDENCY_AUTOMATION_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEPENDENCY_AUTOMATION_APP_PRIVATE_KEY }}
+          owner: atomicfi
+          repositories: atomic-transact-flutter
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Checkout PR branch
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Download iOS SDK frameworks
         run: ./scripts/update-ios-sdk-frameworks.sh
@@ -35,9 +48,14 @@ jobs:
 
       - name: Commit updated frameworks
         if: steps.changes.outputs.has_changes == 'true'
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
+          BOT_ID="$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq '.id')"
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${BOT_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
           git add ios/frameworks/ ios/atomic_transact_flutter/Package.swift
           git commit -m "chore: sync vendored iOS frameworks and Package.swift"
           git push
