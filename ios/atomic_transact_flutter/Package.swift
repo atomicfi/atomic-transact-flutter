@@ -9,7 +9,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
-        .package(url: "https://github.com/atomicfi/atomic-transact-ios.git", from: "3.35.1")
+        .package(url: "https://github.com/atomicfi/atomic-transact-ios.git", from: "3.35.2")
     ],
     targets: [
         .target(
