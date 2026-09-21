@@ -90,7 +90,25 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           channel.invokeMethod("onInteraction", mapOf("interaction" to mapFromTransactInteraction(data)))
         }
         override fun onDataRequest(data: JSONObject) {
-          channel.invokeMethod("onDataRequest", mapOf("request" to mapFromTransactDataRequest(data)))
+          // Request/response: whatever Dart replies with is handed straight back to Transact.
+          // A null reply (no handler, an error, or nothing to send) leaves Transact waiting,
+          // which is the same as having no handler at all.
+          channel.invokeMethod(
+            "onDataRequest",
+            mapOf("request" to mapFromTransactDataRequest(data)),
+            object : Result {
+              override fun success(result: Any?) {
+                val response = transactDataResponseFromResult(result) ?: return
+                Transact.sendData(activity, response)
+              }
+
+              override fun error(code: String, message: String?, details: Any?) {
+                Log.w("AtomicTransact", "onDataRequest handler failed: $code $message")
+              }
+
+              override fun notImplemented() {}
+            }
+          )
         }
         override fun onLaunch() {
           channel.invokeMethod("onLaunch", null)
@@ -342,21 +360,78 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   private fun mapFromTransactDataRequest(data: JSONObject): Map<String, Any?> {
     val result = mutableMapOf<String, Any?>();
 
+    result["taskId"] = data.optString("taskId")
+    result["userId"] = data.optString("userId")
     result["identifier"] = data.optString("identifier")
 
+    val fields = mutableListOf<String>()
     val jArray = data.optJSONArray("fields")
 
     if (jArray != null) {
-      val fields = mutableListOf<String>()
-
       for (i in 0 until jArray.length()) {
-        fields.add(jArray.get(i) as String)
+        fields.add(jArray.optString(i))
       }
-
-      result["fields"] = fields.toList()
     }
 
+    result["fields"] = fields.toList()
+    // Mirrors iOS, where `data` carries the whole request payload so consumers can read
+    // anything Transact sends that isn't modeled above.
+    result["data"] = toMap(data)
+
     return result.toMap()
+  }
+
+  /// Data request response converters
+
+  private fun transactDataResponseFromResult(result: Any?): Config.TransactDataResponse? {
+    val response = result as? Map<*, *> ?: return null
+    val card = transactCardDataFromMap(response["card"] as? Map<*, *>)
+    val identity = transactIdentityFromMap(response["identity"] as? Map<*, *>)
+
+    if (card == null && identity == null) {
+      return null
+    }
+
+    return Config.TransactDataResponse(card = card, identity = identity)
+  }
+
+  private fun transactCardDataFromMap(
+    value: Map<*, *>?
+  ): Config.TransactDataResponse.CardData? {
+    // The SDK requires a card number; anything else is not a usable card response.
+    val number = value?.get("number") as? String ?: return null
+    val cardType = (value["cardType"] as? String)?.let { type ->
+      Config.TransactDataResponse.CardType.values().firstOrNull {
+        it.name.equals(type, ignoreCase = true)
+      }
+    }
+
+    return Config.TransactDataResponse.CardData(
+            number = number,
+            expiry = value["expiry"] as? String,
+            cvv = value["cvv"] as? String,
+            cardType = cardType
+    )
+  }
+
+  private fun transactIdentityFromMap(
+    value: Map<*, *>?
+  ): Config.TransactDataResponse.Identity? {
+    if (value == null) {
+      return null
+    }
+
+    return Config.TransactDataResponse.Identity(
+            firstName = value["firstName"] as? String,
+            lastName = value["lastName"] as? String,
+            postalCode = value["postalCode"] as? String,
+            address = value["address"] as? String,
+            address2 = value["address2"] as? String,
+            city = value["city"] as? String,
+            state = value["state"] as? String,
+            phone = value["phone"] as? String,
+            email = value["email"] as? String
+    )
   }
 
   private fun mapFromTransactResponseData(data: JSONObject): Map<String, Any?> {

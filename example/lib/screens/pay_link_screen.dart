@@ -68,15 +68,25 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
         ));
       },
       onDataRequest: (request) {
+        // Whatever this returns is sent back to Transact. Configure it under
+        // Settings > Data Request Response.
+        final response = state.buildDataRequestResponse();
+
         eventLog.add(EventEntry(
           type: EventType.dataRequest,
           title: 'Data Request',
           body: 'Fields: ${request.fields}',
           rawData: {
+            'taskId': request.taskId,
+            'userId': request.userId,
+            'identifier': request.identifier,
             'fields': request.fields,
             'data': request.data,
+            'response': response?.toJson(),
           },
         ));
+
+        return response;
       },
       onAuthStatusUpdate: (authStatus) {
         eventLog.add(EventEntry(

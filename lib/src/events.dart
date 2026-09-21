@@ -1,14 +1,28 @@
 import 'types.dart';
 
+/// Request emitted when Transact needs data that only the host app can supply.
+/// Respond by returning an [AtomicTransactDataResponse] from the
+/// `onDataRequest` handler passed to `Atomic.transact`.
 class AtomicTransactDataRequest {
+  /// Id of the task requesting data. Empty when the request is not task scoped.
   final String taskId;
+
+  /// Id of the user the request belongs to
   final String userId;
+
+  /// Identifier supplied by the customer when the access token was created
+  final String identifier;
+
+  /// Names of the fields Transact is asking for, such as `card` or `identity`
   final List<String> fields;
+
+  /// The full request payload, including any fields not modeled above
   final Map<String, dynamic> data;
 
   AtomicTransactDataRequest({
     required this.taskId,
     required this.userId,
+    required this.identifier,
     required this.fields,
     required this.data,
   });
@@ -17,9 +31,121 @@ class AtomicTransactDataRequest {
     return AtomicTransactDataRequest(
       taskId: json["taskId"] ?? '',
       userId: json["userId"] ?? '',
-      fields: json["fields"] ?? [],
+      identifier: json["identifier"] ?? '',
+      fields: List<String>.from(json["fields"] ?? const []),
       data: Map<String, dynamic>.from(json["data"] ?? {}),
     );
+  }
+}
+
+/// Data sent back to Transact in response to an [AtomicTransactDataRequest].
+///
+/// Return `null` from the `onDataRequest` handler to send nothing; Transact
+/// keeps waiting until data arrives or the user abandons the flow.
+class AtomicTransactDataResponse {
+  /// Raw card data to be used in a payment switch
+  final AtomicTransactCardData? card;
+
+  /// PII data to be used in a payment switch
+  final AtomicTransactIdentity? identity;
+
+  const AtomicTransactDataResponse({
+    this.card,
+    this.identity,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (card != null) 'card': card!.toJson(),
+      if (identity != null) 'identity': identity!.toJson(),
+    };
+  }
+}
+
+/// Card data supplied in an [AtomicTransactDataResponse]
+class AtomicTransactCardData {
+  /// Full card number
+  final String number;
+
+  /// Card expiration date, formatted as `MM/YY`
+  final String? expiry;
+
+  /// Card verification value
+  final String? cvv;
+
+  /// Whether the card is a debit or credit card
+  final AtomicTransactCardType? cardType;
+
+  const AtomicTransactCardData({
+    required this.number,
+    this.expiry,
+    this.cvv,
+    this.cardType,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'number': number,
+      if (expiry != null) 'expiry': expiry,
+      if (cvv != null) 'cvv': cvv,
+      if (cardType != null) 'cardType': cardType!.name,
+    };
+  }
+}
+
+/// Identity data supplied in an [AtomicTransactDataResponse]
+class AtomicTransactIdentity {
+  /// The given name of the individual
+  final String? firstName;
+
+  /// The family name or surname
+  final String? lastName;
+
+  /// Zip or postal code
+  final String? postalCode;
+
+  /// Address line 1
+  final String? address;
+
+  /// Address line 2
+  final String? address2;
+
+  /// City
+  final String? city;
+
+  /// State, as a two letter code
+  final String? state;
+
+  /// Phone number of the individual
+  final String? phone;
+
+  /// Email address of the individual
+  final String? email;
+
+  const AtomicTransactIdentity({
+    this.firstName,
+    this.lastName,
+    this.postalCode,
+    this.address,
+    this.address2,
+    this.city,
+    this.state,
+    this.phone,
+    this.email,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (firstName != null) 'firstName': firstName,
+      if (lastName != null) 'lastName': lastName,
+      if (postalCode != null) 'postalCode': postalCode,
+      if (address != null) 'address': address,
+      if (address2 != null) 'address2': address2,
+      if (city != null) 'city': city,
+      if (state != null) 'state': state,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+    };
   }
 }
 

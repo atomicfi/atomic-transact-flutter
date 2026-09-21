@@ -78,6 +78,107 @@ class AppState extends ChangeNotifier {
   int get pauseDelaySeconds => _pauseDelaySeconds;
   set pauseDelaySeconds(int v) { _pauseDelaySeconds = v; notifyListeners(); }
 
+  // Data request response — returned from onDataRequest when Transact asks the
+  // app for card or identity data (deferred payment method strategy).
+  String _cardNumber = '';
+  String get cardNumber => _cardNumber;
+  set cardNumber(String v) { _cardNumber = v; notifyListeners(); }
+
+  String _cardExpiry = '';
+  String get cardExpiry => _cardExpiry;
+  set cardExpiry(String v) { _cardExpiry = v; notifyListeners(); }
+
+  String _cardCvv = '';
+  String get cardCvv => _cardCvv;
+  set cardCvv(String v) { _cardCvv = v; notifyListeners(); }
+
+  AtomicTransactCardType? _cardType;
+  AtomicTransactCardType? get cardType => _cardType;
+  set cardType(AtomicTransactCardType? v) { _cardType = v; notifyListeners(); }
+
+  String _identityFirstName = '';
+  String get identityFirstName => _identityFirstName;
+  set identityFirstName(String v) { _identityFirstName = v; notifyListeners(); }
+
+  String _identityLastName = '';
+  String get identityLastName => _identityLastName;
+  set identityLastName(String v) { _identityLastName = v; notifyListeners(); }
+
+  String _identityAddress = '';
+  String get identityAddress => _identityAddress;
+  set identityAddress(String v) { _identityAddress = v; notifyListeners(); }
+
+  String _identityCity = '';
+  String get identityCity => _identityCity;
+  set identityCity(String v) { _identityCity = v; notifyListeners(); }
+
+  String _identityState = '';
+  String get identityState => _identityState;
+  set identityState(String v) { _identityState = v; notifyListeners(); }
+
+  String _identityPostalCode = '';
+  String get identityPostalCode => _identityPostalCode;
+  set identityPostalCode(String v) { _identityPostalCode = v; notifyListeners(); }
+
+  String _identityPhone = '';
+  String get identityPhone => _identityPhone;
+  set identityPhone(String v) { _identityPhone = v; notifyListeners(); }
+
+  String _identityEmail = '';
+  String get identityEmail => _identityEmail;
+  set identityEmail(String v) { _identityEmail = v; notifyListeners(); }
+
+  void clearDataRequestResponse() {
+    _cardNumber = '';
+    _cardExpiry = '';
+    _cardCvv = '';
+    _cardType = null;
+    _identityFirstName = '';
+    _identityLastName = '';
+    _identityAddress = '';
+    _identityCity = '';
+    _identityState = '';
+    _identityPostalCode = '';
+    _identityPhone = '';
+    _identityEmail = '';
+    notifyListeners();
+  }
+
+  /// Builds the response handed back to Transact from `onDataRequest`, or null
+  /// when nothing has been filled in — in which case Transact keeps waiting.
+  AtomicTransactDataResponse? buildDataRequestResponse() {
+    final card = _cardNumber.isEmpty
+        ? null
+        : AtomicTransactCardData(
+            number: _cardNumber,
+            expiry: _cardExpiry.isEmpty ? null : _cardExpiry,
+            cvv: _cardCvv.isEmpty ? null : _cardCvv,
+            cardType: _cardType,
+          );
+
+    final identity = AtomicTransactIdentity(
+      firstName: _identityFirstName.isEmpty ? null : _identityFirstName,
+      lastName: _identityLastName.isEmpty ? null : _identityLastName,
+      address: _identityAddress.isEmpty ? null : _identityAddress,
+      city: _identityCity.isEmpty ? null : _identityCity,
+      state: _identityState.isEmpty ? null : _identityState,
+      postalCode: _identityPostalCode.isEmpty ? null : _identityPostalCode,
+      phone: _identityPhone.isEmpty ? null : _identityPhone,
+      email: _identityEmail.isEmpty ? null : _identityEmail,
+    );
+
+    final hasIdentity = identity.toJson().isNotEmpty;
+
+    if (card == null && !hasIdentity) {
+      return null;
+    }
+
+    return AtomicTransactDataResponse(
+      card: card,
+      identity: hasIdentity ? identity : null,
+    );
+  }
+
   // Pay Link
   PayLinkTask _payLinkTask = PayLinkTask.switchPayment;
   PayLinkTask get payLinkTask => _payLinkTask;

@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
+
 import '../src/events.dart';
 
 /// The product to initiate
@@ -13,6 +15,12 @@ enum AtomicProductType {
   final String productName;
 
   const AtomicProductType(this.productName);
+}
+
+/// Whether a card supplied in an [AtomicTransactDataResponse] is debit or credit
+enum AtomicTransactCardType {
+  debit,
+  credit,
 }
 
 /// Type of distribution
@@ -88,8 +96,13 @@ typedef AtomicInteractionHandler = void Function(
   AtomicTransactInteraction interaction,
 );
 
-/// Closure that will be called when a Transact data request event occurs
-typedef AtomicDataRequestHandler = void Function(
+/// Closure that will be called when a Transact data request event occurs.
+///
+/// Return an [AtomicTransactDataResponse] to send the requested data back to
+/// Transact, or `null` to send nothing. The handler may be asynchronous, so the
+/// data can be gathered from the user or a backend before responding.
+typedef AtomicDataRequestHandler = FutureOr<AtomicTransactDataResponse?>
+    Function(
   AtomicTransactDataRequest request,
 );
 
