@@ -17,6 +17,15 @@ enum AtomicProductType {
   const AtomicProductType(this.productName);
 }
 
+/// Strategy used to supply a deferred payment method.
+///
+/// Use [sdk] to have Transact ask the app for the payment method through
+/// `onDataRequest` instead of reading it from the Atomic API.
+enum AtomicDeferredPaymentMethodStrategy {
+  sdk,
+  api,
+}
+
 /// Whether a card supplied in an [AtomicTransactDataResponse] is debit or credit
 enum AtomicTransactCardType {
   debit,

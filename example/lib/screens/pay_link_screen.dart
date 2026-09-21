@@ -8,6 +8,7 @@ import '../theme/atomic_theme.dart';
 import '../widgets/clearable_text_field.dart';
 import '../widgets/full_width_button.dart';
 import 'company_login_screen.dart';
+import '../widgets/payment_response_section.dart';
 import '../widgets/public_token_banner.dart';
 import '../widgets/select_grid.dart';
 
@@ -68,9 +69,15 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
         ));
       },
       onDataRequest: (request) {
-        // Whatever this returns is sent back to Transact. Configure it under
-        // Settings > Data Request Response.
+        // Whatever this returns is sent back to Transact. Null unless the
+        // Payment Response toggle above is on.
         final response = state.buildDataRequestResponse();
+
+        debugPrint('[Example] onDataRequest'
+            ' fields=${request.fields}'
+            ' taskId=${request.taskId}'
+            ' identifier=${request.identifier}'
+            ' -> ${state.describeDataRequestResponse(response)}');
 
         eventLog.add(EventEntry(
           type: EventType.dataRequest,
@@ -297,6 +304,8 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
                     onChanged: (v) => state.payLinkAccountId = v,
                     hint: 'Enter the account ID to deeplink to',
                   ),
+                const SizedBox(height: 8),
+                PaymentResponseSection(state: state),
                 const SizedBox(height: 16),
               ],
             ),

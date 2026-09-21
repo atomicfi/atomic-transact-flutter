@@ -94,6 +94,37 @@ void main() {
     });
   });
 
+  group('AtomicConfig.deferredPaymentMethodStrategy', () {
+    test('serializes the sdk strategy', () {
+      final json = AtomicConfig(
+        publicToken: 'token',
+        tasks: [AtomicTask(operation: AtomicOperationType.switchPayment)],
+        deferredPaymentMethodStrategy: AtomicDeferredPaymentMethodStrategy.sdk,
+      ).toJson();
+
+      expect(json['deferredPaymentMethodStrategy'], 'sdk');
+    });
+
+    test('serializes the api strategy', () {
+      final json = AtomicConfig(
+        publicToken: 'token',
+        tasks: [AtomicTask(operation: AtomicOperationType.switchPayment)],
+        deferredPaymentMethodStrategy: AtomicDeferredPaymentMethodStrategy.api,
+      ).toJson();
+
+      expect(json['deferredPaymentMethodStrategy'], 'api');
+    });
+
+    test('omits the key when unset so Transact keeps its default', () {
+      final json = AtomicConfig(
+        publicToken: 'token',
+        tasks: [AtomicTask(operation: AtomicOperationType.switchPayment)],
+      ).toJson();
+
+      expect(json.containsKey('deferredPaymentMethodStrategy'), isFalse);
+    });
+  });
+
   group('onDataRequest round trip', () {
     const codec = StandardMethodCodec();
     late AtomicMethodChannel platform;

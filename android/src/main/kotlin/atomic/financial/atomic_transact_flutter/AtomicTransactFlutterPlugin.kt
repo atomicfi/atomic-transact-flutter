@@ -55,6 +55,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val deeplink = configuration?.get("deeplink") as? Map<String, Any>
       val search = configuration?.get("search") as? Map<String, Any>
       val experiments = configuration?.get("experiments") as? Map<String, Any>
+      val deferredPaymentMethodStrategy = configuration?.get("deferredPaymentMethodStrategy") as? String
       
       val config : Config
 
@@ -74,6 +75,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           search = configSearchFromMap(search),
           environment = Config.Environment.CUSTOM,
           environmentURL = transactPath,
+          deferredPaymentMethodStrategy =
+            configDeferredPaymentMethodStrategyFromString(deferredPaymentMethodStrategy),
           debug = debug
         )
 
@@ -313,6 +316,18 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     }
 
     return null
+  }
+
+  private fun configDeferredPaymentMethodStrategyFromString(
+    value: String?
+  ): Config.DeferredPaymentMethodStrategy? {
+    if (value == null) {
+      return null
+    }
+
+    return Config.DeferredPaymentMethodStrategy.values().firstOrNull {
+      it.name.equals(value, ignoreCase = true)
+    }
   }
 
   private fun configExperimentsFromMap(value: Map<String, Any?>?): Config.Experiments? {
