@@ -1,0 +1,40 @@
+name: pr
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize]
+
+jobs:
+  # One definition, three checks. Jobs never share a runner, so the setup steps
+  # below run once per check either way — the matrix just keeps them written once.
+  pr:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      # Report every check, rather than cancelling the others on the first failure.
+      fail-fast: false
+      matrix:
+        include:
+          - task: analyze
+            run: flutter analyze
+          - task: test
+            run: flutter test
+          - task: publish
+            run: dart pub publish --dry-run
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          # SDK and pub deps are separate caches. pub-cache defaults to the
+          # cache value, but set it explicitly so it does not ride on that.
+          cache: true
+          pub-cache: true
+      - name: ${{ matrix.task }}
+        run: ${{ matrix.run }}
