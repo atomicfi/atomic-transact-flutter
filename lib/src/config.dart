@@ -498,6 +498,11 @@ class AtomicConfig {
   /// Customer information
   final Customer? customer;
 
+  /// Strategy used to supply a deferred payment method. Pass
+  /// [AtomicDeferredPaymentMethodStrategy.sdk] to have Transact request the
+  /// payment method from the app through `onDataRequest`.
+  final AtomicDeferredPaymentMethodStrategy? deferredPaymentMethodStrategy;
+
   AtomicConfig({
     required this.publicToken,
     this.scope,
@@ -514,6 +519,7 @@ class AtomicConfig {
     this.handoff,
     this.experiments,
     this.customer,
+    this.deferredPaymentMethodStrategy,
   }) : assert(tasks != null || product != null,
             'AtomicConfig requires a valid tasks list or a valid product type');
 
@@ -535,6 +541,7 @@ class AtomicConfig {
       'handoff': handoff?.map((e) => e.name.replaceAll("_", "-")).toList(),
       'experiments': experiments?.toJson(),
       'customer': customer?.toJson(),
+      'deferredPaymentMethodStrategy': deferredPaymentMethodStrategy?.name,
     }..removeWhere((key, value) => value == null);
   }
 }

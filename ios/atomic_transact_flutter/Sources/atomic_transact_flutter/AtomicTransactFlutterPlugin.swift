@@ -98,8 +98,31 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
         self.channel.invokeMethod("onInteraction", arguments: ["interaction": interaction.toFlutterMap()])
     }
     
-    func onDataRequest(_ request: TransactDataRequest) {
-        self.channel.invokeMethod("onDataRequest", arguments: ["request": request.toFlutterMap()])
+    /// Forwards the request to Dart and waits for the handler's reply, which the SDK then
+    /// dispatches back into Transact. A nil return (no handler, an error, or an empty reply)
+    /// sends nothing, leaving Transact waiting as it would with no handler at all.
+    func onDataRequest(_ request: TransactDataRequest) async -> TransactDataResponse? {
+        await withCheckedContinuation { (continuation: CheckedContinuation<TransactDataResponse?, Never>) in
+            DispatchQueue.main.async {
+                self.channel.invokeMethod("onDataRequest", arguments: ["request": request.toFlutterMap()]) { reply in
+                    continuation.resume(returning: Self.dataResponse(from: reply))
+                }
+            }
+        }
+    }
+
+    /// Decodes the Dart reply into a `TransactDataResponse`. `reply` is a `FlutterError` when the
+    /// Dart handler threw, and `FlutterMethodNotImplemented` when no handler is registered; both
+    /// fail the cast and decode to nil.
+    private static func dataResponse(from reply: Any?) -> TransactDataResponse? {
+        guard let json = reply as? [String: Any], !json.isEmpty,
+              let data = try? JSONSerialization.data(withJSONObject: json, options: []),
+              let response = try? JSONDecoder().decode(TransactDataResponse.self, from: data)
+        else {
+            return nil
+        }
+
+        return response
     }
 
     func onLaunch() {
@@ -188,9 +211,11 @@ extension TransactInteraction {
 extension TransactDataRequest {
     func toFlutterMap() -> [String: Any?] {
         return [
+            "taskId": taskId,
+            "userId": userId,
+            "identifier": identifier,
             "fields": fields,
             "data": data,
-            "identifier": identifier,
         ]
     }
 }

@@ -13,6 +13,7 @@ class Atomic {
   ///   - [config] Configuration of the Transact SDK.
   ///   - [onInteraction] Closure that will be called when a Transact Interaction event occurs.
   ///   - [onDataRequest] Closure that will be called when a Transact data request event occurs.
+  ///     Return an [AtomicTransactDataResponse] to send the requested data back to Transact.
   ///   - [onLaunch] Closure that will be called when a Transact launch event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
   ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).

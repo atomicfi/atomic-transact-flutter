@@ -67,9 +67,18 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         break;
 
       case 'onDataRequest':
+        // Request/response: whatever the handler returns is sent straight back
+        // to the native SDK as the reply to this call. Returning null leaves
+        // Transact waiting, which is the same as having no handler at all.
+        final handler = onDataRequest;
+        if (handler == null) {
+          return null;
+        }
+
         final request = call.arguments['request'];
-        onDataRequest?.call(AtomicTransactDataRequest.fromJson(request));
-        break;
+        final response =
+            await handler(AtomicTransactDataRequest.fromJson(request));
+        return response?.toJson();
 
       case 'onCompletion':
         final typeName = call.arguments['type'];

@@ -63,14 +63,6 @@ class _UserLinkScreenState extends State<UserLinkScreen> {
           },
         ));
       },
-      onDataRequest: (request) {
-        eventLog.add(EventEntry(
-          type: EventType.dataRequest,
-          title: 'Data Request',
-          body: 'Fields: ${request.fields}',
-          rawData: {'fields': request.fields, 'data': request.data},
-        ));
-      },
       onAuthStatusUpdate: (authStatus) {
         eventLog.add(EventEntry(
           type: EventType.authStatus,
