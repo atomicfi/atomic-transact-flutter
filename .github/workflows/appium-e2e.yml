@@ -184,8 +184,8 @@ jobs:
             until curl -sf http://127.0.0.1:4723/status > /dev/null; do sleep 2; done
             cd conformance/appium && npm run wdio:android:flutter
         env:
-          ATOMIC_API_KEY: ${{ secrets.MOLECULAR_BANK_API_KEY }}
-          ATOMIC_API_SECRET: ${{ secrets.MOLECULAR_BANK_API_SECRET }}
+          ATOMIC_API_KEY: ${{ secrets.ATOMIC_API_KEY }}
+          ATOMIC_API_SECRET: ${{ secrets.ATOMIC_API_SECRET }}
           WDIO_CONNECTION_RETRY_TIMEOUT: 300000
           # A spec that has to log in through Transact can spend most of mocha's default 120s just
           # getting there: the login helper gives each company 20s before trying the next.
@@ -391,8 +391,8 @@ jobs:
           until curl -sf http://127.0.0.1:4723/status > /dev/null; do sleep 2; done
           npm run wdio:ios:flutter
         env:
-          ATOMIC_API_KEY: ${{ secrets.MOLECULAR_BANK_API_KEY }}
-          ATOMIC_API_SECRET: ${{ secrets.MOLECULAR_BANK_API_SECRET }}
+          ATOMIC_API_KEY: ${{ secrets.ATOMIC_API_KEY }}
+          ATOMIC_API_SECRET: ${{ secrets.ATOMIC_API_SECRET }}
           # Longer than the slowest session creation. A client that gives up first posts a new
           # session while the server is still building the old one, and the two race for one
           # simulator. This does not make a hang shorter, it stops one from being multiplied.
