@@ -1,11 +1,9 @@
 import '../platform_interface/atomic_platform_interface.dart';
-import '../src/events.dart';
 
 import 'types.dart';
 import 'config.dart';
 
 class Atomic {
-  static bool _isLoading = false;
   static AtomicPlatformInterface get _platform =>
       AtomicPlatformInterface.instance;
 
@@ -16,8 +14,19 @@ class Atomic {
   ///     Return an [AtomicTransactDataResponse] to send the requested data back to Transact.
   ///   - [onLaunch] Closure that will be called when a Transact launch event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
+  ///     A task can keep sending status updates after this.
+  ///   - [onCleanup] Closure that will be called once the launch has ended for good. No further
+  ///     callbacks are delivered for the launch after this one.
   ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).
-  static Future<void> transact({
+  ///
+  /// Every call is its own launch with its own callbacks, so calling this again
+  /// does not replace the callbacks of a launch that is still running. It also
+  /// means a second call launches a second Transact, even while one is open.
+  /// Returns an [AtomicTransactTask] for the launch.
+  ///
+  /// Throws a `PlatformException` if Transact can't be presented, for example
+  /// when there is no activity or window to present it from.
+  static Future<AtomicTransactTask> transact({
     required AtomicConfig config,
     TransactEnvironment environment = TransactEnvironment.production,
     AtomicInteractionHandler? onInteraction,
@@ -26,45 +35,38 @@ class Atomic {
     AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
     AtomicLaunchHandler? onLaunch,
     AtomicCompletionHandler? onCompletion,
+    AtomicCleanupHandler? onCleanup,
     AtomicPresentationStyleIOS? presentationStyleIOS,
     bool debug = false,
   }) async {
-    if (_isLoading) {
-      return;
-    }
-    _isLoading = true;
-
-    _platform.onInteraction = onInteraction;
-    _platform.onDataRequest = onDataRequest;
-    _platform.onAuthStatusUpdate = onAuthStatusUpdate;
-    _platform.onTaskStatusUpdate = onTaskStatusUpdate;
-    _platform.onLaunch = onLaunch;
-    _platform.onCompletion = (
-      AtomicTransactCompletionType type,
-      AtomicTransactResponse? response,
-      AtomicTransactError? error,
-    ) {
-      _isLoading = false;
-      if (onCompletion != null) {
-        return onCompletion(type, response, error);
-      }
-    };
-
-    await _platform.presentTransact(
+    final platform = _platform;
+    final instanceId = await platform.presentTransact(
       configuration: config,
       environment: environment,
       presentationStyleIOS: presentationStyleIOS,
       debug: debug,
+      onInteraction: onInteraction,
+      onDataRequest: onDataRequest,
+      onAuthStatusUpdate: onAuthStatusUpdate,
+      onTaskStatusUpdate: onTaskStatusUpdate,
+      onLaunch: onLaunch,
+      onCompletion: onCompletion,
+      onCleanup: onCleanup,
     );
+
+    return AtomicTransactTask._(instanceId, platform);
   }
 
+  /// Closes every launch that hasn't finished or closed yet, including hidden
+  /// and paused ones. Those launches get `onCleanup`, but not `onCompletion`.
+  /// Launches that already finished or closed keep running until they clean up
+  /// on their own.
   static Future<void> close() async {
-    _isLoading = false;
     await _platform.dismissTransact();
   }
 
+  /// Hides every Transact that is on screen. The launches keep running.
   static Future<void> hide() async {
-    _isLoading = false;
     await _platform.hideTransact();
   }
 
@@ -74,6 +76,22 @@ class Atomic {
   static Future<PausedTransactRef> pauseTransact() async {
     await _platform.pauseTransact();
     return PausedTransactRef._(_platform);
+  }
+}
+
+/// A single launch of Transact, returned by [Atomic.transact].
+class AtomicTransactTask {
+  /// Id generated for this launch. Every event for the launch is routed by it.
+  final String instanceId;
+
+  final AtomicPlatformInterface _platform;
+
+  AtomicTransactTask._(this.instanceId, this._platform);
+
+  /// Stops delivering this launch's callbacks. This does not close Transact.
+  /// [Atomic.close] closes every open launch, not just this one.
+  void remove() {
+    _platform.removeTransact(instanceId);
   }
 }
 

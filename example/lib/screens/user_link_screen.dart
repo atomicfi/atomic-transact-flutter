@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
 import '../data/company_data.dart';
 import '../models/app_state.dart';
@@ -33,7 +34,7 @@ class _UserLinkScreenState extends State<UserLinkScreen> {
   bool _transactActive = false;
   PausedTransactRef? _pausedRef;
 
-  void _onInitialize() {
+  Future<void> _onInitialize() async {
     final config = state.buildUserLinkConfig();
     final shouldPause = state.pauseAfterInit;
     final delaySeconds = state.pauseDelaySeconds;
@@ -47,7 +48,7 @@ class _UserLinkScreenState extends State<UserLinkScreen> {
       _schedulePause(delaySeconds);
     }
 
-    Atomic.transact(
+    final launch = Atomic.transact(
       config: config,
       environment: state.environment,
       debug: state.debug,
@@ -104,7 +105,25 @@ class _UserLinkScreenState extends State<UserLinkScreen> {
           ));
         }
       },
+      onCleanup: () {
+        eventLog.add(EventEntry(
+          type: EventType.cleanup,
+          title: 'Cleanup',
+          body: 'No more callbacks for this launch',
+        ));
+      },
     );
+
+    try {
+      await launch;
+    } on PlatformException catch (e) {
+      // Transact couldn't be presented, so no callback will reset the button.
+      if (!mounted) return;
+      setState(() => _transactActive = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to launch Transact: ${e.message}')),
+      );
+    }
   }
 
   void _schedulePause(int delaySeconds) {

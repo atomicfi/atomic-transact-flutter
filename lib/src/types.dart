@@ -135,6 +135,11 @@ typedef AtomicTaskStatusUpdateHandler = void Function(
   AtomicTransactTaskStatusUpdate taskStatus,
 );
 
+/// Closure that will be called once a Transact launch has ended for good.
+///
+/// No further callbacks are delivered for the launch after this one.
+typedef AtomicCleanupHandler = void Function();
+
 /// Error thrown when pauseTransact fails
 class PauseTransactException implements Exception {
   final String message;

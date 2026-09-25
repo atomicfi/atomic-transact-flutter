@@ -1,8 +1,11 @@
 package atomic.financial.atomic_transact_flutter
 
 import android.app.Activity
+import android.content.Context
+import android.content.IntentFilter
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import financial.atomic.transact.*
 import financial.atomic.transact.receiver.TransactBroadcastReceiver
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -26,16 +29,23 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
-  private lateinit var activity : Activity
+  private lateinit var context : Context
+  private var activity : Activity? = null
   private var pausedTransactRef: PausedTransactRef? = null
 
+  /// Every presented flow that hasn't cleaned up yet, keyed by the instance id Dart generated for
+  /// it. Each flow keeps its own receiver, so presenting again never replaces an earlier flow's.
+  private val instances = mutableMapOf<String, TransactInstance>()
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    context = flutterPluginBinding.applicationContext
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "atomic_transact_flutter")
     channel.setMethodCallHandler(this)
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "presentTransact") {
+      val instanceId = call.argument<String>("instanceId")
       val transactPath = call.argument<String>("transactPath") as String? ?: ""
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
       val pluginVersion = call.argument<String>("pluginVersion") ?: ""
@@ -82,57 +92,38 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       config.platform = Config.Platform.suffixed(suffix)
 
-      Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
-        override fun onClose(data: JSONObject) {
-          channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
-        }
-        override fun onFinish(data: JSONObject) {
-          channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
-        }
-        override fun onInteraction(data: JSONObject) {
-          channel.invokeMethod("onInteraction", mapOf("interaction" to mapFromTransactInteraction(data)))
-        }
-        override fun onDataRequest(data: JSONObject) {
-          // Request/response: whatever Dart replies with is handed straight back to Transact.
-          // A null reply (no handler, an error, or nothing to send) leaves Transact waiting,
-          // which is the same as having no handler at all.
-          channel.invokeMethod(
-            "onDataRequest",
-            mapOf("request" to mapFromTransactDataRequest(data)),
-            object : Result {
-              override fun success(result: Any?) {
-                val response = transactDataResponseFromResult(result) ?: return
-                Transact.sendData(activity, response)
-              }
+      if (instanceId == null) {
+        result.error("ConfigError", "Missing instanceId", null)
+        return
+      }
+      val activity = this.activity
+      if (activity == null) {
+        result.error("PlatformError", "No activity found", null)
+        return
+      }
 
-              override fun error(code: String, message: String?, details: Any?) {
-                Log.w("AtomicTransact", "onDataRequest handler failed: $code $message")
-              }
-
-              override fun notImplemented() {}
-            }
-          )
-        }
-        override fun onLaunch() {
-          channel.invokeMethod("onLaunch", null)
-        }
-        override fun onAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate) {
-          channel.invokeMethod("onAuthStatusUpdate", mapOf("auth" to mapFromTransactAuthStatusUpdate(authData)))
-        }
-        override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
-          channel.invokeMethod("onTaskStatusUpdate", mapOf("task" to mapFromTransactTaskStatusUpdate(taskData)))
-        }
-        override fun onDebugLog(level: String, tag: String, message: String, data: JSONObject) {
-          channel.invokeMethod("onDebugLog", mapOf("message" to "[$level] $tag: $message"))
-        }
-      })
-
-      Transact.present(activity, config)
+      val instance = TransactInstance(instanceId)
+      instances[instanceId] = instance
+      try {
+        instance.present(activity, config)
+      } catch (e: Exception) {
+        instance.discard(activity)
+        result.error("PresentError", e.message, null)
+        return
+      }
+      result.success(null)
     }
     else if (call.method == "dismissTransact") {
-      Transact.close(activity)
+      // Ends every flow that hasn't finished or closed yet, including hidden and paused ones. That
+      // matches iOS, where only those flows get a dismissal. Flows that already finished or closed
+      // keep running until their own cleanup.
+      instances.values.filter { !it.completed }.forEach { it.close() }
+      // The paused flow, if any, has just ended, so it can't be resumed.
+      pausedTransactRef = null
+      result.success(null)
     } else if (call.method == "hideTransact") {
-      Transact.hideTransact(activity)
+      instances.values.filter { !it.completed }.forEach { it.hide() }
+      result.success(null)
     } else if (call.method == "pauseTransact") {
       CoroutineScope(Dispatchers.Main).launch {
         try {
@@ -145,7 +136,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     } else if (call.method == "resumeTransact") {
       val ref = pausedTransactRef
       if (ref != null) {
-        ref.resume(activity)
+        ref.resume(activity ?: context)
         pausedTransactRef = null
         result.success(null)
       } else {
@@ -158,6 +149,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
     channel.setMethodCallHandler(null)
+    // Nothing is left to deliver events to.
+    instances.values.forEach { it.unregister() }
+    instances.clear()
   }
 
   /// ActivityAware
@@ -166,7 +160,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
   }
 
   override fun onDetachedFromActivity() {
-    //
+    this.activity = null
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
@@ -175,6 +169,138 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
   override fun onDetachedFromActivityForConfigChanges() {
     onDetachedFromActivity();
+  }
+
+  /// One presented flow. [id] is the instance id Dart generated, which every event sent to Dart is
+  /// tagged with. The SDK assigns the flow its own id, which the instance-scoped Transact calls take.
+  private inner class TransactInstance(val id: String) {
+    /// Set once the flow closes or finishes. A task can keep sending status updates after that,
+    /// so this instance keeps listening until cleanup.
+    var completed = false
+      private set
+
+    private var registered = false
+
+    private val receiver: TransactBroadcastReceiver = object : TransactBroadcastReceiver() {
+      override fun onClose(data: JSONObject) {
+        completed = true
+        emit("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)))
+
+        // The SDK closes with `error` or `user_closed` itself when a flow ends before Transact
+        // initializes, or when its page fails to load. Transact never runs to send
+        // cleanup-application after those (its own close reasons are kebab-case), so end the
+        // task here.
+        val reason = data.optString("reason")
+        if (reason == "error" || reason == "user_closed") {
+          cleanup()
+        }
+      }
+      override fun onFinish(data: JSONObject) {
+        completed = true
+        emit("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
+      }
+      override fun onInteraction(data: JSONObject) {
+        emit("onInteraction", mapFromTransactInteraction(data))
+      }
+      override fun onDataRequest(data: JSONObject) {
+        // Request/response: whatever Dart replies with is handed straight back to this flow.
+        // A null reply (no handler, an error, or nothing to send) leaves Transact waiting,
+        // which is the same as having no handler at all.
+        channel.invokeMethod(
+          "onDataRequest",
+          envelope(mapFromTransactDataRequest(data)),
+          object : Result {
+            override fun success(result: Any?) {
+              val response = transactDataResponseFromResult(result) ?: return
+              val sdkInstanceId = receiver.instanceId ?: return
+              Transact.sendData(context, sdkInstanceId, response)
+            }
+
+            override fun error(code: String, message: String?, details: Any?) {
+              Log.w("AtomicTransact", "onDataRequest handler failed: $code $message")
+            }
+
+            override fun notImplemented() {}
+          }
+        )
+      }
+      override fun onLaunch() {
+        emit("onLaunch", null)
+      }
+      override fun onAuthStatusUpdate(authData: Config.TransactAuthStatusUpdate) {
+        emit("onAuthStatusUpdate", mapFromTransactAuthStatusUpdate(authData))
+      }
+      override fun onTaskStatusUpdate(taskData: Config.TaskStatusUpdate) {
+        emit("onTaskStatusUpdate", mapFromTransactTaskStatusUpdate(taskData))
+      }
+      override fun onDebugLog(level: String, tag: String, message: String, data: JSONObject) {
+        // Not tagged: the SDK routes every log through the newest flow, whichever flow it's from.
+        channel.invokeMethod("onDebugLog", mapOf("message" to "[$level] $tag: $message"))
+      }
+      override fun onCleanup() {
+        cleanup()
+      }
+    }
+
+    fun present(activity: Activity, config: Config) {
+      Transact.present(activity, config, receiver)
+
+      // present() binds the receiver to the new flow and registers it against the activity. Move it
+      // to the application context, outside the SDK's registry. The SDK queues its own unregister
+      // right after broadcasting cleanup-application, which drops that broadcast before onCleanup
+      // is delivered. And tearing down an action flow unregisters every receiver registered against
+      // the activity, including other flows' receivers.
+      Transact.unregisterReceiver(activity, receiver)
+      // Not exported on every API level, so no other app can send this flow events.
+      ContextCompat.registerReceiver(
+        context, receiver, IntentFilter(Transact.ACTION_EVENT), ContextCompat.RECEIVER_NOT_EXPORTED)
+      registered = true
+    }
+
+    /// Undoes a present() that threw partway through. Dart hears about it from the error reply.
+    fun discard(activity: Activity) {
+      Transact.unregisterReceiver(activity, receiver)
+      cleanup(notifyDart = false)
+    }
+
+    /// The SDK sends nothing back when the host closes a flow, so this ends the task itself.
+    fun close() {
+      receiver.instanceId?.let { Transact.close(context, it) }
+      cleanup()
+    }
+
+    fun hide() {
+      receiver.instanceId?.let { Transact.hideTransact(context, it) }
+    }
+
+    /// Ends the task and, unless [notifyDart] is false, tells Dart. Runs at most once per flow.
+    fun cleanup(notifyDart: Boolean = true) {
+      if (instances.remove(id) == null) {
+        return
+      }
+      unregister()
+      if (notifyDart) {
+        emit("onCleanup", null)
+      }
+    }
+
+    fun unregister() {
+      if (!registered) {
+        return
+      }
+      registered = false
+      try {
+        context.unregisterReceiver(receiver)
+      } catch (e: IllegalArgumentException) {
+        // Already unregistered.
+      }
+    }
+
+    private fun emit(method: String, data: Any?) {
+      channel.invokeMethod(method, envelope(data))
+    }
+
+    private fun envelope(data: Any?): Map<String, Any?> = mapOf("instanceId" to id, "data" to data)
   }
 
   /// Configuration converters

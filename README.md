@@ -41,7 +41,7 @@ Transact. The handler may be asynchronous, so you can prompt the user or call
 your backend before responding.
 
 ```dart
-Atomic.transact(
+await Atomic.transact(
   config: config,
   onDataRequest: (request) async {
     // request.fields lists what Transact is asking for, e.g. ['card']
@@ -65,5 +65,39 @@ Atomic.transact(
 ```
 
 Returning `null` sends nothing back, and Transact keeps waiting for data.
+
+## Running more than one Transact flow
+
+Every `Atomic.transact` call gets its own callbacks, so launching Transact again
+never replaces the callbacks of a flow that's still running. A task can keep
+sending `onTaskStatusUpdate` after `onCompletion`, while its work finishes in
+the background. `onCleanup` is the last callback a flow sends. After it, the
+flow sends nothing more.
+
+```dart
+final task = await Atomic.transact(
+  config: config,
+  onTaskStatusUpdate: (update) => print('${update.taskId}: ${update.status}'),
+  onCompletion: (type, response, error) => print('UI closed: ${type.name}'),
+  onCleanup: () => print('done'),
+);
+
+// Stop receiving this flow's callbacks without closing Transact.
+task.remove();
+```
+
+`Atomic.close()` closes every flow that hasn't finished or closed yet,
+including hidden and paused ones. Those flows get `onCleanup` but not
+`onCompletion`, so reset any "Transact is open" state there too.
+`Atomic.hide()` hides every Transact on screen, and those flows keep running.
+
+### Upgrading
+
+- `Atomic.transact` no longer ignores calls while Transact is open. Every call
+  launches Transact, so disable your launch button until `onCompletion` if you
+  only want one flow at a time.
+- `Atomic.transact` now returns a `Future<AtomicTransactTask>` instead of
+  `Future<void>`. It throws a `PlatformException` if Transact can't be
+  presented, so await it or catch the error.
 
 *More info at [https://docs.atomicfi.com](https://docs.atomicfi.com).*

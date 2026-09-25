@@ -50,5 +50,6 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "androidx.core:core:1.9.0"
     implementation "financial.atomic:transact:3.24.1"
 }
