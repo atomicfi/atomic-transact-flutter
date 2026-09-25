@@ -18,33 +18,31 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     _instance = instance;
   }
 
-  /// Closure that will be called when a Transact Interaction event occurs
-  AtomicInteractionHandler? onInteraction;
-
-  /// Closure that will be called when a Transact data request event occurs
-  AtomicDataRequestHandler? onDataRequest;
-
-  /// Response with more information when Transact completes and dismisses.
-  AtomicCompletionHandler? onCompletion;
-
-  /// Closure that will be called when a Transact launch event occurs
-  AtomicLaunchHandler? onLaunch;
-
-  /// Closure that will be called when a Transact auth status update event occurs
-  AtomicAuthStatusUpdateHandler? onAuthStatusUpdate;
-
-  /// Closure that will be called when a Transact task status update event occurs
-  AtomicTaskStatusUpdateHandler? onTaskStatusUpdate;
-
   /// Present the Atomic Transact SDK
   ///   - [config] Configuration of the Transact SDK
-  Future<void> presentTransact({
+  ///
+  /// The handlers only receive events for this launch, so presenting again
+  /// does not replace the handlers of a launch that is still running. Returns
+  /// the id generated for this launch.
+  Future<String> presentTransact({
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
     bool debug = false,
+    AtomicInteractionHandler? onInteraction,
+    AtomicDataRequestHandler? onDataRequest,
+    AtomicAuthStatusUpdateHandler? onAuthStatusUpdate,
+    AtomicTaskStatusUpdateHandler? onTaskStatusUpdate,
+    AtomicLaunchHandler? onLaunch,
+    AtomicCompletionHandler? onCompletion,
+    AtomicCleanupHandler? onCleanup,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');
+  }
+
+  /// Stops delivering callbacks for the launch with [instanceId].
+  void removeTransact(String instanceId) {
+    throw UnimplementedError('removeTransact() has not been implemented.');
   }
 
   Future<void> dismissTransact() async {

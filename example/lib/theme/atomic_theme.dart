@@ -20,6 +20,7 @@ const eventCyan = Color(0xFF00BCD4);
 const eventMint = Color(0xFF26A69A);
 const eventOrange = Color(0xFFFF9800);
 const eventRed = Color(0xFFF44336);
+const eventGray = Color(0xFF9E9E9E);
 
 final atomicColorScheme = ColorScheme.dark(
   primary: atomicPurple,

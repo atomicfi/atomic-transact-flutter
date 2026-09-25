@@ -9,7 +9,8 @@ enum EventType {
   taskStatus('Task Status', eventMint),
   completion('Completion', eventGreen),
   error('Error', eventRed),
-  launch('Launch', eventOrange);
+  launch('Launch', eventOrange),
+  cleanup('Cleanup', eventGray);
 
   final String label;
   final Color color;
