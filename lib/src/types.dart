@@ -165,7 +165,8 @@ enum AtomicOperationType {
   switchPayment('switch'),
   present('present'),
   tax('tax'),
-  manage('manage');
+  manage('manage'),
+  action('action');
 
   final String operationName;
 

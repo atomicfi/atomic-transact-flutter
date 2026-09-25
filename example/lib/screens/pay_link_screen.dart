@@ -105,13 +105,16 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
         ));
       },
       onTaskStatusUpdate: (taskStatus) {
+        final actionType = taskStatus.actionType;
         eventLog.add(EventEntry(
           type: EventType.taskStatus,
           title: 'Task Status',
-          body: '${taskStatus.status} (${taskStatus.taskId})',
+          body: '${taskStatus.status} (${taskStatus.taskId})'
+              '${actionType != null ? ' · action: $actionType' : ''}',
           rawData: {
             'status': taskStatus.status,
             'taskId': taskStatus.taskId,
+            'actionType': actionType,
           },
         ));
       },

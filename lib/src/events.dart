@@ -260,6 +260,10 @@ class AtomicTransactTaskStatusUpdate {
   final Map<String, dynamic>? depositData;
   final Map<String, dynamic>? managedBy;
 
+  /// The Pay Link action the task runs, e.g. `cancel-plan` or `refresh`. Null
+  /// for tasks that aren't actions.
+  final String? actionType;
+
   AtomicTransactTaskStatusUpdate({
     required this.taskId,
     required this.product,
@@ -269,6 +273,7 @@ class AtomicTransactTaskStatusUpdate {
     this.switchData,
     this.depositData,
     this.managedBy,
+    this.actionType,
   });
 
   factory AtomicTransactTaskStatusUpdate.fromJson(Map<Object?, Object?> json) {
@@ -291,6 +296,7 @@ class AtomicTransactTaskStatusUpdate {
           ? Map<String, dynamic>.from(
               json['managedBy'] as Map<Object?, Object?>)
           : null,
+      actionType: json['actionType']?.toString(),
     );
   }
 }
