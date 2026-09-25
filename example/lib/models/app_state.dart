@@ -358,6 +358,24 @@ class AppState extends ChangeNotifier {
     );
   }
 
+  // Actions config builder
+  AtomicConfig buildActionConfig({
+    required String actionId,
+    required bool headless,
+  }) {
+    return AtomicConfig(
+      publicToken: _publicToken,
+      scope: 'pay-link',
+      tasks: [AtomicTask.action(actionId: actionId, headless: headless)],
+      theme: theme,
+      // Same as Pay Link: an action that asks for a payment method gets the
+      // Payment Response data through onDataRequest.
+      deferredPaymentMethodStrategy: _useSdkPaymentResponse
+          ? AtomicDeferredPaymentMethodStrategy.sdk
+          : null,
+    );
+  }
+
   // User Link config builder
   AtomicConfig buildUserLinkConfig() {
     AtomicOperationType op;

@@ -387,8 +387,17 @@ class AtomicTask {
   @Deprecated('Use operation instead')
   final AtomicProductType? product;
 
-  /// One of deposit, verify, switch, present, tax, or manage.
+  /// One of deposit, verify, switch, present, tax, manage, or action.
   final AtomicOperationType? operation;
+
+  /// The Pay Link action to run, for an [AtomicOperationType.action] task. Comes
+  /// from the `actionId` of an action returned by `GET /pay-link/accounts`.
+  final String? actionId;
+
+  /// Asks Transact to run an action without its UI. Transact still shows UI
+  /// when the action needs it, for example when the account isn't linked yet.
+  /// Only valid on an [AtomicOperationType.action] task.
+  final bool? headless;
 
   /// The action to take on completion of the task. Can be either "continue" or "finish." To execute the next task, use "continue." To finish the task workflow and not execute any of the subsequent tasks, use "finish."
   /// Default value: "continue"
@@ -411,8 +420,22 @@ class AtomicTask {
     this.onFail = "continue",
     this.distribution,
     this.apps,
-  }) : assert(operation != null || product != null,
-            'Either operation or product must be provided');
+    this.actionId,
+    this.headless,
+  })  : assert(operation != null || product != null,
+            'Either operation or product must be provided'),
+        assert(headless == null || operation == AtomicOperationType.action,
+            'headless is only valid on an action task');
+
+  /// A task that runs the Pay Link action [actionId]. Launch it with a
+  /// `pay-link` scope.
+  AtomicTask.action({required String this.actionId, this.headless})
+      : product = null,
+        operation = AtomicOperationType.action,
+        onComplete = null,
+        onFail = null,
+        distribution = null,
+        apps = null;
 
   /// Returns a JSON object representation.
   Map<String, dynamic> toJson() {
@@ -429,6 +452,8 @@ class AtomicTask {
       'onFail': onFail,
       'distribution': distribution?.toJson(),
       'apps': apps?.map((a) => a.id).toList(),
+      'action': actionId != null ? {'id': actionId} : null,
+      'headless': headless,
     }..removeWhere((key, value) => value == null);
   }
 }

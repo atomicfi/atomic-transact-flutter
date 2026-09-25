@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'models/app_state.dart';
 import 'models/event_log.dart';
+import 'screens/actions_screen.dart';
 import 'screens/events_screen.dart';
 import 'screens/pay_link_screen.dart';
 import 'screens/settings_screen.dart';
@@ -62,16 +63,24 @@ class _MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<_MainScreen> {
+  /// Position of the Settings tab in the bottom navigation.
+  static const _settingsIndex = 4;
+
   int _selectedIndex = 0;
 
   void _navigateToSettings() {
-    setState(() => _selectedIndex = 3);
+    setState(() => _selectedIndex = _settingsIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     final screens = [
       PayLinkScreen(
+        state: widget.appState,
+        eventLog: widget.eventLog,
+        onNavigateToSettings: _navigateToSettings,
+      ),
+      ActionsScreen(
         state: widget.appState,
         eventLog: widget.eventLog,
         onNavigateToSettings: _navigateToSettings,
@@ -97,6 +106,10 @@ class _MainScreenState extends State<_MainScreen> {
           NavigationDestination(
             icon: Icon(Icons.payment),
             label: 'Pay Link',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.checklist),
+            label: 'Actions',
           ),
           NavigationDestination(
             icon: Icon(Icons.verified_user),

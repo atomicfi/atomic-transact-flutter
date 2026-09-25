@@ -333,10 +333,13 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     val result = mutableListOf<Config.Task>()
 
     value?.forEach {
+        val actionId = (it["action"] as? Map<*, *>)?.get("id") as? String
         result.add(Config.Task(
               product = (it["product"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
               operation = (it["operation"] as? String)?.let { Config.Product.valueOf(it.uppercase()) },
               distribution = configDistributionFromMap(it["distribution"] as? Map<String, Any>),
+              action = actionId?.let { Config.UserAction(it) },
+              headless = it["headless"] as? Boolean,
               apps = it["apps"] as? List<String>))
       }
 
@@ -654,6 +657,9 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     result["product"] = taskData.product.name.lowercase()
     result["status"] = taskData.status.name.lowercase()
     result["failReason"] = taskData.failReason
+    // CANCEL_PLAN -> "cancel-plan", the SDK's @SerialName for each value and the
+    // string iOS sends.
+    taskData.actionType?.let { result["actionType"] = it.name.lowercase().replace('_', '-') }
     
     // Map company data
     val company = mutableMapOf<String, Any?>()
