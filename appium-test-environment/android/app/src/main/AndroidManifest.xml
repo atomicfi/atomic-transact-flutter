@@ -7,6 +7,8 @@
              TRANSACT_* extras. singleTask matches the native test app. The theme's action bar shows
              the label as a native TextView, which is what the suite's
              //*[@text="AppiumTestEnvironment"] finds: Flutter's own text only reaches content-desc. -->
+        <!-- Exported because it is the launcher activity, and the suite starts it by explicit component. -->
+        <!-- nosemgrep: java.android.security.exported_activity.exported_activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

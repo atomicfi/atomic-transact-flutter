@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- A CI-only test app: its only traffic is Transact's own, made by the SDK, so there is nothing of its own to pin. -->
+<!-- nosemgrep: swift.insecure-communication.ats.ats-pinning.ATS-consider-pinning -->
 <plist version="1.0">
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
