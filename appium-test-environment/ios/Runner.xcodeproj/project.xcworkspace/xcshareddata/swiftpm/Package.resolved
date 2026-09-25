@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "atomic-transact-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/atomicfi/atomic-transact-ios.git",
+      "state" : {
+        "revision" : "5ce97ae4a348ec8ed2bd0ca113cccd8b00683a92",
+        "version" : "3.35.2"
+      }
+    }
+  ],
+  "version" : 2
+}

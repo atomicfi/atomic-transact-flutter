@@ -1,1 +1,3 @@
 atomic_transact_flutter.iml
+# Appium conformance test app: CI only, not part of the package.
+appium-test-environment/
