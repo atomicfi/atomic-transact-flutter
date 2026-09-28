@@ -23,6 +23,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    AtomicPresentationStyleAndroid? presentationStyleAndroid,
     bool debug = false,
   }) async {
     await _channel.invokeMethod(
@@ -32,6 +33,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
         'transactPath': environment.transactPath,
         'apiPath': environment.apiPath,
         'presentationStyleIOS': presentationStyleIOS?.name,
+        'presentationStyleAndroid': presentationStyleAndroid?.name,
         'pluginVersion': packageVersion,
         'debug': debug,
       },

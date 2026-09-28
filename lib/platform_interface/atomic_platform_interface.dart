@@ -42,6 +42,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    AtomicPresentationStyleAndroid? presentationStyleAndroid,
     bool debug = false,
   }) async {
     throw UnimplementedError('presentTransact() has not been implemented.');

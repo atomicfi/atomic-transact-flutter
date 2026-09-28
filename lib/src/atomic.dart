@@ -16,6 +16,7 @@ class Atomic {
   ///   - [onLaunch] Closure that will be called when a Transact launch event occurs.
   ///   - [onCompletion] Response with more information when Transact completes and dismisses.
   ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).
+  ///   - [presentationStyleAndroid] Android presentation style (PoC).
   static Future<void> transact({
     required AtomicConfig config,
     TransactEnvironment environment = TransactEnvironment.production,
@@ -26,6 +27,7 @@ class Atomic {
     AtomicLaunchHandler? onLaunch,
     AtomicCompletionHandler? onCompletion,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    AtomicPresentationStyleAndroid? presentationStyleAndroid,
     bool debug = false,
   }) async {
     if (_isLoading) {
@@ -53,6 +55,7 @@ class Atomic {
       configuration: config,
       environment: environment,
       presentationStyleIOS: presentationStyleIOS,
+      presentationStyleAndroid: presentationStyleAndroid,
       debug: debug,
     );
   }

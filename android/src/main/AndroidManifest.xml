@@ -1,3 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="atomic.financial.atomic_transact_flutter">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="atomic.financial.atomic_transact_flutter">
+
+    <application>
+    <!-- PoC: replace AAR Fullscreen theme so bottomSheet presentation can float.
+             fullScreen callers still look near-fullscreen because content is match_parent
+             unless FormSheetWindowApplier runs. -->
+        <activity
+            android:name="financial.atomic.transact.activity.TransactActivity"
+            android:theme="@style/AtomicTransact.BottomSheet"
+            tools:replace="android:theme" />
+    </application>
 </manifest>

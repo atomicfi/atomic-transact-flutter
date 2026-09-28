@@ -131,6 +131,19 @@ enum AtomicPresentationStyleIOS {
   formSheet,
 }
 
+/// Android presentation styles (PoC — not upstream yet).
+///
+/// Upstream Atomic Android only ships fullscreen [TransactActivity].
+/// [bottomSheet] is a plugin-side approximation (dialog theme + window layout)
+/// until Atomic exposes a real BottomSheet / presentation API in the AAR.
+enum AtomicPresentationStyleAndroid {
+  /// Default Atomic behavior (fullscreen Activity).
+  fullScreen,
+
+  /// Approximate iOS formSheet: floating window, bottom-anchored, peek + dim.
+  bottomSheet,
+}
+
 /// The operation type to initiate
 enum AtomicOperationType {
   deposit('deposit'),

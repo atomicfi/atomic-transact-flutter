@@ -41,6 +41,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val pluginVersion = call.argument<String>("pluginVersion") ?: ""
       val suffix = if (pluginVersion.isNotEmpty()) "flutter-$pluginVersion" else "flutter"
       val debug = call.argument<Boolean>("debug") ?: false
+      val presentationStyleAndroid =
+        call.argument<String>("presentationStyleAndroid") ?: "fullScreen"
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
@@ -81,9 +83,11 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
 
       Transact.registerReceiver(activity, object: TransactBroadcastReceiver() {
         override fun onClose(data: JSONObject) {
+          FormSheetWindowApplier.disable(activity.application)
           channel.invokeMethod("onCompletion", mapOf("type" to "closed", "response" to mapFromTransactResponseData(data)));
         }
         override fun onFinish(data: JSONObject) {
+          FormSheetWindowApplier.disable(activity.application)
           channel.invokeMethod("onCompletion", mapOf("type" to "finished", "response" to mapFromTransactResponseData(data)))
         }
         override fun onInteraction(data: JSONObject) {
@@ -105,6 +109,12 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           channel.invokeMethod("onDebugLog", mapOf("message" to "[$level] $tag: $message"))
         }
       })
+
+      if (presentationStyleAndroid == "bottomSheet") {
+        FormSheetWindowApplier.enable(activity.application)
+      } else {
+        FormSheetWindowApplier.disable(activity.application)
+      }
 
       Transact.present(activity, config)
     }
