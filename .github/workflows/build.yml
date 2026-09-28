@@ -55,6 +55,40 @@ jobs:
         working-directory: ./example
         run: flutter build ios --no-codesign
 
+  # The example app pins its Android Gradle plugin. An app created from the current Flutter template
+  # uses the template's (AGP 9.1 as of Flutter 3.47), which checks more of the plugin's build.
+  build-android-template:
+    name: Build Android (current Flutter template)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: "stable"
+
+      - name: Create an app with the plugin
+        working-directory: ${{ runner.temp }}
+        run: |
+          flutter create --platforms android template_app
+          cd template_app
+          flutter pub add atomic_transact_flutter --path "$GITHUB_WORKSPACE"
+
+      - name: Build debug
+        working-directory: ${{ runner.temp }}/template_app
+        run: flutter build apk --debug
+
+      - name: Build release
+        working-directory: ${{ runner.temp }}/template_app
+        run: flutter build apk --release
+
   build-android:
     name: Build Android
     runs-on: ubuntu-latest
