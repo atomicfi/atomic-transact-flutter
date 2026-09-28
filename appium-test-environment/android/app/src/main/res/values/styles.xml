@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- A framework theme with an action bar, so the app label is a native TextView the suite can
+         match by @text. One theme for light and dark: the title must be there either way. -->
+    <style name="HarnessTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>

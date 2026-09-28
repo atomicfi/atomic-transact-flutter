@@ -1,0 +1,24 @@
+name: appium_test_environment
+description: "Appium conformance harness for the Atomic Transact Flutter SDK."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  atomic_transact_flutter:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  config:
+    # The example app builds the plugin through Swift Package Manager; so does the harness.
+    enable-swift-package-manager: true
