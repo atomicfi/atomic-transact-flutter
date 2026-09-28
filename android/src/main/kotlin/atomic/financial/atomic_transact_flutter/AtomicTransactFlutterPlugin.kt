@@ -578,11 +578,16 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     )
   }
 
-  private fun mapFromTransactResponseData(data: JSONObject): Map<String, Any?> {
+  internal fun mapFromTransactResponseData(data: JSONObject): Map<String, Any?> {
     val result = mutableMapOf<String, Any?>();
 
     result["taskId"] = data.optString("taskId")
     result["reason"] = data.optString("reason")
+    // Null when the flow didn't end at a handoff, as on iOS.
+    result["handoff"] = data.opt("handoff") as? String
+    // Mirrors iOS, where `data` carries the whole finish or close payload so consumers can read
+    // anything Transact sends that isn't modeled above.
+    result["data"] = toMap(data)
 
     return result.toMap()
   }
