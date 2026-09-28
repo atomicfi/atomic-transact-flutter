@@ -60,7 +60,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val distribution = configuration?.get("distribution") as? Map<String, Any>
       val handoff = configuration?.get("handoff") as? List<String>
       val linkedAccount = configuration?.get("linkedAccount") as? String
-      val metadata = configuration?.get("metadata") as? JSONObject
+      val metadata = configMetadataFromMap(configuration?.get("metadata"))
       val theme = configuration?.get("theme") as? Map<String, Any>
       val deeplink = configuration?.get("deeplink") as? Map<String, Any>
       val search = configuration?.get("search") as? Map<String, Any>
@@ -468,6 +468,13 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     }
 
     return null
+  }
+
+  /// The method channel delivers the metadata as a map, never a JSONObject, but the SDK takes a
+  /// JSONObject.
+  internal fun configMetadataFromMap(value: Any?): JSONObject? {
+    val map = value as? Map<*, *> ?: return null
+    return JSONObject(map)
   }
 
   /// Event converters

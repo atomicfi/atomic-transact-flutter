@@ -79,3 +79,8 @@ jobs:
       - name: Build Android
         working-directory: ./example
         run: flutter build apk --debug
+
+      # Needs the build above, which generates the Gradle wrapper.
+      - name: Run Android unit tests
+        working-directory: ./example/android
+        run: ./gradlew :atomic_transact_flutter:testDebugUnitTest

@@ -40,11 +40,20 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
     }
 
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 35
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                events "passed", "skipped", "failed"
+            }
+        }
     }
 }
 
@@ -52,4 +61,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.core:core:1.9.0"
     implementation "financial.atomic:transact:3.24.1"
+
+    testImplementation "junit:junit:4.13.2"
+    // The org.json in android.jar is only a stub in JVM unit tests.
+    testImplementation "org.json:json:20260814"
 }
