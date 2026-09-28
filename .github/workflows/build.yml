@@ -33,6 +33,15 @@ jobs:
         working-directory: ./example
         run: flutter build ios --no-codesign
 
+      # Needs the build above, which generates the Flutter files the Runner project reads.
+      - name: Run iOS unit tests
+        working-directory: ./example/ios
+        run: |
+          # Which simulators exist depends on the runner's Xcode, so take the first iPhone.
+          udid=$(xcrun simctl list devices available --json \
+            | jq -r '[.devices[][] | select(.name | startswith("iPhone"))][0].udid')
+          xcodebuild test -workspace Runner.xcworkspace -scheme Runner -destination "id=$udid"
+
   build-ios-cocoapods:
     name: Build iOS (CocoaPods)
     runs-on: macos-latest
