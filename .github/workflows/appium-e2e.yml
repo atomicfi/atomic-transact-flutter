@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: atomicfi/mobile-conformance-tests
-          ref: braxton/sdk-841-flutter-target
+          ref: main
           ssh-key: ${{ secrets.CONFORMANCE_REPO_PULL_KEY }}
           path: conformance
 
@@ -241,7 +241,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: atomicfi/mobile-conformance-tests
-          ref: braxton/sdk-841-flutter-target
+          ref: main
           ssh-key: ${{ secrets.CONFORMANCE_REPO_PULL_KEY }}
           path: conformance
 
