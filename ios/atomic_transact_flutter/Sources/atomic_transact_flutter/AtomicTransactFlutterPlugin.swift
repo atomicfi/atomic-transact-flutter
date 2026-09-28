@@ -268,9 +268,10 @@ private final class TransactInstance {
 // MARK: - Transact Type Extensions
 
 extension TransactCompany {
+    /// Keyed as `AtomicTransactCompany.fromJson` reads it, and as Android sends it.
     func toFlutterMap() -> [String: Any?] {
         return [
-            "_id": id,
+            "id": id,
             "name": name,
             "branding": branding != nil ? [
                 "color": branding?.color,
