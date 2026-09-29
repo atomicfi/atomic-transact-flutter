@@ -180,6 +180,8 @@ jobs:
           # restarts the stuck process instead; an ANR in the app under test still fails its spec.
           script: |
             adb shell settings put global hide_error_dialogs 1
+            adb logcat -c
+            adb logcat -v threadtime > logcat.txt 2>&1 &
             appium --allow-cors --allow-insecure=uiautomator2:chromedriver_autodownload,uiautomator2:adb_shell > appium.log 2>&1 &
             until curl -sf http://127.0.0.1:4723/status > /dev/null; do sleep 2; done
             cd conformance/appium && npm run wdio:android:flutter
@@ -225,6 +227,15 @@ jobs:
         with:
           name: appium-log-android
           path: ./appium.log
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: 📦 Upload the emulator logcat
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: logcat-android
+          path: ./logcat.txt
           retention-days: 7
           if-no-files-found: ignore
 
