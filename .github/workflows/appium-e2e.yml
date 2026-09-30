@@ -48,12 +48,18 @@ jobs:
   # wrapper, plus env-gated dev tools that register no tests. None of them fail the run, so the job
   # summary names each one rather than counting it as passed.
   #
-  # Both E2E jobs also run on Dependabot PRs, so a native SDK bump is tested before it merges. A
-  # Dependabot-triggered run only receives Dependabot secrets, so CONFORMANCE_REPO_PULL_KEY,
+  # Dependabot PRs run both E2E jobs only when they bump a native SDK, so the bump is tested before
+  # it merges; its GitHub Actions bumps skip them. Dependabot names those branches after the
+  # dependency: `.../financial.atomic-transact-<version>` and `.../atomicfi/atomic-transact-ios-<version>`.
+  # A Dependabot-triggered run only receives Dependabot secrets, so CONFORMANCE_REPO_PULL_KEY,
   # MOLECULAR_BANK_API_KEY and MOLECULAR_BANK_API_SECRET must exist there as well as under Actions.
   e2e-android:
     name: E2E Android (emulator)
     needs: harness
+    if: >-
+      github.event.pull_request.user.login != 'dependabot[bot]' ||
+      contains(github.head_ref, '/financial.atomic-transact-') ||
+      contains(github.head_ref, '/atomicfi/atomic-transact-ios-')
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Checkout repository
@@ -249,6 +255,10 @@ jobs:
   e2e-ios:
     name: E2E iOS (simulator)
     needs: harness
+    if: >-
+      github.event.pull_request.user.login != 'dependabot[bot]' ||
+      contains(github.head_ref, '/financial.atomic-transact-') ||
+      contains(github.head_ref, '/atomicfi/atomic-transact-ios-')
     runs-on: macos-latest
     steps:
       - name: 🏗 Checkout repository
