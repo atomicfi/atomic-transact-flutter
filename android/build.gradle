@@ -61,7 +61,7 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.core:core:1.9.0"
-    implementation "financial.atomic:transact:3.25.0"
+    implementation "financial.atomic:transact:3.25.1"
 
     testImplementation "junit:junit:4.13.2"
     // The org.json in android.jar is only a stub in JVM unit tests.
