@@ -18,6 +18,7 @@ class Atomic {
   ///   - [onCleanup] Closure that will be called once the launch has ended for good. No further
   ///     callbacks are delivered for the launch after this one.
   ///   - [presentationStyleIOS] iOS presentation style (only applicable on iOS).
+  ///   - [presentationStyleAndroid] Android presentation style (only applicable on Android).
   ///
   /// Every call is its own launch with its own callbacks, so calling this again
   /// does not replace the callbacks of a launch that is still running. It also
@@ -37,6 +38,7 @@ class Atomic {
     AtomicCompletionHandler? onCompletion,
     AtomicCleanupHandler? onCleanup,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    AtomicPresentationStyleAndroid? presentationStyleAndroid,
     bool debug = false,
   }) async {
     final platform = _platform;
@@ -44,6 +46,7 @@ class Atomic {
       configuration: config,
       environment: environment,
       presentationStyleIOS: presentationStyleIOS,
+      presentationStyleAndroid: presentationStyleAndroid,
       debug: debug,
       onInteraction: onInteraction,
       onDataRequest: onDataRequest,

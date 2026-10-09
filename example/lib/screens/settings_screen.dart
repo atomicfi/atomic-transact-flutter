@@ -1,8 +1,11 @@
+import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/app_state.dart';
 import '../theme/atomic_theme.dart';
 import '../widgets/clearable_text_field.dart';
 import '../widgets/section_header.dart';
+import '../widgets/select_grid.dart';
 import '../widgets/toggle_row.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -63,6 +66,17 @@ class SettingsScreen extends StatelessWidget {
                   value: state.debug,
                   onChanged: (v) => state.debug = v,
                 ),
+                if (defaultTargetPlatform == TargetPlatform.android)
+                  SingleSelectGrid<AtomicPresentationStyleAndroid>(
+                    title: 'Presentation Style',
+                    options: AtomicPresentationStyleAndroid.values,
+                    selected: state.presentationStyleAndroid,
+                    labelOf: (style) => switch (style) {
+                      AtomicPresentationStyleAndroid.fullScreen => 'Full Screen',
+                      AtomicPresentationStyleAndroid.formSheet => 'Form Sheet',
+                    },
+                    onSelect: (style) => state.presentationStyleAndroid = style,
+                  ),
                 const SizedBox(height: 16),
                 const Divider(indent: 16, endIndent: 16),
                 const SizedBox(height: 8),

@@ -51,6 +51,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val pluginVersion = call.argument<String>("pluginVersion") ?: ""
       val suffix = if (pluginVersion.isNotEmpty()) "flutter-$pluginVersion" else "flutter"
       val debug = call.argument<Boolean>("debug") ?: false
+      val presentationStyle = configPresentationStyleFromString(call.argument<String>("presentationStyleAndroid"))
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
@@ -87,6 +88,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           environmentURL = transactPath,
           deferredPaymentMethodStrategy =
             configDeferredPaymentMethodStrategyFromString(deferredPaymentMethodStrategy),
+          presentationStyle = presentationStyle,
           debug = debug
         )
 
@@ -468,6 +470,15 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
     }
 
     return null
+  }
+
+  /// Maps the Dart `AtomicPresentationStyleAndroid` name. Anything else, including no value, gets the
+  /// SDK's default of full screen.
+  internal fun configPresentationStyleFromString(value: String?): Config.PresentationStyle {
+    return when (value) {
+      "formSheet" -> Config.PresentationStyle.FORM_SHEET
+      else -> Config.PresentationStyle.FULL_SCREEN
+    }
   }
 
   /// The method channel delivers the metadata as a map, never a JSONObject, but the SDK takes a

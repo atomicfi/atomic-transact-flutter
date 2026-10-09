@@ -53,6 +53,7 @@ class _PayLinkScreenState extends State<PayLinkScreen> {
     final launch = Atomic.transact(
       config: config,
       environment: state.environment,
+      presentationStyleAndroid: state.presentationStyleAndroid,
       debug: state.debug,
       onInteraction: (interaction) {
         eventLog.add(EventEntry(

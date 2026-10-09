@@ -70,6 +70,10 @@ class AppState extends ChangeNotifier {
   bool get debug => _debug;
   set debug(bool v) { _debug = v; notifyListeners(); }
 
+  AtomicPresentationStyleAndroid _presentationStyleAndroid = AtomicPresentationStyleAndroid.fullScreen;
+  AtomicPresentationStyleAndroid get presentationStyleAndroid => _presentationStyleAndroid;
+  set presentationStyleAndroid(AtomicPresentationStyleAndroid v) { _presentationStyleAndroid = v; notifyListeners(); }
+
   bool _pauseAfterInit = false;
   bool get pauseAfterInit => _pauseAfterInit;
   set pauseAfterInit(bool v) { _pauseAfterInit = v; notifyListeners(); }

@@ -158,6 +158,16 @@ enum AtomicPresentationStyleIOS {
   formSheet,
 }
 
+/// Android presentation styles
+enum AtomicPresentationStyleAndroid {
+  /// Full screen presentation style (default)
+  fullScreen,
+
+  /// Form sheet presentation style. A bottom sheet on phones and a centered
+  /// card on large screens.
+  formSheet,
+}
+
 /// The operation type to initiate
 enum AtomicOperationType {
   deposit('deposit'),

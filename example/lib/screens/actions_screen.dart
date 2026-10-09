@@ -59,6 +59,7 @@ class _ActionsScreenState extends State<ActionsScreen> {
     final launch = Atomic.transact(
       config: state.buildActionConfig(actionId: action.id, headless: _headless),
       environment: state.environment,
+      presentationStyleAndroid: state.presentationStyleAndroid,
       debug: state.debug,
       onInteraction: (interaction) {
         eventLog.add(EventEntry(
