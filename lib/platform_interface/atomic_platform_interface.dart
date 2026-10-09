@@ -28,6 +28,7 @@ abstract class AtomicPlatformInterface extends PlatformInterface {
     required AtomicConfig configuration,
     required TransactEnvironment environment,
     AtomicPresentationStyleIOS? presentationStyleIOS,
+    AtomicPresentationStyleAndroid? presentationStyleAndroid,
     bool debug = false,
     AtomicInteractionHandler? onInteraction,
     AtomicDataRequestHandler? onDataRequest,

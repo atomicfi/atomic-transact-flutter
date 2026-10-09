@@ -31,6 +31,25 @@ android {
 }
 ```
 
+## Presentation style
+
+Each platform has its own presentation style, and each one ignores the other's.
+iOS presents Transact as a form sheet by default, and Android presents it full
+screen. Pass `presentationStyleIOS` or `presentationStyleAndroid` to change
+that:
+
+```dart
+await Atomic.transact(
+  config: config,
+  presentationStyleIOS: AtomicPresentationStyleIOS.fullScreen,
+  presentationStyleAndroid: AtomicPresentationStyleAndroid.formSheet,
+);
+```
+
+On Android, the form sheet is a bottom sheet over your dimmed app on phones,
+and a centered card on screens of at least 600×480dp. It's modal, so users
+close it with Transact's close button or the back button, not by swiping it
+down or tapping outside it.
 
 ## Responding to data requests
 
