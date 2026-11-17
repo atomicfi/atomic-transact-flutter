@@ -55,7 +55,7 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val configuration = call.argument<Map<String, Any>>("configuration")
       val publicToken = configuration?.get("publicToken") as String
       val scope = configuration?.get("scope") as String
-      val language = configuration?.get("language") as String
+      val language = configuration?.get("language") as? String
       val tasks = configuration?.get("tasks") as? List<Map<String, Any>>
       val additionalProduct = configuration?.get("additionalProduct") as? String
       val distribution = configuration?.get("distribution") as? Map<String, Any>
@@ -78,7 +78,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           distribution = configDistributionFromMap(distribution),
           linkedAccount = linkedAccount,
           handoff = configHandoffFromList(handoff),
-          language = Config.Language.valueOf(language),
+          // Null lets the SDK use the device's language.
+          language = language?.let { Config.Language.valueOf(it) },
           metadata = metadata,
           theme = configThemeFromMap(theme),
           deeplink = configDeeplinkFromMap(deeplink),
