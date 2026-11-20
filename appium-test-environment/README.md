@@ -45,9 +45,9 @@ flutter build ios --simulator --debug   # -> build/ios/iphonesimulator/Runner.ap
   Android SDK references Uplink classes it neither depends on nor tells R8 about, so
   `android/app/proguard-rules.pro` carries the two `-dontwarn` rules R8 generates for them. Any
   Flutter app built for release needs the same.
-- **The Android Gradle plugin is pinned to the example app's version (8.11).** The current Flutter
-  template's AGP 9 checks each library's `compileSdk` against its dependencies, and the plugin's 35
-  fails that check.
+- **The Android toolchain matches the example app's**, which follows the Flutter 3.50 template:
+  Gradle 9.5, AGP 9.3.1 and Kotlin 2.4.20. Flutter refuses to build when Gradle is older than its
+  minimum (9.3.1 as of 3.50), so bump both apps together when Flutter raises it.
 
 ## Running the conformance suite against it
 
