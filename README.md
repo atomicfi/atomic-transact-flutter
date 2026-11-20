@@ -120,3 +120,7 @@ including hidden and paused ones. Those flows get `onCleanup` but not
   presented, so await it or catch the error.
 
 *More info at [https://docs.atomicfi.com](https://docs.atomicfi.com).*
+
+## Contributing
+
+Atomic's SDK team maintains this SDK and makes all changes to its code. To report a bug, ask a question or request a feature, open a [GitHub issue](https://github.com/atomicfi/atomic-transact-flutter/issues/new); for a bug, also tell your Atomic account manager. See [CONTRIBUTING.md](CONTRIBUTING.md) for what to include, and [AGENTS.md](AGENTS.md) if you use an AI coding agent.
