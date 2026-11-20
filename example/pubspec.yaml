@@ -13,6 +13,7 @@ dependencies:
     path: ../
 
   cupertino_icons: ^1.0.8
+  material_ui: ^1.11.1
 
 dev_dependencies:
   flutter_test:

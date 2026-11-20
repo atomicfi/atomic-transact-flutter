@@ -1,6 +1,6 @@
 import 'package:atomic_transact_flutter/atomic_transact_flutter.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../models/app_state.dart';
 import '../models/event_log.dart';
