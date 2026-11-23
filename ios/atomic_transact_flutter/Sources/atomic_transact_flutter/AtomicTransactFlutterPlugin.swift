@@ -30,6 +30,8 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             let transactPath = arguments["transactPath"] as! String
             let apiPath = arguments["apiPath"] as! String
             let pluginVersion = arguments["pluginVersion"] as? String ?? ""
+            // Null when the app was built with Flutter older than 3.32.
+            let flutterVersion = arguments["flutterVersion"] as? String
             let debugEnabled = arguments["debug"] as? Bool ?? false
             let decoder = JSONDecoder()
 
@@ -45,7 +47,9 @@ public class AtomicTransactFlutterPlugin: NSObject, FlutterPlugin {
             do {
                 var json = configuration
                 let suffix = pluginVersion.isEmpty ? "flutter" : "flutter-\(pluginVersion)"
-                json["platform"] = AtomicConfig.Platform(suffixed: suffix).encode()
+                let hostFramework = AtomicConfig.Platform.HostFramework(
+                    name: "flutter", version: flutterVersion, packageManager: packageManager)
+                json["platform"] = AtomicConfig.Platform(suffixed: suffix, hostFramework: hostFramework).encode()
 
                 // JSONSerialization raises an exception Swift can't catch for values like NaN.
                 guard JSONSerialization.isValidJSONObject(json) else {
@@ -388,6 +392,14 @@ extension TransactTaskStatusUpdate {
 }
 
 // MARK: - Helper Functions
+
+/// How this plugin's iOS code was built: Swift Package Manager defines `SWIFT_PACKAGE`, and
+/// CocoaPods doesn't.
+#if SWIFT_PACKAGE
+private let packageManager = "swiftpm"
+#else
+private let packageManager = "cocoapods"
+#endif
 
 /// The key window's root view controller followed by each view controller presented on top of it.
 @MainActor

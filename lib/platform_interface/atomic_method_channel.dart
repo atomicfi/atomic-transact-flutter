@@ -19,9 +19,19 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
 
   int _instanceCounter = 0;
 
+  /// The Flutter version the app was built with, or null when unknown.
+  final String? _flutterVersion;
+
   MethodChannel get channel => _channel;
 
-  AtomicMethodChannel() {
+  /// [flutterVersion] defaults to the `FLUTTER_VERSION` dart-define, which
+  /// flutter_tools sets on every build since Flutter 3.32. Older Flutter
+  /// leaves it empty, and the plugin still supports Flutter versions without
+  /// `FlutterVersion` from `package:flutter/services.dart`.
+  AtomicMethodChannel({
+    @visibleForTesting
+    String flutterVersion = const String.fromEnvironment('FLUTTER_VERSION'),
+  }) : _flutterVersion = flutterVersion.isEmpty ? null : flutterVersion {
     _channel.setMethodCallHandler(_onMethodCall);
   }
 
@@ -71,6 +81,7 @@ class AtomicMethodChannel extends AtomicPlatformInterface {
           'presentationStyleIOS': presentationStyleIOS?.name,
           'presentationStyleAndroid': presentationStyleAndroid?.name,
           'pluginVersion': packageVersion,
+          'flutterVersion': _flutterVersion,
           'debug': debug,
         },
       );
