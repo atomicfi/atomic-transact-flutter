@@ -50,6 +50,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
       val apiPath = call.argument<String>("apiPath") as String? ?: ""
       val pluginVersion = call.argument<String>("pluginVersion") ?: ""
       val suffix = if (pluginVersion.isNotEmpty()) "flutter-$pluginVersion" else "flutter"
+      // Null when the app was built with Flutter older than 3.32.
+      val flutterVersion = call.argument<String>("flutterVersion")
       val debug = call.argument<Boolean>("debug") ?: false
       val presentationStyle = configPresentationStyleFromString(call.argument<String>("presentationStyleAndroid"))
       val configuration = call.argument<Map<String, Any>>("configuration")
@@ -93,7 +95,8 @@ class AtomicTransactFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAwa
           debug = debug
         )
 
-      config.platform = Config.Platform.suffixed(suffix)
+      config.platform =
+        Config.Platform.suffixed(suffix, Config.Platform.HostFramework("flutter", flutterVersion))
 
       if (instanceId == null) {
         result.error("ConfigError", "Missing instanceId", null)
