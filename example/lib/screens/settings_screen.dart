@@ -77,6 +77,13 @@ class SettingsScreen extends StatelessWidget {
                     },
                     onSelect: (style) => state.presentationStyleAndroid = style,
                   ),
+                SingleSelectGrid<TransactLanguage>(
+                  title: 'Language',
+                  options: TransactLanguage.values,
+                  selected: state.language,
+                  labelOf: (language) => language.label,
+                  onSelect: (language) => state.language = language,
+                ),
                 const SizedBox(height: 16),
                 const Divider(indent: 16, endIndent: 16),
                 const SizedBox(height: 8),

@@ -501,9 +501,12 @@ class AtomicConfig {
   /// Optionally provide colors to customize Transact.
   final AtomicTheme? theme;
 
-  /// Optionally change the language. Could be either 'en' for English or 'es' for Spanish. Default is 'en', unless the user's current locale is Spanish, then Spanish will be used.
-  /// Default value: 'en'
-  final String language;
+  /// Optionally change the language, as a language code or locale such as 'pt', 'pt-BR' or 'en_CA'.
+  /// The native SDKs resolve it to one of Transact's locales: en-US, en-CA, es-US, fr-CA or pt-BR.
+  /// A bare language code takes its region from the device, so 'en' on a Canadian device is en-CA.
+  /// An unsupported region uses the language's default, so 'pt-PT' is pt-BR.
+  /// When unset, the native SDKs use the device's language.
+  final String? language;
 
   /// Optionally deeplink into a specific step
   final AtomicDeeplink? deeplink;
@@ -537,7 +540,7 @@ class AtomicConfig {
     @Deprecated("This has been moved to 'tasks'") this.distribution,
     this.linkedAccount,
     this.theme,
-    this.language = 'en',
+    this.language,
     this.deeplink,
     this.metadata,
     this.search,

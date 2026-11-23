@@ -41,6 +41,19 @@ enum UserLinkTask {
   const UserLinkTask(this.label);
 }
 
+enum TransactLanguage {
+  system('System', null),
+  enUS('English (US)', 'en-US'),
+  enCA('English (CA)', 'en-CA'),
+  esUS('Spanish (US)', 'es-US'),
+  frCA('French (CA)', 'fr-CA'),
+  ptBR('Portuguese (BR)', 'pt-BR');
+
+  final String label;
+  final String? code;
+  const TransactLanguage(this.label, this.code);
+}
+
 // URL mode
 enum UrlMode { production, sandbox, custom }
 
@@ -73,6 +86,10 @@ class AppState extends ChangeNotifier {
   AtomicPresentationStyleAndroid _presentationStyleAndroid = AtomicPresentationStyleAndroid.fullScreen;
   AtomicPresentationStyleAndroid get presentationStyleAndroid => _presentationStyleAndroid;
   set presentationStyleAndroid(AtomicPresentationStyleAndroid v) { _presentationStyleAndroid = v; notifyListeners(); }
+
+  TransactLanguage _language = TransactLanguage.system;
+  TransactLanguage get language => _language;
+  set language(TransactLanguage v) { _language = v; notifyListeners(); }
 
   bool _pauseAfterInit = false;
   bool get pauseAfterInit => _pauseAfterInit;
@@ -354,6 +371,7 @@ class AppState extends ChangeNotifier {
       scope: 'pay-link',
       tasks: [AtomicTask(operation: op, apps: apps)],
       theme: theme,
+      language: _language.code,
       deeplink: step != null ? AtomicDeeplink.step(step) : null,
       // Left unset when off, so Transact falls back to its API default.
       deferredPaymentMethodStrategy: _useSdkPaymentResponse
@@ -372,6 +390,7 @@ class AppState extends ChangeNotifier {
       scope: 'pay-link',
       tasks: [AtomicTask.action(actionId: actionId, headless: headless)],
       theme: theme,
+      language: _language.code,
       // Same as Pay Link: an action that asks for a payment method gets the
       // Payment Response data through onDataRequest.
       deferredPaymentMethodStrategy: _useSdkPaymentResponse
@@ -411,6 +430,7 @@ class AppState extends ChangeNotifier {
       scope: 'user-link',
       tasks: [AtomicTask(operation: op)],
       theme: theme,
+      language: _language.code,
       deeplink: step != null ? AtomicDeeplink.step(step) : null,
     );
   }

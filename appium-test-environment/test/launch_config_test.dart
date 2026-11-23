@@ -35,7 +35,6 @@ void main() {
           'onFail': 'continue',
         },
       ],
-      'language': 'en',
     });
     expect(launch.environment.transactPath, 'https://transact.atomicfi.com');
     expect(launch.environment.apiPath, apiUrl);
