@@ -270,7 +270,9 @@ jobs:
       github.event.pull_request.user.login != 'dependabot[bot]' ||
       contains(github.head_ref, '/financial.atomic-transact-') ||
       contains(github.head_ref, '/atomicfi/atomic-transact-ios-')
-    runs-on: macos-latest
+    # The standard 3-core, 7 GB runner runs out of memory with an iOS 26 simulator booted, and
+    # the Simulator stalls long enough to fail specs. This runner has 5 cores and 14 GB.
+    runs-on: macos-26-xlarge
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
